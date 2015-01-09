@@ -1,12 +1,15 @@
 
 package org.usfirst.frc.team2521.robot;
 
+import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
+import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,6 +36,10 @@ public class Robot extends IterativeRobot {
 	
     public void robotInit() {
 		oi = new OI();
+		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
+		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
+		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
+		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
         // instantiate the command used for the autonomous period
         // autonomousCommand = new ExampleCommand();
     }

@@ -25,6 +25,7 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("Angle", Robot.sensors.getAngle());
     	SmartDashboard.putNumber("Ultrasonic Raw", Robot.sensors.getUltrasonicVoltage());
     	SmartDashboard.putNumber("Ultrasonic Distance", Robot.sensors.getUltrasonicDistance());
+    	SmartDashboard.putNumber("Smoothed Distance", Robot.sensors.getSmoothedUltrasonicDistance());
     }
 
     // Make this return true when this Command no longer needs to run execute()
