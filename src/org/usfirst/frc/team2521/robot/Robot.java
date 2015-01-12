@@ -1,12 +1,14 @@
 
 package org.usfirst.frc.team2521.robot;
 
+import org.usfirst.frc.team2521.robot.commands.Autonomous;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,25 +25,23 @@ public class Robot extends IterativeRobot {
 	public static Drivechain drivechain;
 	public static OI oi;
 
-    // Command autonomousCommand;
+     Command autonomousCommand;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-	public Robot() {
-		sensors = new Sensors();
-		drivechain = new Drivechain();
-	}
 	
     public void robotInit() {
+		sensors = new Sensors();
+		drivechain = new Drivechain();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
 		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
         // instantiate the command used for the autonomous period
-        // autonomousCommand = new ExampleCommand();
+         autonomousCommand = new Autonomous();
     }
 	
 	public void disabledPeriodic() {
@@ -51,6 +51,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         // schedule the autonomous command (example)
         //if (autonomousCommand != null) autonomousCommand.start();
+    	autonomousCommand.start();
     }
 
     /**
@@ -58,6 +59,10 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        autonomousCommand.start();
+        if (autonomousCommand.timeSinceInitialized() > 5000) {
+        	autonomousCommand.cancel();
+        }
     }
 
     public void teleopInit() {

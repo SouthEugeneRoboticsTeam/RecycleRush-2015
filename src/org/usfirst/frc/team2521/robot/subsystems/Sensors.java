@@ -46,6 +46,10 @@ public class Sensors extends Subsystem {
 		return smoothedDistance;
 	}
 	
+	public void resetGyro() {
+		gyro.reset();
+	}
+	
     public void initDefaultCommand() {
     	setDefaultCommand(new WriteSensors());
         // Set the default command for a subsystem here.

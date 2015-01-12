@@ -1,6 +1,9 @@
 package org.usfirst.frc.team2521.robot;
 
+import org.usfirst.frc.team2521.robot.commands.ResetGyro;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -38,6 +41,8 @@ public class OI {
 	private Joystick rotate;
 	private static OI instance;
 	
+	private JoystickButton resetGyro;
+	
 	 public OI() {
 		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
 			rotate = new Joystick(RobotMap.ROTATE_PORT);
@@ -59,6 +64,9 @@ public class OI {
 		return rotate;
 	}
 	
-	private void initButtons() {}
+	private void initButtons() {
+		resetGyro = new JoystickButton(translate, 10);
+		resetGyro.whenPressed(new ResetGyro());
+	}
 }
 
