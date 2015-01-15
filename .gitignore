@@ -1,1 +1,3 @@
 /bin/
+*.class
+/build/org/usfirst/frc/team2521/robot

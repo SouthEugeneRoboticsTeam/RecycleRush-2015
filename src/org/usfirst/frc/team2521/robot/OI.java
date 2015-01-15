@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2521.robot;
 
+import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 import org.usfirst.frc.team2521.robot.commands.ResetGyro;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -42,6 +43,8 @@ public class OI {
 	private static OI instance;
 	
 	private JoystickButton resetGyro;
+	private JoystickButton moveConveyorUp;
+	private JoystickButton moveConveyorDown;
 	
 	 public OI() {
 		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
@@ -66,7 +69,16 @@ public class OI {
 	
 	private void initButtons() {
 		resetGyro = new JoystickButton(translate, 10);
-		resetGyro.whenPressed(new ResetGyro());
+		moveConveyorUp = new JoystickButton(rotate, 3);
+		moveConveyorDown = new JoystickButton(rotate, 2);
+		tieButtons();
 	}
+	
+	private void tieButtons() {
+		resetGyro.whenPressed(new ResetGyro());
+		moveConveyorUp.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
+		moveConveyorDown.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
+	}
+	
 }
 

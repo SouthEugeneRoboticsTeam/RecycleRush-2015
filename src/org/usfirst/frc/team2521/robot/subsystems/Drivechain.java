@@ -1,12 +1,14 @@
 
 package org.usfirst.frc.team2521.robot.subsystems;
 
+import org.usfirst.frc.team2521.robot.CANRobotDrive;
 import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,7 +22,7 @@ public class Drivechain extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 	
-	private RobotDrive drive;
+	private CANRobotDrive drive;
 	private DriveMode mode = DriveMode.fieldOrientedMecanum;
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
 	public Drivechain() {
@@ -36,7 +38,7 @@ public class Drivechain extends Subsystem {
 		rearRight = new CANJaguar(RobotMap.REAR_RIGHT_MOTOR);
 		rearRight.setPercentMode();
 		rearRight.enableControl();
-		drive = new RobotDrive(frontLeft, rearLeft, frontRight, rearRight);
+		drive = new CANRobotDrive(frontLeft, rearLeft, frontRight, rearRight);
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 //		drive = new RobotDrive(0, 1, 2, 3);
@@ -98,7 +100,6 @@ public class Drivechain extends Subsystem {
 		}
 		SmartDashboard.putNumber("Right Encoder", frontRight.getPosition());
 		SmartDashboard.putNumber("Left Encoder", frontLeft.getPosition());
-		CANJaguar.updateSyncGroup((byte)0x80);
 	}
 	
 	public void switchDriveMode(DriveMode newMode) {
@@ -107,7 +108,7 @@ public class Drivechain extends Subsystem {
 	}
 	
 	public void auto() {
-		drive.drive(.5, 0);;
+		drive.mecanumDrive_Cartesian(1, 1, 0, Robot.sensors.getAngle());
 	}
 	
     public void initDefaultCommand() {
