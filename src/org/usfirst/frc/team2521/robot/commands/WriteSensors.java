@@ -23,9 +23,8 @@ public class WriteSensors extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	SmartDashboard.putNumber("Angle", Robot.sensors.getAngle());
-    	SmartDashboard.putNumber("Ultrasonic Raw", Robot.sensors.getUltrasonicVoltage());
-    	SmartDashboard.putNumber("Ultrasonic Distance", Robot.sensors.getUltrasonicDistance());
-    	SmartDashboard.putNumber("Smoothed Distance", Robot.sensors.getSmoothedUltrasonicDistance());
+    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
+    	Robot.sensors.writeSensorsToFile();
     }
 
     // Make this return true when this Command no longer needs to run execute()

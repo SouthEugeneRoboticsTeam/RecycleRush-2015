@@ -25,6 +25,6 @@ public class RobotMap {
 	public static final int TRANSLATE_PORT = 0;
 	public static final int ROTATE_PORT = 1;
 	public static final int CONVEYOR_MOTOR = 32;
-	public static final double CONVEYOR_SPEED = .3;
+	public static final double CONVEYOR_SPEED = 1;
 	public static final double LOW_PASS_ALPHA = .5;
 }

@@ -1,7 +1,5 @@
 package org.usfirst.frc.team2521.robot.commands;
 
-
-
 import org.usfirst.frc.team2521.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -9,12 +7,12 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class Autonomous extends Command {
+public class Auto2 extends Command {
 
-    public Autonomous() {
+	public Auto2() {
+    	requires(Robot.drivechain);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.drivechain);
     }
 
     // Called just before this Command runs the first time
@@ -23,7 +21,7 @@ public class Autonomous extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//Robot.drivechain.auto();
+    	Robot.drivechain.auto2();
     }
 
     // Make this return true when this Command no longer needs to run execute()

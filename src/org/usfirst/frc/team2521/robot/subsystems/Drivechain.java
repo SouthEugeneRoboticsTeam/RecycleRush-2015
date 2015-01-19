@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team2521.robot.subsystems;
 
-import org.usfirst.frc.team2521.robot.CANRobotDrive;
 import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.Robot;
@@ -22,9 +21,23 @@ public class Drivechain extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 	
-	private CANRobotDrive drive;
+	private RobotDrive drive;
 	private DriveMode mode = DriveMode.fieldOrientedMecanum;
+	
+	final int TOTAL_EXECUTIONS = 9000; //how many times the function should execute in 3 minutes
+	double[] transX = new double[TOTAL_EXECUTIONS];
+	double[] transY = new double[TOTAL_EXECUTIONS];
+	double[] fieldOrientedRotation = new double[TOTAL_EXECUTIONS];
+	double[] robotOrientedRotation = new double[TOTAL_EXECUTIONS];
+	double[] angle = new double[TOTAL_EXECUTIONS];
+	double[] magnitude = new double[TOTAL_EXECUTIONS];
+	double[] direction = new double[TOTAL_EXECUTIONS];
+	int teleopCounter = 0;
+	int autoCounter = 0;
+	boolean isRemembering = false;
+	
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
+	
 	public Drivechain() {
 		frontLeft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR);
 		frontLeft.setPercentMode(CANJaguar.kQuadEncoder, 360);
@@ -38,7 +51,7 @@ public class Drivechain extends Subsystem {
 		rearRight = new CANJaguar(RobotMap.REAR_RIGHT_MOTOR);
 		rearRight.setPercentMode();
 		rearRight.enableControl();
-		drive = new CANRobotDrive(frontLeft, rearLeft, frontRight, rearRight);
+		drive = new RobotDrive(frontLeft, rearLeft, frontRight, rearRight);
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 //		drive = new RobotDrive(0, 1, 2, 3);
@@ -62,15 +75,23 @@ public class Drivechain extends Subsystem {
 	public void arcadeDrive() {
 		double rotation = OI.getInstance().getTranslateStick().getX();
 		double magnitude = OI.getInstance().getTranslateStick().getY();
-		SmartDashboard.putNumber("Speed", magnitude);
 		drive.arcadeDrive(magnitude, rotation);
 	}
 	
 	public void tankDrive() {
 		double left = OI.getInstance().getTranslateStick().getY();
 		double right = OI.getInstance().getRotateStick().getY();
-		SmartDashboard.putNumber("Speed", right);
 		drive.tankDrive(left, right);
+	}
+	
+	public void robotOrientedDriveRemembering() {
+		if (teleopCounter <= TOTAL_EXECUTIONS) {
+		robotOrientedRotation[teleopCounter] = OI.getInstance().getRotateStick().getX();
+		magnitude[teleopCounter] = OI.getInstance().getTranslateStick().getMagnitude();
+		direction[teleopCounter] = OI.getInstance().getTranslateStick().getDirectionDegrees();
+		drive.mecanumDrive_Polar(magnitude[teleopCounter], direction[teleopCounter], robotOrientedRotation[teleopCounter]);
+		teleopCounter++;
+		}
 	}
 	
 	
@@ -80,35 +101,82 @@ public class Drivechain extends Subsystem {
 	}
 	
 	public void teleoperatedDrive() {
-		switch (mode) {
-		case fieldOrientedMecanum:
-			invertLeftDrive(true);
-			fieldOrientedDrive();
-			break;
-		case robotOrientedMecanum:
-			invertLeftDrive(true);
-			robotOrientedDrive();
-			break;
-		case arcadeDrive:
-			invertLeftDrive(false);
-			arcadeDrive();
-			break;
-		case tankDrive:
-			invertLeftDrive(false);
-			tankDrive();
-			break;
+		if (!isRemembering) {
+			switch (mode) {
+			case fieldOrientedMecanum:
+				invertLeftDrive(true);
+				fieldOrientedDrive();
+				break;
+			case robotOrientedMecanum:
+				invertLeftDrive(true);
+				robotOrientedDrive();
+				break;
+			case arcadeDrive:
+				invertLeftDrive(false);
+				arcadeDrive();
+				break;
+			case tankDrive:
+				invertLeftDrive(false);
+				tankDrive();
+				break;
+			}
+		} else {
+			switch (mode) {
+			case fieldOrientedMecanum:
+				invertLeftDrive(true);
+				fieldOrientedDriveRemembering();
+				break;
+			case robotOrientedMecanum:
+				invertLeftDrive(true);
+				robotOrientedDriveRemembering();
+				break;
+			}
 		}
-		SmartDashboard.putNumber("Right Encoder", frontRight.getPosition());
-		SmartDashboard.putNumber("Left Encoder", frontLeft.getPosition());
+	}
+	
+	
+	public void toggleRemembering() {
+		isRemembering  = !isRemembering;
 	}
 	
 	public void switchDriveMode(DriveMode newMode) {
 		mode = newMode;
 		SmartDashboard.putString("Current Drive Mode", mode.identifier);
 	}
+	  
+	public void autoRemembering() {
+		
+	}
 	
-	public void auto() {
-		drive.mecanumDrive_Cartesian(1, 1, 0, Robot.sensors.getAngle());
+	public void auto1() {
+		drive.mecanumDrive_Cartesian(.1, .1, 0, Robot.sensors.getAngle());
+	}
+	
+	public void auto2() {
+		drive.mecanumDrive_Cartesian(.5, .5, 0, Robot.sensors.getAngle());
+	}
+	
+	public void resetRemembering() {
+		transX = new double[TOTAL_EXECUTIONS];
+		transY = new double[TOTAL_EXECUTIONS];
+		fieldOrientedRotation = new double[TOTAL_EXECUTIONS];
+		robotOrientedRotation= new double[TOTAL_EXECUTIONS];
+		angle = new double[TOTAL_EXECUTIONS];
+		magnitude = new double[TOTAL_EXECUTIONS];
+		direction = new double[TOTAL_EXECUTIONS];
+		teleopCounter = 0;
+		autoCounter = 0;
+	}
+	public void fieldOrientedDriveRemembering() {
+		if (teleopCounter <= TOTAL_EXECUTIONS) {
+			transX[teleopCounter] = OI.getInstance().getTranslateStick().getX();
+			transY[teleopCounter] = OI.getInstance().getTranslateStick().getY();
+			fieldOrientedRotation[teleopCounter] = OI.getInstance().getRotateStick().getX();
+			//angle[teleopCounter] = Robot.sensors.getAngle();
+			double angle = Robot.sensors.getAngle();
+			drive.mecanumDrive_Cartesian(transX[teleopCounter], transY[teleopCounter], fieldOrientedRotation[teleopCounter], angle);
+			teleopCounter++;
+		}
 	}
 	
     public void initDefaultCommand() {
@@ -128,5 +196,18 @@ public class Drivechain extends Subsystem {
     		this.identifier = identifier;
     	}
     }
+    
+   /* public enum AutoMode {
+    	auto1 ("First autonomous mode"),
+    	auto2 ("Second autonomous mode");
+    	
+    	private final String identifier;
+    	private AutoMode(String identifier) {
+    		this.identifier = identifier;
+    	}
+    }
+    */
 }
+    	
+
 

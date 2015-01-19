@@ -1,7 +1,10 @@
 
 package org.usfirst.frc.team2521.robot;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
-import org.usfirst.frc.team2521.robot.commands.Autonomous;
+import org.usfirst.frc.team2521.robot.commands.Auto1;
+import org.usfirst.frc.team2521.robot.commands.Auto2;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
@@ -9,10 +12,14 @@ import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import java.io.File;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,8 +33,10 @@ public class Robot extends IterativeRobot {
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
 	public static OI oi;
+	SendableChooser autoChooser;
+	Command autonomousCommand;
 
-     Command autonomousCommand;
+	
 
     /**
      * This function is run when the robot is first started up and should be
@@ -35,15 +44,22 @@ public class Robot extends IterativeRobot {
      */
 	
     public void robotInit() {
+    	
+
+    	drivechain = new Drivechain();
+    	//Auto1 auto1 = new Auto1();
+    	//Auto2 auto2 = new Auto2();
+    	autoChooser = new SendableChooser();
+    	autoChooser.addDefault("Autonomous 1", new Auto1());
+    	autoChooser.addObject("Autonomous 2", new Auto2());
 		sensors = new Sensors();
-		drivechain = new Drivechain();
 		conveyor = new Conveyor();
 		oi = new OI();
-		SmartDashboard.putData("Autonomous", new Autonomous());
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
 		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
+		SmartDashboard.putData("Autonomous mode", autoChooser);
         // instantiate the command used for the autonomous period
          
     }
@@ -53,9 +69,14 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
+    	if (OI.getInstance().getRotateStick().getRawButton(7)) {
+    		autonomousCommand = new Auto1();
+    	} else {
+    		autonomousCommand = new Auto2();
+    	}
         // schedule the autonomous command (example)
         //if (autonomousCommand != null) autonomousCommand.start();
-    	autonomousCommand = new Autonomous();
+//    	autonomousCommand = (Command) autoChooser.getSelected();
     	autonomousCommand.start();
     }
 

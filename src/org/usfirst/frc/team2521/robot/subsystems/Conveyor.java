@@ -22,7 +22,7 @@ public class Conveyor extends Subsystem {
 	
 	
 	public void moveConveyor(double speed) {
-		//conveyor.set(speed);
+		conveyor.set(speed);
 	}
 	
     public void initDefaultCommand() {
