@@ -1,9 +1,9 @@
 package org.usfirst.frc.team2521.robot.commands;
-
 import org.usfirst.frc.team2521.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /**
  *
@@ -23,7 +23,11 @@ public class WriteSensors extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	SmartDashboard.putNumber("Angle", Robot.sensors.getAngle());
-    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
+    	//SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
+    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
+    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
+    	SmartDashboard.putNumber("Empty Analog", Robot.sensors.getBlank());
+    	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
     	Robot.sensors.writeSensorsToFile();
     }
 

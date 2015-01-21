@@ -9,9 +9,19 @@ import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  *
@@ -25,6 +35,7 @@ public class Drivechain extends Subsystem {
 	private DriveMode mode = DriveMode.fieldOrientedMecanum;
 	
 	final int TOTAL_EXECUTIONS = 9000; //how many times the function should execute in 3 minutes
+	int executions = 1;
 	double[] transX = new double[TOTAL_EXECUTIONS];
 	double[] transY = new double[TOTAL_EXECUTIONS];
 	double[] fieldOrientedRotation = new double[TOTAL_EXECUTIONS];
@@ -35,6 +46,13 @@ public class Drivechain extends Subsystem {
 	int teleopCounter = 0;
 	int autoCounter = 0;
 	boolean isRemembering = false;
+	String RobotOrientedRotation = "/tmp/RobotOrientedRotation.txt";
+	String Magnitude = "/tmp/Magnitude.txt";
+	String Direction = "/tmp/Direction.txt";
+	//String autoFieldOriented = "/tmp/autoFieldOriented.txt";
+	BufferedWriter ROrotWriter = null;
+	BufferedWriter magWriter = null;
+	BufferedWriter dirWriter = null;
 	
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -56,6 +74,7 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 //		drive = new RobotDrive(0, 1, 2, 3);
 	}
+	
 	
 	public void fieldOrientedDrive() {
 		double transX = OI.getInstance().getTranslateStick().getX();
@@ -93,7 +112,7 @@ public class Drivechain extends Subsystem {
 		teleopCounter++;
 		}
 	}
-	
+
 	
 	public void invertLeftDrive(boolean invert) {
 		drive.setInvertedMotor(MotorType.kFrontLeft, invert);
@@ -144,9 +163,65 @@ public class Drivechain extends Subsystem {
 		SmartDashboard.putString("Current Drive Mode", mode.identifier);
 	}
 	  
-	public void autoRemembering() {
-		
+	
+	public double[] fileToArray(String filename) {
+		List<String> recordList;
+		int listSize = 1;
+		double[] recordArray = null;
+		try {
+			recordList = Files.readAllLines(Paths.get(filename), Charset.defaultCharset()); // this should work only if it is actually creating new lines
+			for (int iii = 0; iii <= executions; iii++) {
+				recordArray[iii] = Double.valueOf(recordList.get(iii));
+			}
+		} catch (IOException e) {}	
+		return recordArray;
 	}
+	
+	public void writeToFileFieldOrientedSetUp() {
+		if (ROrotWriter == null || magWriter == null || dirWriter == null ) {
+			File rotationFile = new File(RobotOrientedRotation);
+			File magnitudeFile = new File(Magnitude);
+			File directionFile = new File(Direction);
+			if (!rotationFile.exists() || !magnitudeFile.exists() || !directionFile.exists()) {
+				try {
+					rotationFile.createNewFile();
+				} catch (IOException e) {}
+			}
+	    	try {
+				ROrotWriter = new BufferedWriter(new FileWriter(rotationFile));
+				magWriter = new BufferedWriter(new FileWriter(magnitudeFile));
+				dirWriter = new BufferedWriter(new FileWriter(directionFile));
+			} catch (IOException e) {
+				
+			} 
+		}
+	}
+	
+	/*public void recordFromFileRobotOriented() {
+		angle = 
+	}*/
+	
+	public void writeToFileFieldOriented() {
+		try {
+			if (ROrotWriter != null) {
+			ROrotWriter.write(OI.getInstance().getRotateStick().getX() + "\n");
+			ROrotWriter.flush();
+			}
+		} catch (IOException ex) {}
+		try {
+			if (magWriter != null) {
+			magWriter.write(OI.getInstance().getTranslateStick().getMagnitude() + "\n");
+			magWriter.flush();
+			}
+		} catch (IOException ex) {}
+		try {
+			if (dirWriter != null) {
+			dirWriter.write(OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n");
+			dirWriter.flush();
+			}
+		} catch (IOException ex) {}
+	}  
+
 	
 	public void auto1() {
 		drive.mecanumDrive_Cartesian(.1, .1, 0, Robot.sensors.getAngle());

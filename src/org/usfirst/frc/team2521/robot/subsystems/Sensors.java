@@ -12,6 +12,8 @@ import java.io.PrintStream;
 import java.io.Writer;
 
 import org.usfirst.frc.team2521.robot.ComplementaryFilter;
+import org.usfirst.frc.team2521.robot.DataBasedFilter;
+import org.usfirst.frc.team2521.robot.LowPassFilter;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.WriteSensors;
 
@@ -33,35 +35,41 @@ public class Sensors extends Subsystem {
 	private Gyro gyro;
 	private BuiltInAccelerometer accel;
 	private AnalogInput ultrasonic;
+	private AnalogInput blankspace;
 	private double smoothedDistance = 0;
 	private ComplementaryFilter compFilter;
+	private DataBasedFilter dbFilter;
+	private LowPassFilter lpFilter;
 	File record;
 	BufferedWriter writer = null;
 	
 	
 	public Sensors() {
 		gyro = new Gyro(RobotMap.GYRO_PORT);
+		blankspace = new AnalogInput(RobotMap.EMPTY_ANALOG);
 		ultrasonic = new AnalogInput(RobotMap.ULTRASONIC_PORT);
 		accel = new BuiltInAccelerometer();
 		compFilter = new ComplementaryFilter(gyro, accel, 1);
+		dbFilter = new DataBasedFilter(gyro, accel);
+		lpFilter = new LowPassFilter(gyro);
 		
 	}
-	public void createFileWriter() {
+	/*public void createFileWriter() {
 		String path = "/home/admin/gyro.out";
 		File file = new File(path);
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				System.out.println("Error occured creating file:\n" + e);
+				System.out.println("Error occurred creating file:\n" + e);
 			}
 		}
     	try {
 			writer = new BufferedWriter(new FileWriter(file));
 		} catch (IOException e) {
-			System.out.println("Error occured creating writer:\n" + e);
+			System.out.println("Error occurred creating writer:\n" + e);
 		} 
-	}
+	}*/
 	
 	public double getAngle() {
 		return gyro.getAngle();
@@ -89,8 +97,24 @@ public class Sensors extends Subsystem {
 		return compFilter.getAngle();
 	}
 	
+	public double getDataBasedAngle() {
+		return dbFilter.getAngle();
+	}
+	
+	public double getDBFilterError() {
+		return dbFilter.getError();
+	}
+	
+	public double getLPAngle(){
+		return lpFilter.getAngle();
+	}
+	
 	public void resetGyro() {
 		gyro.reset();
+	}
+	
+	public double getBlank(){
+		return blankspace.getValue();
 	}
 	
 	public void writeSensorsToFile() {
@@ -117,7 +141,8 @@ public class Sensors extends Subsystem {
 					gyro.getAngle() + "," + 
 					accel.getX() +  "," + 
 					accel.getY() + "," +
-					compFilter.getAngle() + "\n"));
+					compFilter.getAngle() + "," +
+					dbFilter.getAngle() + "\n"));
 			writer.flush();
 			}
 		} catch (IOException ex) {}

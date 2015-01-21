@@ -10,6 +10,8 @@ import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
+import org.usfirst.frc.team2521.robot.subsystems.CompressorSub;
+import org.usfirst.frc.team2521.robot.subsystems.Flipper;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TalonSRX;
@@ -32,6 +34,8 @@ public class Robot extends IterativeRobot {
 	public static Sensors sensors;
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
+	public static CompressorSub compressor;
+	public static Flipper flipper;
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;

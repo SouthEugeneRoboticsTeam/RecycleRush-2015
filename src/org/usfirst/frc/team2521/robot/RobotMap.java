@@ -21,10 +21,12 @@ public class RobotMap {
 	public static final int REAR_RIGHT_MOTOR = 41;
 	public static final int REAR_LEFT_MOTOR = 43;
 	public static final int GYRO_PORT = 0;
+	public static final int EMPTY_ANALOG = 3;
 	public static final int ULTRASONIC_PORT = 1;
 	public static final int TRANSLATE_PORT = 0;
 	public static final int ROTATE_PORT = 1;
 	public static final int CONVEYOR_MOTOR = 32;
+	public static final int FLIPPER_CHANNEL = 0;
 	public static final double CONVEYOR_SPEED = 1;
 	public static final double LOW_PASS_ALPHA = .5;
 }
