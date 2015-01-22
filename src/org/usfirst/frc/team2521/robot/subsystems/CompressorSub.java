@@ -2,6 +2,8 @@ package org.usfirst.frc.team2521.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.Compressor;
+
+import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.StartCompressor;
 
 /**
@@ -14,7 +16,7 @@ public class CompressorSub extends Subsystem {
     // here. Call these from Commands.
 	
 	public CompressorSub() {
-		compressor = new Compressor();
+		compressor = new Compressor(RobotMap.PCM_CAN_CHANNEL);
 	}
 	
 	public void startCompressor(){

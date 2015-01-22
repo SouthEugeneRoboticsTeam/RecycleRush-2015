@@ -58,6 +58,8 @@ public class Robot extends IterativeRobot {
     	autoChooser.addObject("Autonomous 2", new Auto2());
 		sensors = new Sensors();
 		conveyor = new Conveyor();
+		compressor = new CompressorSub();
+		flipper = new Flipper();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));

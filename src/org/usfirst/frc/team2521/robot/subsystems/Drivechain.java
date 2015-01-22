@@ -35,7 +35,6 @@ public class Drivechain extends Subsystem {
 	private DriveMode mode = DriveMode.fieldOrientedMecanum;
 	
 	final int TOTAL_EXECUTIONS = 9000; //how many times the function should execute in 3 minutes
-	int executions = 1;
 	double[] transX = new double[TOTAL_EXECUTIONS];
 	double[] transY = new double[TOTAL_EXECUTIONS];
 	double[] fieldOrientedRotation = new double[TOTAL_EXECUTIONS];
@@ -49,10 +48,18 @@ public class Drivechain extends Subsystem {
 	String RobotOrientedRotation = "/tmp/RobotOrientedRotation.txt";
 	String Magnitude = "/tmp/Magnitude.txt";
 	String Direction = "/tmp/Direction.txt";
+	String FieldOrientedRotation = "/tmp/FieldOrientedRotation.txt";
+	String TransX = "/tmp/TransX.txt";
+	String TransY = "/tmp/TransY.txt";
+	String Angle = "/tmp/Angle.txt";
 	//String autoFieldOriented = "/tmp/autoFieldOriented.txt";
 	BufferedWriter ROrotWriter = null;
 	BufferedWriter magWriter = null;
 	BufferedWriter dirWriter = null;
+	BufferedWriter FOrotWriter = null;
+	BufferedWriter transXWriter = null;
+	BufferedWriter transYWriter = null;
+	//BufferedWriter angleWriter = null;
 	
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -113,6 +120,19 @@ public class Drivechain extends Subsystem {
 		}
 	}
 
+	public void autoRobotOrientedRemembering() {
+		if (autoCounter <= TOTAL_EXECUTIONS) {
+			drive.mecanumDrive_Polar(magnitude[teleopCounter], direction[teleopCounter], robotOrientedRotation[teleopCounter]);
+			autoCounter++;
+		}
+	}
+	
+	public void autoFieldOrientedRemembering(){
+		if (autoCounter <= TOTAL_EXECUTIONS) {
+			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], angle[autoCounter]);
+			autoCounter++;
+		}
+	}
 	
 	public void invertLeftDrive(boolean invert) {
 		drive.setInvertedMotor(MotorType.kFrontLeft, invert);
@@ -170,25 +190,31 @@ public class Drivechain extends Subsystem {
 		double[] recordArray = null;
 		try {
 			recordList = Files.readAllLines(Paths.get(filename), Charset.defaultCharset()); // this should work only if it is actually creating new lines
-			for (int iii = 0; iii <= executions; iii++) {
+			for (int iii = 0; iii <= TOTAL_EXECUTIONS; iii++) {
 				recordArray[iii] = Double.valueOf(recordList.get(iii));
 			}
 		} catch (IOException e) {}	
 		return recordArray;
 	}
 	
-	public void writeToFileFieldOrientedSetUp() {
+	public void writeToFileRobotOrientedSetUp() {
 		if (ROrotWriter == null || magWriter == null || dirWriter == null ) {
-			File rotationFile = new File(RobotOrientedRotation);
+			File ROrotationFile = new File(RobotOrientedRotation);
 			File magnitudeFile = new File(Magnitude);
 			File directionFile = new File(Direction);
-			if (!rotationFile.exists() || !magnitudeFile.exists() || !directionFile.exists()) {
+			if (!ROrotationFile.exists() || !magnitudeFile.exists() || !directionFile.exists()) {
 				try {
-					rotationFile.createNewFile();
+					ROrotationFile.createNewFile();
+				} catch (IOException e) {}
+				try {
+					magnitudeFile.createNewFile();
+				} catch (IOException e) {}
+				try {
+					directionFile.createNewFile();
 				} catch (IOException e) {}
 			}
 	    	try {
-				ROrotWriter = new BufferedWriter(new FileWriter(rotationFile));
+				ROrotWriter = new BufferedWriter(new FileWriter(ROrotationFile));
 				magWriter = new BufferedWriter(new FileWriter(magnitudeFile));
 				dirWriter = new BufferedWriter(new FileWriter(directionFile));
 			} catch (IOException e) {
@@ -201,7 +227,7 @@ public class Drivechain extends Subsystem {
 		angle = 
 	}*/
 	
-	public void writeToFileFieldOriented() {
+	public void writeToFileRobotOriented() {
 		try {
 			if (ROrotWriter != null) {
 			ROrotWriter.write(OI.getInstance().getRotateStick().getX() + "\n");
@@ -221,6 +247,64 @@ public class Drivechain extends Subsystem {
 			}
 		} catch (IOException ex) {}
 	}  
+	
+	public void writeToFileFieldOrientedSetUp() {
+		if (FOrotWriter == null || transXWriter == null || transYWriter == null) {
+			File FOrotationFile = new File(RobotOrientedRotation);
+			File transXFile = new File(Magnitude);
+			File transYFile = new File(Direction);
+			//File angleFile = new File(Angle);
+			if (!FOrotationFile.exists() || !transXFile.exists() || !transYFile.exists()) {
+				try {
+					FOrotationFile.createNewFile();
+				} catch (IOException e) {}
+				try {
+					transXFile.createNewFile();
+				} catch (IOException e) {}
+				try {
+					transYFile.createNewFile();
+				} catch (IOException e) {}
+				/*try {
+					angleFile.createNewFile();
+				} catch (IOException e) {} */
+			}
+	    	try {
+				FOrotWriter = new BufferedWriter(new FileWriter(FOrotationFile));
+				transXWriter = new BufferedWriter(new FileWriter(transXFile));
+				transYWriter = new BufferedWriter(new FileWriter(transYFile));
+				//angleWriter = new BufferedWriter(new FileWriter(angleFile));
+			} catch (IOException e) {
+				
+			} 
+		}
+	}
+	
+	public void writeToFileFieldOriented() {
+		try {
+			if (FOrotWriter != null) {
+			FOrotWriter.write(OI.getInstance().getRotateStick().getX() + "\n");
+			ROrotWriter.flush();
+			}
+		} catch (IOException ex) {}
+		try {
+			if (transXWriter != null) {
+			transXWriter.write(OI.getInstance().getTranslateStick().getX() + "\n");
+			transXWriter.flush();
+			}
+		} catch (IOException ex) {}
+		try {
+			if (transYWriter != null) {
+			transYWriter.write(OI.getInstance().getRotateStick().getX() + "\n");
+			transYWriter.flush();
+			}
+		} catch (IOException ex) {}
+		/*try {
+			if (angleWriter != null) {
+			angleWriter.write(OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n");
+			angleWriter.flush(); 
+			}
+		} catch (IOException ex) {}*/
+	} 
 
 	
 	public void auto1() {
