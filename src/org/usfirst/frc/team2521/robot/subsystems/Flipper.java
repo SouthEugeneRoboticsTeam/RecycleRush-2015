@@ -4,20 +4,22 @@ import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 /**
  *
  */
 public class Flipper extends Subsystem {
-    Solenoid flipUp;
-    Solenoid flipDown;
+    DoubleSolenoid flipper;
+    
     private boolean isUp = false;
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
     public Flipper() {
-    	flipUp = new Solenoid(RobotMap.FLIPPER_DOWN_CHANNEL);
+    	/*flipUp = new Solenoid(RobotMap.FLIPPER_DOWN_CHANNEL);
     	flipDown = new Solenoid(RobotMap.FLIPPER_UP_CHANNEL);
-    	resetFlipper();
+    	resetFlipper(); */
+    	flipper = new DoubleSolenoid(RobotMap.FLIPPER_UP_CHANNEL, RobotMap.FLIPPER_DOWN_CHANNEL);
     }
     
     public boolean isUp() {
@@ -26,17 +28,18 @@ public class Flipper extends Subsystem {
     
     public void flipperUp() {
         isUp = true;
-        flipDown.set(isUp);
+        flipper.set(DoubleSolenoid.Value.kForward);
     }
     
     public void flipperDown() {
         isUp = false;
-        flipDown.set(isUp);
+        flipper.set(DoubleSolenoid.Value.kReverse);
+        
     }
     
     public void resetFlipper() {
         isUp = false;
-    	flipUp.set(isUp);
+    	flipper.set(DoubleSolenoid.Value.kOff);
     
     }
 

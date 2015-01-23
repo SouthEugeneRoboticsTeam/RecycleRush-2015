@@ -5,7 +5,8 @@ import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 import org.usfirst.frc.team2521.robot.commands.ResetGyro;
 import org.usfirst.frc.team2521.robot.commands.ResetRemembering;
 import org.usfirst.frc.team2521.robot.commands.ToggleRemembering;
-import org.usfirst.frc.team2521.robot.commands.Flip;
+import org.usfirst.frc.team2521.robot.commands.FlipperUp;
+import org.usfirst.frc.team2521.robot.commands.FlipperDown;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -92,7 +93,8 @@ public class OI {
 		moveConveyorDown.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
 		resetRemembering.whenPressed(new ResetRemembering());
 		toggleRemembering.whenPressed(new ToggleRemembering());
-		flip.whenPressed(new Flip());
+		flip.whenPressed(new FlipperUp());
+		flip.whenReleased(new FlipperDown());
 		//switchAutonomous.whileHeld(new SwitchAuto());
 		//buttonPressed = translate.getRawButton(4);
 		
