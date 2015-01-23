@@ -16,7 +16,7 @@ public class CompressorSub extends Subsystem {
     // here. Call these from Commands.
 	
 	public CompressorSub() {
-		compressor = new Compressor(RobotMap.PCM_CAN_CHANNEL);
+		compressor = new Compressor();
 	}
 	
 	public void startCompressor(){

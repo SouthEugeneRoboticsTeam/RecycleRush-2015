@@ -16,6 +16,7 @@ import org.usfirst.frc.team2521.robot.DataBasedFilter;
 import org.usfirst.frc.team2521.robot.LowPassFilter;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.WriteSensors;
+import org.usfirst.frc.team2521.robot.commands.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -149,7 +150,7 @@ public class Sensors extends Subsystem {
 		} catch (IOException ex) {}
 	} 
 	
-	public void generalLog(){
+	/*public void generalLog(){
 		if (genWriter == null) {
 			String path = "/tmp/log.csv";
 			File file = new File(path);
@@ -166,7 +167,14 @@ public class Sensors extends Subsystem {
 				
 			} 
 		}
-	}
+		try {
+			if (genWriter != null) {
+			genWriter.write((Timer.getFPGATimestamp() + "," + 
+					dbFilter.getAngle() + "\n"));
+			gyroWriter.flush();
+			}
+		} catch (IOException ex) {}
+	} */
 	
 	
     public void initDefaultCommand() {
