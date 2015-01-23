@@ -21,6 +21,7 @@ public class FlipperUp extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	Robot.flipper.flipperUp();
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -30,7 +31,7 @@ public class FlipperUp extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.flipper.flipperUp();
+    	//Robot.flipper.flipperUp();
     }
 
     // Called when another command which requires one or more of the same

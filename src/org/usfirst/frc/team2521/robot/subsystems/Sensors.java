@@ -41,7 +41,8 @@ public class Sensors extends Subsystem {
 	private DataBasedFilter dbFilter;
 	private LowPassFilter lpFilter;
 	File record;
-	BufferedWriter writer = null;
+	BufferedWriter gyroWriter = null;
+	BufferedWriter genWriter = null;
 	
 	
 	public Sensors() {
@@ -118,7 +119,7 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void writeSensorsToFile() {
-		if (writer == null) {
+		if (gyroWriter == null) {
 			String path = "/tmp/gyro.csv";
 			File file = new File(path);
 			if (!file.exists()) {
@@ -129,24 +130,44 @@ public class Sensors extends Subsystem {
 				}
 			}
 	    	try {
-				writer = new BufferedWriter(new FileWriter(file));
+				gyroWriter = new BufferedWriter(new FileWriter(file));
 			} catch (IOException e) {
 				
 			} 
 		}
 		try {
-			if (writer != null) {
-			writer.write((Timer.getFPGATimestamp() + "," + 
+			if (gyroWriter != null) {
+			gyroWriter.write((Timer.getFPGATimestamp() + "," + 
 					gyro.getRate() + "," + 
 					gyro.getAngle() + "," + 
 					accel.getX() +  "," + 
 					accel.getY() + "," +
 					compFilter.getAngle() + "," +
 					dbFilter.getAngle() + "\n"));
-			writer.flush();
+			gyroWriter.flush();
 			}
 		} catch (IOException ex) {}
 	} 
+	
+	public void generalLog(){
+		if (genWriter == null) {
+			String path = "/tmp/log.csv";
+			File file = new File(path);
+			if (!file.exists()) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+				
+				}
+			}
+	    	try {
+				genWriter = new BufferedWriter(new FileWriter(file));
+			} catch (IOException e) {
+				
+			} 
+		}
+	}
+	
 	
     public void initDefaultCommand() {
     	setDefaultCommand(new WriteSensors());

@@ -27,13 +27,17 @@ public class Flipper extends Subsystem {
     }
     
     public void flipperUp() {
-        isUp = true;
+        if (isUp != true){
         flipper.set(DoubleSolenoid.Value.kForward);
+        isUp = true;
+        }
     }
     
     public void flipperDown() {
+    	if (isUp = true){
         isUp = false;
         flipper.set(DoubleSolenoid.Value.kReverse);
+    	}
         
     }
     
