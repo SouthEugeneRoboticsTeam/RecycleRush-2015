@@ -182,5 +182,32 @@ public class Sensors extends Subsystem {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
+
+	// This is a very simple weighted average filter
+	public double GetSimpleFilter( double RA[] )
+	{
+		double result = 0;
+		
+		int len = RA.length;
+		
+		double val_n = RA[ len - 1 ];
+		double val_n1 = RA[ len - 2 ];
+		double val_n2 = RA[ len - 3 ];
+		double val_n3 = RA[ len - 4 ];
+		
+		double weightN = 5;
+		double weightN1 = 4;
+		double weightN2 = 3;
+		double weightN3 = 1
+				;
+		double sum = val_n * weightN;
+		sum += val_n1 * weightN1;
+		sum += val_n2 * weightN2;
+		sum += val_n3 * weightN3;
+		
+		result = sum / ( weightN + weightN1 + weightN2 + weightN3 );
+		
+		return result;
+	}
 }
 
