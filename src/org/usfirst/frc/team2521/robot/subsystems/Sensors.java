@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import org.usfirst.frc.team2521.robot.ComplementaryFilter;
 import org.usfirst.frc.team2521.robot.DataBasedFilter;
@@ -44,6 +46,9 @@ public class Sensors extends Subsystem {
 	File record;
 	BufferedWriter gyroWriter = null;
 	BufferedWriter genWriter = null;
+	String pathPart1;
+	String getCurrentTimeDate;
+	String pathPart3;
 	
 	
 	public Sensors() {
@@ -54,24 +59,21 @@ public class Sensors extends Subsystem {
 		compFilter = new ComplementaryFilter(gyro, accel, 1);
 		dbFilter = new DataBasedFilter(gyro, accel);
 		lpFilter = new LowPassFilter(gyro);
+		pathPart1 = "/home/lvuser/data/gyro ";
+		getCurrentTimeDate = pathPart2();
+		pathPart3 = ".csv";
+	}
+	
+	public static String pathPart2() {
+		SimpleDateFormat dateAsString = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
+		Date now = new Date();
+		String stringDate = dateAsString.format(now);
+		return stringDate;
+	}
+	
+	public void gyroWriter() {
 		
 	}
-	/*public void createFileWriter() {
-		String path = "/home/admin/gyro.out";
-		File file = new File(path);
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				System.out.println("Error occurred creating file:\n" + e);
-			}
-		}
-    	try {
-			writer = new BufferedWriter(new FileWriter(file));
-		} catch (IOException e) {
-			System.out.println("Error occurred creating writer:\n" + e);
-		} 
-	}*/
 	
 	public double getAngle() {
 		return gyro.getAngle();
@@ -121,8 +123,7 @@ public class Sensors extends Subsystem {
 	
 	public void writeSensorsToFile() {
 		if (gyroWriter == null) {
-			String path = "/tmp/gyro.csv";
-			File file = new File(path);
+			File file = new File(pathPart1 + getCurrentTimeDate + pathPart3);
 			if (!file.exists()) {
 				try {
 					file.createNewFile();
@@ -134,8 +135,8 @@ public class Sensors extends Subsystem {
 				gyroWriter = new BufferedWriter(new FileWriter(file));
 			} catch (IOException e) {
 				
-			} 
-		}
+			}
+	}
 		try {
 			if (gyroWriter != null) {
 			gyroWriter.write((Timer.getFPGATimestamp() + "," + 
