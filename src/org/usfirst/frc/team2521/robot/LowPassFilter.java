@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2521.robot;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Gyro;
 
 

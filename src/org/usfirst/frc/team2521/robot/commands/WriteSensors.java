@@ -28,7 +28,11 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
     	SmartDashboard.putNumber("Empty Analog", Robot.sensors.getBlank());
     	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
-    	Robot.sensors.writeSensorsToFile();
+    	Robot.sensors.sensorLog();
+    	Robot.sensors.joystickLog();
+    	Robot.sensors.commandLog();
+    	SmartDashboard.putBoolean("Limit switch top:", Robot.sensors.getLimitSwitchTop());
+    	SmartDashboard.putBoolean("Limit switch bot:", Robot.sensors.getLimitSwitchBot());
     }
 
     // Make this return true when this Command no longer needs to run execute()

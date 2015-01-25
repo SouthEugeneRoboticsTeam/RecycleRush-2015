@@ -28,7 +28,17 @@ public class RobotMap {
 	public static final int CONVEYOR_MOTOR = 32;
 	public static final int FLIPPER_UP_CHANNEL = 1;
 	public static final int FLIPPER_DOWN_CHANNEL = 0;
-	public static final double CONVEYOR_SPEED = 1;
+	public static final int LIMIT_SWITCH_PORT_TOP = 0; 
+	public static final int LIMIT_SWITCH_PORT_BOT = 1; 
+	public static final int LIGHT_MAIN = 2; 
+	public static final int LIGHT_1 = 3; 
+	public static final int LIGHT_2 = 4; 
+	public static final int LIGHT_3 = 5; 
+	public static final int LIGHT_4 = 6; 
+	public static final int LIGHT_5 = 7; 
+	public static final int LIGHT_6 = 8; 
+	public static final int LIGHT_7 = 9; 
+	public static final double CONVEYOR_SPEED = .2;
 	public static final double LOW_PASS_ALPHA = .5;
 	public static final int PCM_CAN_CHANNEL = 9;
 }

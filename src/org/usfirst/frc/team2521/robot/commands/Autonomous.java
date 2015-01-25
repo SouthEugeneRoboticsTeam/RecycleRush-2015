@@ -19,11 +19,12 @@ public class Autonomous extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.drivechain.autoInit();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//Robot.drivechain.auto();
+    	Robot.drivechain.auto();
     }
 
     // Make this return true when this Command no longer needs to run execute()

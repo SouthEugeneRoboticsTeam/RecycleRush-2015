@@ -16,16 +16,20 @@ import java.text.SimpleDateFormat;
 import org.usfirst.frc.team2521.robot.ComplementaryFilter;
 import org.usfirst.frc.team2521.robot.DataBasedFilter;
 import org.usfirst.frc.team2521.robot.LowPassFilter;
+import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
-import org.usfirst.frc.team2521.robot.commands.WriteSensors;
+import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
  *
@@ -38,6 +42,8 @@ public class Sensors extends Subsystem {
 	private Gyro gyro;
 	private BuiltInAccelerometer accel;
 	private AnalogInput ultrasonic;
+	private DigitalInput limitSwitchTop;
+	private DigitalInput limitSwitchBot;
 	private AnalogInput blankspace;
 	private double smoothedDistance = 0;
 	private ComplementaryFilter compFilter;
@@ -45,10 +51,15 @@ public class Sensors extends Subsystem {
 	private LowPassFilter lpFilter;
 	File record;
 	BufferedWriter gyroWriter = null;
-	BufferedWriter genWriter = null;
-	String pathPart1;
+	BufferedWriter commandWriter = null;
+	BufferedWriter JoystickWriter = null;
+	BufferedWriter sensorWriter = null;
+	String commandPathPart1;
+	String joystickPathPart1;
+	String sensorPathPart1;
 	String getCurrentTimeDate;
 	String pathPart3;
+
 	
 	
 	public Sensors() {
@@ -59,9 +70,12 @@ public class Sensors extends Subsystem {
 		compFilter = new ComplementaryFilter(gyro, accel, 1);
 		dbFilter = new DataBasedFilter(gyro, accel);
 		lpFilter = new LowPassFilter(gyro);
-		pathPart1 = "/home/lvuser/data/gyro ";
-		getCurrentTimeDate = pathPart2();
+		commandPathPart1 = "/home/lvuser/data/command_";
+		joystickPathPart1  = "/home/lvuser/data/joystick_";
+		sensorPathPart1 = "/home/lvuser/data/sensor_";
 		pathPart3 = ".csv";
+		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
+		limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
 	}
 	
 	public static String pathPart2() {
@@ -77,6 +91,14 @@ public class Sensors extends Subsystem {
 	
 	public double getAngle() {
 		return gyro.getAngle();
+	}
+	
+	public boolean getLimitSwitchTop(){
+		return limitSwitchTop.get(); // returns true when switch is closed
+	}
+	
+	public boolean getLimitSwitchBot(){
+		return limitSwitchBot.get(); // returns true when switch is closed
 	}
 	
 	public double getUltrasonicVoltage() {
@@ -121,7 +143,7 @@ public class Sensors extends Subsystem {
 		return blankspace.getValue();
 	}
 	
-	public void writeSensorsToFile() {
+	/*public void writeSensorsToFile() {
 		if (gyroWriter == null) {
 			File file = new File(pathPart1 + getCurrentTimeDate + pathPart3);
 			if (!file.exists()) {
@@ -149,11 +171,11 @@ public class Sensors extends Subsystem {
 			gyroWriter.flush();
 			}
 		} catch (IOException ex) {}
-	} 
+	} */ 
 	
-	/*public void generalLog(){
-		if (genWriter == null) {
-			String path = "/tmp/log.csv";
+	public void commandLog(){
+		if (commandWriter == null) {
+			String path = (commandPathPart1 + getCurrentTimeDate + pathPart3);
 			File file = new File(path);
 			if (!file.exists()) {
 				try {
@@ -163,19 +185,83 @@ public class Sensors extends Subsystem {
 				}
 			}
 	    	try {
-				genWriter = new BufferedWriter(new FileWriter(file));
+				commandWriter = new BufferedWriter(new FileWriter(file));
 			} catch (IOException e) {
 				
 			} 
 		}
 		try {
-			if (genWriter != null) {
-			genWriter.write((Timer.getFPGATimestamp() + "," + 
-					dbFilter.getAngle() + "\n"));
-			gyroWriter.flush();
+			if (commandWriter != null) {
+			commandWriter.write((Timer.getFPGATimestamp() + "," + 
+					Robot.compressor.getCurrentCommand() + "," +
+					Robot.conveyor.getCurrentCommand() + "," +
+					Robot.drivechain.getCurrentCommand() + "," +
+					Robot.flipper.getCurrentCommand() + "," + "\n"));
+			commandWriter.flush();
 			}
 		} catch (IOException ex) {}
-	} */
+	} //*/
+	
+	public void sensorLog(){
+		if (sensorWriter == null) {
+			String path = (sensorPathPart1 + getCurrentTimeDate + pathPart3);
+			File file = new File(path);
+			if (!file.exists()) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+				
+				}
+			}
+	    	try {
+				sensorWriter = new BufferedWriter(new FileWriter(file));
+			} catch (IOException e) {
+				
+			} 
+		}
+		try {
+			if (sensorWriter != null) {
+			sensorWriter.write((Timer.getFPGATimestamp() + "," + 
+					ultrasonic.getVoltage() + "," +
+					accel.getX() +  "," + 
+					accel.getY() + "," +
+					gyro.getAngle() + "," +
+					blankspace.getValue() + "\n"));
+			sensorWriter.flush();
+			}
+		} catch (IOException ex) {}
+	}
+	
+	public void joystickLog(){
+		if (JoystickWriter == null) {
+			String path = (joystickPathPart1 + getCurrentTimeDate + pathPart3);
+			File file = new File(path);
+			if (!file.exists()) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+				
+				}
+			}
+	    	try {
+				JoystickWriter = new BufferedWriter(new FileWriter(file));
+			} catch (IOException e) {
+				
+			} 
+		}
+		try {
+			if (JoystickWriter != null) {
+			JoystickWriter.write((Timer.getFPGATimestamp() + "," + 
+					OI.getInstance().getTranslateStick().getX() + "," +
+					OI.getInstance().getTranslateStick().getY() + "," +
+					OI.getInstance().getRotateStick().getX() + "," +
+					OI.getInstance().getTranslateStick().getMagnitude() + "," +
+					OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n"));
+			JoystickWriter.flush();
+			}
+		} catch (IOException ex) {}
+	}
+	
 	
 	
     public void initDefaultCommand() {
@@ -195,7 +281,6 @@ public class Sensors extends Subsystem {
 		double val_n1 = RA[ len - 2 ];
 		double val_n2 = RA[ len - 3 ];
 		double val_n3 = RA[ len - 4 ];
-		
 		double weightN = 5;
 		double weightN1 = 4;
 		double weightN2 = 3;

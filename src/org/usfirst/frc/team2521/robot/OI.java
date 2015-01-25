@@ -53,6 +53,7 @@ public class OI {
 	private JoystickButton resetRemembering;
 	private JoystickButton toggleRemembering;
 	private JoystickButton flip;
+	private JoystickButton clearLimits;
 	//private JoystickButton switchAutonomous;
 	
 	 public OI() {
@@ -83,14 +84,17 @@ public class OI {
 		resetRemembering = new JoystickButton(translate, 9);
 		toggleRemembering = new JoystickButton(translate, 11);
 		flip = new JoystickButton(translate, 1);
+		
 		//switchAutonomous = new JoystickButton(translate, 4);
 		tieButtons();
 	}
 	
 	private void tieButtons() {
 		resetGyro.whenPressed(new ResetGyro());
-		moveConveyorUp.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
-		moveConveyorDown.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
+		moveConveyorUp.whenPressed(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
+		moveConveyorUp.whenReleased(new MoveConveyor(0));
+		moveConveyorDown.whenPressed(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
+		moveConveyorDown.whenReleased(new MoveConveyor(0));
 		resetRemembering.whenPressed(new ResetRemembering());
 		toggleRemembering.whenPressed(new ToggleRemembering());
 		flip.whenPressed(new FlipperUp());

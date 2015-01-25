@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class StartCompressor extends Command {
+public class FlipperLog extends Command {
 
-    public StartCompressor() {
-    	requires(Robot.compressor);
+    public FlipperLog() {
+    	requires(Robot.flipper);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -21,8 +21,7 @@ public class StartCompressor extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.compressor.startCompressor();
-    	Robot.compressor.compLog();
+    	Robot.flipper.flipperLog();
     }
 
     // Make this return true when this Command no longer needs to run execute()

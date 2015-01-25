@@ -46,12 +46,12 @@ public class Drivechain extends Subsystem {
 	int autoCounter = 0;
 	boolean isRemembering = false;
 	String RobotOrientedRotation = "/tmp/RobotOrientedRotation.txt";
-	String Magnitude = "/tmp/Magnitude.txt";
-	String Direction = "/tmp/Direction.txt";
-	String FieldOrientedRotation = "/tmp/FieldOrientedRotation.txt";
-	String TransX = "/tmp/TransX.txt";
-	String TransY = "/tmp/TransY.txt";
-	String Angle = "/tmp/Angle.txt";
+	String Magnitude = "/home/lvuser/auto/Magnitude.txt";
+	String Direction = "/home/lvuser/auto/Direction.txt";
+	String FieldOrientedRotation = "/home/lvuser/auto/FieldOrientedRotation.txt";
+	String TransX = "/home/lvuser/auto/TransX.txt";
+	String TransY = "/home/lvuser/auto/TransY.txt";
+	String Angle = "/home/lvuser/auto/Angle.txt";
 	//String autoFieldOriented = "/tmp/autoFieldOriented.txt";
 	BufferedWriter ROrotWriter = null;
 	BufferedWriter magWriter = null;
@@ -59,7 +59,11 @@ public class Drivechain extends Subsystem {
 	BufferedWriter FOrotWriter = null;
 	BufferedWriter transXWriter = null;
 	BufferedWriter transYWriter = null;
+	BufferedWriter logWriter = null;
 	//BufferedWriter angleWriter = null;
+	String pathPart1;
+	String pathPart2;
+	String pathPart3;
 	
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -80,8 +84,49 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 //		drive = new RobotDrive(0, 1, 2, 3);
+		pathPart1 = "/home/lvuser/data/drivechain_";
+		pathPart2 = Robot.sensors.pathPart2();
+		pathPart3 = ".csv";
 	}
 	
+	
+	public void driveLog(){
+		if (logWriter == null) {
+			String path = (pathPart1 + pathPart2 + pathPart3);
+			File file = new File(path);
+			if (!file.exists()) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+				
+				}
+			}
+	    	try {
+				logWriter = new BufferedWriter(new FileWriter(file));
+			} catch (IOException e) {
+				
+			} 
+		}
+		try {
+			if (logWriter != null) {
+			logWriter.write((Timer.getFPGATimestamp() + "," + 
+					mode + "," +
+					frontLeft.getOutputVoltage() + "," +
+					frontRight.getOutputVoltage() + "," +
+					rearRight.getOutputVoltage() + "," +
+					rearLeft.getOutputVoltage() + "," +
+					frontLeft.get() + "," +
+					frontRight.get() + "," +
+					rearRight.get() + "," +
+					rearLeft.get() + "," +
+					frontLeft.getOutputCurrent() + "," +
+					frontRight.getOutputCurrent() + "," +
+					rearRight.getOutputCurrent() + "," +
+					rearLeft.getOutputCurrent() + ","));
+		logWriter.flush();
+			}
+		} catch (IOException ex) {}
+	}
 	
 	public void fieldOrientedDrive() {
 		double transX = OI.getInstance().getTranslateStick().getX();
@@ -119,6 +164,32 @@ public class Drivechain extends Subsystem {
 		teleopCounter++;
 		}
 	}
+	
+	public void autoInit(){
+		switch (mode) {
+		case fieldOrientedMecanum:
+			transX = fileToArray(TransX);
+			transY = fileToArray(TransY);
+			fieldOrientedRotation = fileToArray(FieldOrientedRotation);
+			break;
+		case robotOrientedMecanum:
+			robotOrientedRotation = fileToArray(RobotOrientedRotation);
+			magnitude = fileToArray(Magnitude);
+			direction = fileToArray(Direction);
+			break;
+		}
+	}
+	
+	public void auto(){
+		switch (mode) {
+		case fieldOrientedMecanum:
+			autoFieldOrientedRemembering();
+			break;
+		case robotOrientedMecanum:
+			autoRobotOrientedRemembering();
+			break;
+		}
+	}
 
 	public void autoRobotOrientedRemembering() {
 		if (autoCounter <= TOTAL_EXECUTIONS) {
@@ -129,7 +200,7 @@ public class Drivechain extends Subsystem {
 	
 	public void autoFieldOrientedRemembering(){
 		if (autoCounter <= TOTAL_EXECUTIONS) {
-			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], angle[autoCounter]);
+			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], Robot.sensors.getAngle());
 			autoCounter++;
 		}
 	}
@@ -145,10 +216,12 @@ public class Drivechain extends Subsystem {
 			case fieldOrientedMecanum:
 				invertLeftDrive(true);
 				fieldOrientedDrive();
+				writeToFileFieldOriented();
 				break;
 			case robotOrientedMecanum:
 				invertLeftDrive(true);
 				robotOrientedDrive();
+				writeToFileRobotOriented();
 				break;
 			case arcadeDrive:
 				invertLeftDrive(false);
@@ -195,6 +268,18 @@ public class Drivechain extends Subsystem {
 			}
 		} catch (IOException e) {}	
 		return recordArray;
+	}
+	
+	public void fromFileSetUp(){
+		switch (mode) {
+		case fieldOrientedMecanum:
+			writeToFileFieldOrientedSetUp();
+			break;
+		case robotOrientedMecanum:
+			writeToFileRobotOrientedSetUp();
+			break;
+		}
+			
 	}
 	
 	public void writeToFileRobotOrientedSetUp() {
@@ -250,9 +335,9 @@ public class Drivechain extends Subsystem {
 	
 	public void writeToFileFieldOrientedSetUp() {
 		if (FOrotWriter == null || transXWriter == null || transYWriter == null) {
-			File FOrotationFile = new File(RobotOrientedRotation);
-			File transXFile = new File(Magnitude);
-			File transYFile = new File(Direction);
+			File FOrotationFile = new File(FieldOrientedRotation);
+			File transXFile = new File(TransX);
+			File transYFile = new File(TransY);
 			//File angleFile = new File(Angle);
 			if (!FOrotationFile.exists() || !transXFile.exists() || !transYFile.exists()) {
 				try {
@@ -283,7 +368,7 @@ public class Drivechain extends Subsystem {
 		try {
 			if (FOrotWriter != null) {
 			FOrotWriter.write(OI.getInstance().getRotateStick().getX() + "\n");
-			ROrotWriter.flush();
+			FOrotWriter.flush();
 			}
 		} catch (IOException ex) {}
 		try {

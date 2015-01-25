@@ -39,6 +39,7 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;
+	public static boolean upperLimitReached;
 
 	
 
@@ -61,12 +62,14 @@ public class Robot extends IterativeRobot {
 		compressor = new CompressorSub();
 		flipper = new Flipper();
 		oi = new OI();
+		upperLimitReached = false;
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
 		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
 		SmartDashboard.putData("Autonomous mode", autoChooser);
         // instantiate the command used for the autonomous period
+		
          
     }
 	
