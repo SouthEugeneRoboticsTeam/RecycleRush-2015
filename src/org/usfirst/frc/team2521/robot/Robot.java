@@ -39,7 +39,9 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;
-	public static boolean upperLimitReached;
+	public static FileManager fileManager;
+	//public static double conveyorSpeed = 0;
+	
 
 	
 
@@ -49,25 +51,26 @@ public class Robot extends IterativeRobot {
      */
 	
     public void robotInit() {
-    	
-
+    	fileManager = new FileManager();
+    	RobotMap.DATE = fileManager.getFormattedDate();
     	drivechain = new Drivechain();
     	//Auto1 auto1 = new Auto1();
     	//Auto2 auto2 = new Auto2();
     	autoChooser = new SendableChooser();
     	autoChooser.addDefault("Autonomous 1", new Auto1());
     	autoChooser.addObject("Autonomous 2", new Auto2());
+    	//conveyorSpeed = SmartDashboard.getNumber("speed");
 		sensors = new Sensors();
 		conveyor = new Conveyor();
 		compressor = new CompressorSub();
 		flipper = new Flipper();
 		oi = new OI();
-		upperLimitReached = false;
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
 		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
 		SmartDashboard.putData("Autonomous mode", autoChooser);
+		
         // instantiate the command used for the autonomous period
 		
          
@@ -116,6 +119,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	
         Scheduler.getInstance().run();
     }
     

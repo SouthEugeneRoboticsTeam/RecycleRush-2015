@@ -1,17 +1,6 @@
 package org.usfirst.frc.team2521.robot.subsystems;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.Writer;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+
 
 import org.usfirst.frc.team2521.robot.ComplementaryFilter;
 import org.usfirst.frc.team2521.robot.DataBasedFilter;
@@ -26,10 +15,13 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.ADXL345_I2C;
 
 /**
  *
@@ -40,25 +32,16 @@ public class Sensors extends Subsystem {
     // here. Call these from Commands.
 
 	private Gyro gyro;
-	private BuiltInAccelerometer accel;
+	private BuiltInAccelerometer accel1;
 	private AnalogInput ultrasonic;
-	private DigitalInput limitSwitchTop;
-	private DigitalInput limitSwitchBot;
+	private ADXL345_I2C accel2;
 	private AnalogInput blankspace;
 	private double smoothedDistance = 0;
 	private ComplementaryFilter compFilter;
 	private DataBasedFilter dbFilter;
 	private LowPassFilter lpFilter;
-	File record;
-	BufferedWriter gyroWriter = null;
-	BufferedWriter commandWriter = null;
-	BufferedWriter JoystickWriter = null;
-	BufferedWriter sensorWriter = null;
-	String commandPathPart1;
-	String joystickPathPart1;
-	String sensorPathPart1;
-	String getCurrentTimeDate;
-	String pathPart3;
+	
+	
 
 	
 	
@@ -66,24 +49,17 @@ public class Sensors extends Subsystem {
 		gyro = new Gyro(RobotMap.GYRO_PORT);
 		blankspace = new AnalogInput(RobotMap.EMPTY_ANALOG);
 		ultrasonic = new AnalogInput(RobotMap.ULTRASONIC_PORT);
-		accel = new BuiltInAccelerometer();
-		compFilter = new ComplementaryFilter(gyro, accel, 1);
-		dbFilter = new DataBasedFilter(gyro, accel);
+		accel1 = new BuiltInAccelerometer();
+		accel2 = new ADXL345_I2C(I2C.Port.kOnboard, Accelerometer.Range.k16G);
+		compFilter = new ComplementaryFilter(gyro, accel1, 1);
+		dbFilter = new DataBasedFilter(gyro, accel1);
 		lpFilter = new LowPassFilter(gyro);
-		commandPathPart1 = "/home/lvuser/data/command_";
-		joystickPathPart1  = "/home/lvuser/data/joystick_";
-		sensorPathPart1 = "/home/lvuser/data/sensor_";
-		pathPart3 = ".csv";
-		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
-		limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
+		
+		
+
 	}
 	
-	public static String pathPart2() {
-		SimpleDateFormat dateAsString = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
-		Date now = new Date();
-		String stringDate = dateAsString.format(now);
-		return stringDate;
-	}
+	
 	
 	public void gyroWriter() {
 		
@@ -91,14 +67,6 @@ public class Sensors extends Subsystem {
 	
 	public double getAngle() {
 		return gyro.getAngle();
-	}
-	
-	public boolean getLimitSwitchTop(){
-		return limitSwitchTop.get(); // returns true when switch is closed
-	}
-	
-	public boolean getLimitSwitchBot(){
-		return limitSwitchBot.get(); // returns true when switch is closed
 	}
 	
 	public double getUltrasonicVoltage() {
@@ -143,6 +111,18 @@ public class Sensors extends Subsystem {
 		return blankspace.getValue();
 	}
 	
+	public double getNewAccelX(){
+		return accel2.getX();
+	}
+	
+	public double getNewAccelY(){
+		return accel2.getY();
+	}
+	
+	public double getNewAccelZ(){
+		return accel2.getZ();
+	}
+	
 	/*public void writeSensorsToFile() {
 		if (gyroWriter == null) {
 			File file = new File(pathPart1 + getCurrentTimeDate + pathPart3);
@@ -164,8 +144,8 @@ public class Sensors extends Subsystem {
 			gyroWriter.write((Timer.getFPGATimestamp() + "," + 
 					gyro.getRate() + "," + 
 					gyro.getAngle() + "," + 
-					accel.getX() +  "," + 
-					accel.getY() + "," +
+					accel1.getX() +  "," + 
+					accel1.getY() + "," +
 					compFilter.getAngle() + "," +
 					dbFilter.getAngle() + "\n"));
 			gyroWriter.flush();
@@ -174,92 +154,30 @@ public class Sensors extends Subsystem {
 	} */ 
 	
 	public void commandLog(){
-		if (commandWriter == null) {
-			String path = (commandPathPart1 + getCurrentTimeDate + pathPart3);
-			File file = new File(path);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				commandWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			} 
+		Robot.fileManager.createLog("/home/lvuser/data/command_", Timer.getFPGATimestamp() + "," + 
+				Robot.compressor.getCurrentCommand() + "," +
+				Robot.conveyor.getCurrentCommand() + "," +
+				Robot.drivechain.getCurrentCommand() + "," +
+				Robot.flipper.getCurrentCommand() + "," + "\n");
 		}
-		try {
-			if (commandWriter != null) {
-			commandWriter.write((Timer.getFPGATimestamp() + "," + 
-					Robot.compressor.getCurrentCommand() + "," +
-					Robot.conveyor.getCurrentCommand() + "," +
-					Robot.drivechain.getCurrentCommand() + "," +
-					Robot.flipper.getCurrentCommand() + "," + "\n"));
-			commandWriter.flush();
-			}
-		} catch (IOException ex) {}
-	} //*/
 	
 	public void sensorLog(){
-		if (sensorWriter == null) {
-			String path = (sensorPathPart1 + getCurrentTimeDate + pathPart3);
-			File file = new File(path);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				sensorWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			} 
-		}
-		try {
-			if (sensorWriter != null) {
-			sensorWriter.write((Timer.getFPGATimestamp() + "," + 
-					ultrasonic.getVoltage() + "," +
-					accel.getX() +  "," + 
-					accel.getY() + "," +
-					gyro.getAngle() + "," +
-					blankspace.getValue() + "\n"));
-			sensorWriter.flush();
-			}
-		} catch (IOException ex) {}
+		Robot.fileManager.createLog("/home/lvuser/data/sensor_", Timer.getFPGATimestamp() + "," + 
+				ultrasonic.getVoltage() + "," +
+				accel2.getX() +  "," + 
+				accel2.getY() + "," +
+				accel2.getZ() + "," +
+				gyro.getAngle() + "," +
+				blankspace.getValue() + "\n");
 	}
 	
 	public void joystickLog(){
-		if (JoystickWriter == null) {
-			String path = (joystickPathPart1 + getCurrentTimeDate + pathPart3);
-			File file = new File(path);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				JoystickWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			} 
-		}
-		try {
-			if (JoystickWriter != null) {
-			JoystickWriter.write((Timer.getFPGATimestamp() + "," + 
-					OI.getInstance().getTranslateStick().getX() + "," +
-					OI.getInstance().getTranslateStick().getY() + "," +
-					OI.getInstance().getRotateStick().getX() + "," +
-					OI.getInstance().getTranslateStick().getMagnitude() + "," +
-					OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n"));
-			JoystickWriter.flush();
-			}
-		} catch (IOException ex) {}
+		Robot.fileManager.createLog("/home/lvuser/data/joysticks_", Timer.getFPGATimestamp() + "," + 
+				OI.getInstance().getTranslateStick().getX() + "," +
+				OI.getInstance().getTranslateStick().getY() + "," +
+				OI.getInstance().getRotateStick().getX() + "," +
+				OI.getInstance().getTranslateStick().getMagnitude() + "," +
+				OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n");
 	}
 	
 	

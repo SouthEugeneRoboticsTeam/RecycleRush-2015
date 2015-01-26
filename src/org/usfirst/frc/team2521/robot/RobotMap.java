@@ -22,6 +22,7 @@ public class RobotMap {
 	public static final int REAR_LEFT_MOTOR = 43;
 	public static final int GYRO_PORT = 0;
 	public static final int EMPTY_ANALOG = 3;
+	public static final int ACCEL_PORT = 0;
 	public static final int ULTRASONIC_PORT = 1;
 	public static final int TRANSLATE_PORT = 0;
 	public static final int ROTATE_PORT = 1;
@@ -38,7 +39,8 @@ public class RobotMap {
 	public static final int LIGHT_5 = 7; 
 	public static final int LIGHT_6 = 8; 
 	public static final int LIGHT_7 = 9; 
-	public static final double CONVEYOR_SPEED = .2;
+	public static final double CONVEYOR_SPEED = .3;
 	public static final double LOW_PASS_ALPHA = .5;
 	public static final int PCM_CAN_CHANNEL = 9;
+	public static String DATE;
 }

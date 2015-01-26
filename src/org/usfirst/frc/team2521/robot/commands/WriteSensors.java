@@ -31,8 +31,10 @@ public class WriteSensors extends Command {
     	Robot.sensors.sensorLog();
     	Robot.sensors.joystickLog();
     	Robot.sensors.commandLog();
-    	SmartDashboard.putBoolean("Limit switch top:", Robot.sensors.getLimitSwitchTop());
-    	SmartDashboard.putBoolean("Limit switch bot:", Robot.sensors.getLimitSwitchBot());
+    	SmartDashboard.putNumber("X", Robot.sensors.getNewAccelX());
+    	SmartDashboard.putNumber("Y", Robot.sensors.getNewAccelY());
+    	SmartDashboard.putNumber("Z", Robot.sensors.getNewAccelZ());
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()

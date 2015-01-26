@@ -45,7 +45,7 @@ public class Drivechain extends Subsystem {
 	int teleopCounter = 0;
 	int autoCounter = 0;
 	boolean isRemembering = false;
-	String RobotOrientedRotation = "/tmp/RobotOrientedRotation.txt";
+	String RobotOrientedRotation = "/home/lvuser/auto/RobotOrientedRotation.txt";
 	String Magnitude = "/home/lvuser/auto/Magnitude.txt";
 	String Direction = "/home/lvuser/auto/Direction.txt";
 	String FieldOrientedRotation = "/home/lvuser/auto/FieldOrientedRotation.txt";
@@ -61,9 +61,7 @@ public class Drivechain extends Subsystem {
 	BufferedWriter transYWriter = null;
 	BufferedWriter logWriter = null;
 	//BufferedWriter angleWriter = null;
-	String pathPart1;
-	String pathPart2;
-	String pathPart3;
+	String path;
 	
 	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -84,48 +82,24 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 //		drive = new RobotDrive(0, 1, 2, 3);
-		pathPart1 = "/home/lvuser/data/drivechain_";
-		pathPart2 = Robot.sensors.pathPart2();
-		pathPart3 = ".csv";
 	}
 	
 	
 	public void driveLog(){
-		if (logWriter == null) {
-			String path = (pathPart1 + pathPart2 + pathPart3);
-			File file = new File(path);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				logWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			} 
-		}
-		try {
-			if (logWriter != null) {
-			logWriter.write((Timer.getFPGATimestamp() + "," + 
-					mode + "," +
-					frontLeft.getOutputVoltage() + "," +
-					frontRight.getOutputVoltage() + "," +
-					rearRight.getOutputVoltage() + "," +
-					rearLeft.getOutputVoltage() + "," +
-					frontLeft.get() + "," +
-					frontRight.get() + "," +
-					rearRight.get() + "," +
-					rearLeft.get() + "," +
-					frontLeft.getOutputCurrent() + "," +
-					frontRight.getOutputCurrent() + "," +
-					rearRight.getOutputCurrent() + "," +
-					rearLeft.getOutputCurrent() + ","));
-		logWriter.flush();
-			}
-		} catch (IOException ex) {}
+		Robot.fileManager.createLog("/home/lvuser/data/joysticks_", Timer.getFPGATimestamp() + "," + 
+				mode + "," +
+				frontLeft.getOutputVoltage() + "," +
+				frontRight.getOutputVoltage() + "," +
+				rearRight.getOutputVoltage() + "," +
+				rearLeft.getOutputVoltage() + "," +
+				frontLeft.get() + "," +
+				frontRight.get() + "," +
+				rearRight.get() + "," +
+				rearLeft.get() + "," +
+				frontLeft.getOutputCurrent() + "," +
+				frontRight.getOutputCurrent() + "," +
+				rearRight.getOutputCurrent() + "," +
+				rearLeft.getOutputCurrent() + ",");
 	}
 	
 	public void fieldOrientedDrive() {
@@ -168,14 +142,14 @@ public class Drivechain extends Subsystem {
 	public void autoInit(){
 		switch (mode) {
 		case fieldOrientedMecanum:
-			transX = fileToArray(TransX);
-			transY = fileToArray(TransY);
-			fieldOrientedRotation = fileToArray(FieldOrientedRotation);
+			transX = Robot.fileManager.fileToArray(TransX, TOTAL_EXECUTIONS);
+			transY = Robot.fileManager.fileToArray(TransY, TOTAL_EXECUTIONS);
+			fieldOrientedRotation = Robot.fileManager.fileToArray(FieldOrientedRotation, TOTAL_EXECUTIONS);
 			break;
 		case robotOrientedMecanum:
-			robotOrientedRotation = fileToArray(RobotOrientedRotation);
-			magnitude = fileToArray(Magnitude);
-			direction = fileToArray(Direction);
+			robotOrientedRotation = Robot.fileManager.fileToArray(RobotOrientedRotation, TOTAL_EXECUTIONS);
+			magnitude = Robot.fileManager.fileToArray(Magnitude, TOTAL_EXECUTIONS);
+			direction = Robot.fileManager.fileToArray(Direction, TOTAL_EXECUTIONS);
 			break;
 		}
 	}
@@ -254,20 +228,6 @@ public class Drivechain extends Subsystem {
 	public void switchDriveMode(DriveMode newMode) {
 		mode = newMode;
 		SmartDashboard.putString("Current Drive Mode", mode.identifier);
-	}
-	  
-	
-	public double[] fileToArray(String filename) {
-		List<String> recordList;
-		int listSize = 1;
-		double[] recordArray = null;
-		try {
-			recordList = Files.readAllLines(Paths.get(filename), Charset.defaultCharset()); // this should work only if it is actually creating new lines
-			for (int iii = 0; iii <= TOTAL_EXECUTIONS; iii++) {
-				recordArray[iii] = Double.valueOf(recordList.get(iii));
-			}
-		} catch (IOException e) {}	
-		return recordArray;
 	}
 	
 	public void fromFileSetUp(){

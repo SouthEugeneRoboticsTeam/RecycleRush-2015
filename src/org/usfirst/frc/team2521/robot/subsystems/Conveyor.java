@@ -5,13 +5,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.ConveyorLog;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -23,52 +26,46 @@ public class Conveyor extends Subsystem {
 	private Talon conveyor0;
 	private Talon conveyor1;
 	BufferedWriter logWriter = null;
-	String pathPart1;
-	String pathPart2;
-	String pathPart3;
+	String path;
+	public static boolean upperLimitReached;
+	public static boolean lowerLimitReached;
+	private DigitalInput limitSwitchTop;
+	//private DigitalInput limitSwitchBot;
 	
 	
 	public Conveyor() {
 		conveyor0 = new Talon(0);
 		conveyor1 = new Talon(1);
-		pathPart1 = "/home/lvuser/data/conveyor_";
-		pathPart2 = Robot.sensors.pathPart2();
-		pathPart3 = ".csv";
+		upperLimitReached = false;
+		lowerLimitReached = false;
+		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
+		//limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
 		
 	}
 	
 	
 	public void moveConveyor(double speed) {
-		conveyor0.set(speed);
-		conveyor1.set(speed);
+		//speed = SmartDashboard.getNumber("Speed");
+		//SmartDashboard.putNumber("Conveyor speed", speed);
+		if (speed > 0 && !canMoveUp()) {
+			conveyor0.set(0);
+			conveyor1.set(0);
+		} else {
+			conveyor0.set(speed);
+			conveyor1.set(speed);
+		}
 	}
 
+	public boolean canMoveUp() {
+		return limitSwitchTop.get();
+	}
 	
 	public void conveyorLog(){
-		if (logWriter == null) {
-			String path = (pathPart1 + pathPart2 + pathPart3);
-			File file = new File(path);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				logWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			} 
-		}
-		try {
-			if (logWriter != null) {
-			logWriter.write((Timer.getFPGATimestamp() + "," + 
-					conveyor0.get() + "," +
-					conveyor1.get() + "\n"));
-			logWriter.flush();
-			}
-		} catch (IOException ex) {}
+		Robot.fileManager.createLog("/home/lvuser/data/conveyor_", Timer.getFPGATimestamp() + "," + 
+				conveyor0.get() + "," +
+				conveyor1.get() + "," +
+				upperLimitReached + "," +
+				lowerLimitReached + "\n");
 	}
 	
     public void initDefaultCommand() {
