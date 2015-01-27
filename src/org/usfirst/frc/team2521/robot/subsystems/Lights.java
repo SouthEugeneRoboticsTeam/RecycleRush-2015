@@ -1,8 +1,14 @@
-package org.usfirst.frc.team2521.robot;
+package org.usfirst.frc.team2521.robot.subsystems;
+
+import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Lights {
+/**
+ *
+ */
+public class Lights extends Subsystem {
 	private DigitalOutput allLights;
 	private DigitalOutput light1;
 	private DigitalOutput light2;
@@ -11,18 +17,18 @@ public class Lights {
 	private DigitalOutput light5;
 	private DigitalOutput light6;
 	private DigitalOutput light7;
-
-	public void Lights(){
-		DigitalOutput allLights = new DigitalOutput(RobotMap.LIGHT_MAIN);
-		DigitalOutput light1 = new DigitalOutput(RobotMap.LIGHT_1);
-		DigitalOutput light2 = new DigitalOutput(RobotMap.LIGHT_2);
-		DigitalOutput light3 = new DigitalOutput(RobotMap.LIGHT_3);
-		DigitalOutput light4 = new DigitalOutput(RobotMap.LIGHT_4);
-		DigitalOutput light5 = new DigitalOutput(RobotMap.LIGHT_5);
-		DigitalOutput light6 = new DigitalOutput(RobotMap.LIGHT_6);
-		DigitalOutput light7 = new DigitalOutput(RobotMap.LIGHT_7);
-	}
 	
+	public void Lights(){
+		allLights = new DigitalOutput(RobotMap.LIGHT_MAIN);
+		light1 = new DigitalOutput(RobotMap.LIGHT_1);
+		light2 = new DigitalOutput(RobotMap.LIGHT_2);
+		light3 = new DigitalOutput(RobotMap.LIGHT_3);
+		light4 = new DigitalOutput(RobotMap.LIGHT_4);
+		light5 = new DigitalOutput(RobotMap.LIGHT_5);
+		light6 = new DigitalOutput(RobotMap.LIGHT_6);
+		light7 = new DigitalOutput(RobotMap.LIGHT_7);
+	}
+    
 	public void turnAllOn(){
 		allLights.set(false);
 		light1.set(true);
@@ -72,5 +78,13 @@ public class Lights {
 			break;
 		}
 	}
+	
+    // Put methods for controlling this subsystem
+    // here. Call these from Commands.
+
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        //setDefaultCommand(new MySpecialCommand());
+    }
 }
 

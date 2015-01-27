@@ -83,7 +83,7 @@ public class OI {
 		moveConveyorDown = new JoystickButton(rotate, 2);
 		resetRemembering = new JoystickButton(translate, 9);
 		toggleRemembering = new JoystickButton(translate, 11);
-		flip = new JoystickButton(translate, 1);
+		flip = new JoystickButton(rotate, 1);
 		
 		//switchAutonomous = new JoystickButton(translate, 4);
 		tieButtons();
