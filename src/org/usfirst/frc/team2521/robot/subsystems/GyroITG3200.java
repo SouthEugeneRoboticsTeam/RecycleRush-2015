@@ -155,7 +155,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		}
 		byte mask = getMask( bit, numBits );
 		byte maskedOriginal = (byte) ( ( original & mask ) & 0xFF );
-		byte shiftedValue = (byte) ( (value << (9 - bit - numBits) ) & 0xFF );	
+		byte shiftedValue = (byte) ( (value << (1 + bit - numBits) ) & 0xFF );	
 		byte result = (byte) ( ( shiftedValue | maskedOriginal ) & 0xFF );
 		/*
 		// Debug code
@@ -222,10 +222,11 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 			
 		}
 		byte result = 0;
-		
+
 		byte mask = (byte)( ~getMask( bit, numBits ) & 0xFF );
 		byte maskedInput = (byte) ( ( bitField & mask) & 0xFF );
-		result = (byte) ( (maskedInput >>> bit ) & 0xFF );
+		result = (byte) ( (maskedInput >>> ( 1 + bit - numBits ) ) & 0xFF );
+		
 		
 		/*
 		// Debug code
@@ -243,7 +244,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		int newMask = 0;
 		for ( int i = 0; i <= 7; i++ )
 		{
-			if ( i < bit || i > bit + numBits - 1)
+			if ( i > bit || i <= bit - numBits )
 			{
 				// set the mask bit
 				newMask = (int) ( newMask + Math.pow( 2, i ) );
