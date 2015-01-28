@@ -144,22 +144,16 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 			           + GetBinaryString(value)
 			           + "\n Number bits: " + numBits );
 		}
-		int newMask = 0;
-		for ( int i = 0; i <= 8; i++ )
+		if ( bit < 0 || numBits < 0 || value < 0 )
 		{
-			int bitPos = 8 - i;
-			if ( i < bit - 1 )
-			{
-				// set the mask bit
-				newMask = (int) ( newMask + Math.pow( 2, (bitPos - 1) ) );
-			}
-			if ( i > bit + numBits - 2 )
-			{
-				// set the mask bit
-				newMask = (int) ( newMask + Math.pow( 2, (bitPos - 1) ) );
-			}
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
+					   + "\n All inputs should be greater than 0. "
+					   + "\n Value: " + GetBinaryString(value)
+			           + "\n Bit: " + bit
+			           + "\n Number bits: " + numBits );
+			
 		}
-		byte mask = (byte) ( newMask & 0xFF );
+		byte mask = getMask( bit, numBits );
 		byte maskedOriginal = (byte) ( ( original & mask ) & 0xFF );
 		byte shiftedValue = (byte) ( (value << (9 - bit - numBits) ) & 0xFF );	
 		byte result = (byte) ( ( shiftedValue | maskedOriginal ) & 0xFF );
@@ -198,16 +192,65 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		m_i2c.read( register, 1, buffer);
 	    return ( buffer[0] & bit) != 0;
 	}
-	
+
 	// Get n bits from the byte to form a byte slice
-	private byte getBits( byte bitField, int bit, int numBits )
+	private static byte getBits( byte bitField, int bit, int numBits )
 	{
+		
+		if ( numBits > 8 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes."
+			           + "\n Number bits: " + numBits );
+		}
+		if ( bit > 8 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
+			           + "\n Bit: " + bit );
+		}
+		if ( bit + numBits > 9 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
+			           + "\n Bit: " + bit
+			           + "\n Number bits: " + numBits  );
+		}
+		if ( bit < 0 || numBits < 0 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
+					   + "\n All inputs should be greater than 0. "
+			           + "\n Bit: " + bit
+			           + "\n Number bits: " + numBits );
+			
+		}
 		byte result = 0;
 		
-		result = (byte) ( bitField << (bit - 1) );
-		result = (byte) ( result >>> (8 - numBits) );
+		byte mask = (byte)( ~getMask( bit, numBits ) & 0xFF );
+		byte maskedInput = (byte) ( ( bitField & mask) & 0xFF );
+		result = (byte) ( (maskedInput >>> bit ) & 0xFF );
+		
+		/*
+		// Debug code
+		System.out.println( "mask           = " + GetBinaryString(mask) );
+		System.out.println( "maskedInput    = " + GetBinaryString(maskedInput) );
+		System.out.println( "result         = " + GetBinaryString(result) );
+		*/
 		
 		return result;
+	}
+	
+	// Gets the bit mask for the given bit and number of bits
+	private static byte getMask(int bit, int numBits)
+	{
+		int newMask = 0;
+		for ( int i = 0; i <= 7; i++ )
+		{
+			if ( i < bit || i > bit + numBits - 1)
+			{
+				// set the mask bit
+				newMask = (int) ( newMask + Math.pow( 2, i ) );
+			}			
+		}
+		byte mask = (byte) ( newMask & 0xFF );
+		return mask;
 	}
 
 	private byte getRegisterByte( byte register ) 
