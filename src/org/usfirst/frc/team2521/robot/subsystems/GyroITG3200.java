@@ -118,17 +118,70 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	
 	// this routine should update the original byte with the new data properly shifted to the correct bit location
 	public static byte updateByte( byte original, int bit, int numBits, byte value )
-	{
-		byte x = (byte) ( 0 << (bit - 1) );
-		byte y = (byte) ( 0 >> (8 - numBits ) );
-		byte mask = (byte) ( x | y );
-		byte maskedOriginal = (byte) ( original & mask );
-		
-		byte shiftedValue = (byte) ( (value & 0xFF) << bit );		
-		
-		byte result = (byte) ( shiftedValue | maskedOriginal );
-				
+	{				
+		if ( numBits > 8 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
+			           + GetBinaryString(value)
+			           + "\n Number bits: " + numBits );
+		}
+		if ( bit > 8 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
+			           + GetBinaryString(value)
+			           + "\n Bit: " + bit );
+		}
+		if ( bit + numBits > 9 )
+		{
+			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
+			           + GetBinaryString(value)
+			           + "\n Bit: " + bit
+			           + "\n Number bits: " + numBits  );
+		}
+		if ( value > Math.pow(  2,  numBits ) )
+		{
+			throw new IllegalArgumentException( "Cannot encode a number this big using the number of bits requested \n Value: " 
+			           + GetBinaryString(value)
+			           + "\n Number bits: " + numBits );
+		}
+		int newMask = 0;
+		for ( int i = 0; i <= 8; i++ )
+		{
+			int bitPos = 8 - i;
+			if ( i < bit - 1 )
+			{
+				// set the mask bit
+				newMask = (int) ( newMask + Math.pow( 2, (bitPos - 1) ) );
+			}
+			if ( i > bit + numBits - 2 )
+			{
+				// set the mask bit
+				newMask = (int) ( newMask + Math.pow( 2, (bitPos - 1) ) );
+			}
+		}
+		byte mask = (byte) ( newMask & 0xFF );
+		byte maskedOriginal = (byte) ( ( original & mask ) & 0xFF );
+		byte shiftedValue = (byte) ( (value << (9 - bit - numBits) ) & 0xFF );	
+		byte result = (byte) ( ( shiftedValue | maskedOriginal ) & 0xFF );
+		/*
+		// Debug code
+		System.out.println( "bit            = " + bit );
+		System.out.println( "num bits       = " + numBits );
+		System.out.println( "original       = " + GetBinaryString(original) );
+		System.out.println( "        Value  = " + GetBinaryString(value) );
+		System.out.println( "" );
+		System.out.println( "mask           = " + GetBinaryString(mask) );
+		System.out.println( "maskedOriginal = " + GetBinaryString(maskedOriginal) );		
+		System.out.println( "shifted Value  = " + GetBinaryString(shiftedValue) );	
+		System.out.println( "" );
+		System.out.println( "result         = " + GetBinaryString(result) );
+		*/		
 		return result;
+	}
+	
+	public static String GetBinaryString( byte value ) 
+	{
+		return String.format( "%8s", Integer.toBinaryString( value & 0xFF ) ).replace(' ', '0');
 	}
 	
 	// 
