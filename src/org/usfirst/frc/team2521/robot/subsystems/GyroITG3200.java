@@ -117,7 +117,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	}
 	
 	// this routine should update the original byte with the new data properly shifted to the correct bit location
-	public byte updateByte( byte original, int bit, int numBits, byte value )
+	public static byte updateByte( byte original, int bit, int numBits, byte value )
 	{
 		byte x = (byte) ( 0 << (bit - 1) );
 		byte y = (byte) ( 0 >> (8 - numBits ) );
