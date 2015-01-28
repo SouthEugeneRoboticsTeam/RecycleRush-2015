@@ -113,7 +113,31 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		m_i2c.read( register, 1, buffer);
 		byte newValue = (byte) ( value ? (buffer[0] | (1 << bit )) 
 				                       : ( buffer[0] & ~(1 << bit ) ) );
-		m_i2c.write( register, newValue);		
+		m_i2c.write( register, newValue );		
+	}
+	
+	// this routine should update the original byte with the new data properly shifted to the correct bit location
+	public byte updateByte( byte original, int bit, int numBits, byte value )
+	{
+		byte x = (byte) ( 0 << (bit - 1) );
+		byte y = (byte) ( 0 >> (8 - numBits ) );
+		byte mask = (byte) ( x | y );
+		byte maskedOriginal = (byte) ( original & mask );
+		
+		byte shiftedValue = (byte) ( (value & 0xFF) << bit );		
+		
+		byte result = (byte) ( shiftedValue | maskedOriginal );
+				
+		return result;
+	}
+	
+	// 
+    // I2Cdev::writeBits(devAddr, ITG3200_RA_WHO_AM_I, ITG3200_DEVID_BIT, ITG3200_DEVID_LENGTH, id);
+	private void writeBits( byte register, int bit, int numBits, byte value )
+	{
+		m_i2c.read( register, 1, buffer );
+		byte newValue = updateByte( buffer[0], bit, numBits, value );
+		m_i2c.write( register, newValue );
 	}
 	
 	private boolean readBit( byte register, byte bit )
@@ -176,8 +200,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setDeviceID(byte id)
 	{
-		m_i2c.write( ITG3200_DEVID_BIT, id);
-	    // I2Cdev::writeBits(devAddr, ITG3200_RA_WHO_AM_I, ITG3200_DEVID_BIT, ITG3200_DEVID_LENGTH, id);
+	    writeBits( ITG3200_RA_WHO_AM_I, ITG3200_DEVID_BIT, ITG3200_DEVID_LENGTH, id );
 	}
 	 
 	// SMPLRT_DIV register
@@ -254,7 +277,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		m_i2c.write( ITG3200_RA_DLPF_FS, range);
 		// ToDo: mask the output such that we only change the bits of interest
-	    // I2Cdev::writeBits(devAddr, ITG3200_RA_DLPF_FS, ITG3200_DF_FS_SEL_BIT, ITG3200_DF_FS_SEL_LENGTH, range);
+	    writeBits( ITG3200_RA_DLPF_FS, ITG3200_DF_FS_SEL_BIT, ITG3200_DF_FS_SEL_LENGTH, range );
 	}
 	
 	/** Get digital low-pass filter bandwidth.
@@ -294,9 +317,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setDLPFBandwidth(byte bandwidth)
 	{
-		m_i2c.write( ITG3200_RA_DLPF_FS, bandwidth);
+		// m_i2c.write( ITG3200_RA_DLPF_FS, bandwidth);
 		// ToDo: mask the output such that we only change the bits of interest
-	    // I2Cdev::writeBits(devAddr, ITG3200_RA_DLPF_FS, ITG3200_DF_DLPF_CFG_BIT, ITG3200_DF_DLPF_CFG_LENGTH, bandwidth);
+	    writeBits( ITG3200_RA_DLPF_FS, ITG3200_DF_DLPF_CFG_BIT, ITG3200_DF_DLPF_CFG_LENGTH, bandwidth );
 	}
 	 
 	// INT_CFG register
@@ -670,8 +693,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setClockSource(byte source)
 	{
-		m_i2c.write( ITG3200_RA_PWR_MGM, source );
-	    // I2Cdev::writeBits(devAddr, ITG3200_RA_PWR_MGM, ITG3200_PWR_CLK_SEL_BIT, ITG3200_PWR_CLK_SEL_LENGTH, source);
+	    writeBits( ITG3200_RA_PWR_MGM, ITG3200_PWR_CLK_SEL_BIT, ITG3200_PWR_CLK_SEL_LENGTH, source );
 	}
 
 
@@ -700,6 +722,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	@Override
 	public void updateTable() {
 		if (m_table != null) {
+			m_table.putNumber("X", getRotationX());
+			m_table.putNumber("Y", getRotationY());
+			m_table.putNumber("Z", getRotationZ());
 			m_table.putNumber("Value", pidGet());
 		}
 	}
