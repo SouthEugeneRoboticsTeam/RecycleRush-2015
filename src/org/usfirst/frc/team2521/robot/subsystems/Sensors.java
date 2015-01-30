@@ -32,14 +32,15 @@ public class Sensors extends Subsystem {
     // here. Call these from Commands.
 
 	private Gyro gyro;
-	private BuiltInAccelerometer accel1;
 	private AnalogInput ultrasonic;
+	private BuiltInAccelerometer accel1;
 	private ADXL345_I2C accel2;
 	private AnalogInput blankspace;
 	private double smoothedDistance = 0;
 	private ComplementaryFilter compFilter;
 	private DataBasedFilter dbFilter;
 	private LowPassFilter lpFilter;
+	private GyroITG3200 m_gyro;
 	
 	
 
@@ -54,6 +55,8 @@ public class Sensors extends Subsystem {
 		compFilter = new ComplementaryFilter(gyro, accel1, 1);
 		dbFilter = new DataBasedFilter(gyro, accel1);
 		lpFilter = new LowPassFilter(gyro);
+		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
+		m_gyro.initialize();
 		
 		
 
@@ -66,7 +69,8 @@ public class Sensors extends Subsystem {
 	}
 	
 	public double getAngle() {
-		return gyro.getAngle();
+		//return gyro.getAngle();
+		return m_gyro.getRotationX();
 	}
 	
 	public double getUltrasonicVoltage() {
@@ -104,7 +108,8 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void resetGyro() {
-		gyro.reset();
+		//gyro.reset();
+		m_gyro.reset();
 	}
 	
 	public double getBlank(){
@@ -123,36 +128,6 @@ public class Sensors extends Subsystem {
 		return accel2.getZ();
 	}
 	
-	/*public void writeSensorsToFile() {
-		if (gyroWriter == null) {
-			File file = new File(pathPart1 + getCurrentTimeDate + pathPart3);
-			if (!file.exists()) {
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-				
-				}
-			}
-	    	try {
-				gyroWriter = new BufferedWriter(new FileWriter(file));
-			} catch (IOException e) {
-				
-			}
-	}
-		try {
-			if (gyroWriter != null) {
-			gyroWriter.write((Timer.getFPGATimestamp() + "," + 
-					gyro.getRate() + "," + 
-					gyro.getAngle() + "," + 
-					accel1.getX() +  "," + 
-					accel1.getY() + "," +
-					compFilter.getAngle() + "," +
-					dbFilter.getAngle() + "\n"));
-			gyroWriter.flush();
-			}
-		} catch (IOException ex) {}
-	} */ 
-	
 	public void commandLog(){
 		Robot.fileManager.createLog("/home/lvuser/data/command_", Timer.getFPGATimestamp() + "," + 
 				Robot.compressor.getCurrentCommand() + "," +
@@ -167,7 +142,9 @@ public class Sensors extends Subsystem {
 				accel2.getX() +  "," + 
 				accel2.getY() + "," +
 				accel2.getZ() + "," +
-				gyro.getAngle() + "," +
+				m_gyro.getRotationX() + "," +
+				m_gyro.getRotationY() + "," +
+				m_gyro.getRotationZ() + "," +
 				blankspace.getValue() + "\n");
 	}
 	
@@ -202,8 +179,8 @@ public class Sensors extends Subsystem {
 		double weightN = 5;
 		double weightN1 = 4;
 		double weightN2 = 3;
-		double weightN3 = 1
-				;
+		double weightN3 = 1;
+		
 		double sum = val_n * weightN;
 		sum += val_n1 * weightN1;
 		sum += val_n2 * weightN2;
