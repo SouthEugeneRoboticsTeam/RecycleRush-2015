@@ -7,10 +7,11 @@
 //
 // Changelog:
 //     2011-07-31 - initial release
-//     2015-01-30 - Java revision
+//     2015-01-30 - Java FRC revision
 
 /* ============================================
 GyroITG3200 device library code is placed under the MIT license
+Copyright (c) 2011 by Jeff Rowberg
 Copyright (c) 2015 Joe Bussell
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +47,7 @@ import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.I2C;
 
 /**
- * @author Joe Bussell
+ * @author Joe Bussell Team 2521 Mentor
  * With thanks to the c++ version authors at: https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/ITG3200
  *
  */
@@ -54,6 +55,8 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 {
 	byte devAddr;
 	byte buffer[] = new byte[7];
+	
+	public static final boolean DEBUG = false;
 	
 	I2C m_i2c;
     		
@@ -101,6 +104,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 	    setFullScaleRange( ITG3200_FULLSCALE_2000 );
 	    setClockSource( ITG3200_CLOCK_PLL_XGYRO );
+	    setIntDeviceReadyEnabled( true );
 	}
 	
 	/** Verify the I2C connection.
@@ -117,7 +121,16 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		ReadI2CBuffer( register, 1, buffer);
 		byte newValue = (byte) ( value ? (buffer[0] | (1 << bit )) 
 				                       : ( buffer[0] & ~(1 << bit ) ) );
-		writeI2CBuffer( register, newValue );		
+		writeI2CBuffer( register, newValue );	
+
+		if ( DEBUG )
+		{
+			ReadI2CBuffer( register, 1, buffer);
+			if ( newValue != buffer[0] )
+			{
+				System.out.println( "Expected " + newValue + " seeing " + buffer[0] );
+			}
+		}
 	}
 	
 	// this routine should update the original byte with the new data properly shifted to the correct bit location
@@ -188,6 +201,14 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		try
 		{
 			retVal = m_i2c.write( registerAddress, data );
+			if ( DEBUG )
+			{
+				ReadI2CBuffer( registerAddress, 1, buffer);
+				if ( data != buffer[0] )
+				{
+					System.out.println( "Expected " + data + " seeing " + buffer[0] );
+				}
+			}
 		}
 		catch (Throwable t) 
 		{
@@ -202,7 +223,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		try
 		{
-			byte[] rawData = new byte[6];
+			byte[] rawData = new byte[numBits];
 			ReadI2CBuffer( register, 1, rawData );
 			byte newValue = updateByte( rawData[0], bit, numBits, value );
 			writeI2CBuffer( register, newValue );
@@ -215,8 +236,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	
 	private boolean readBit( int register, byte bit )
 	{
-		ReadI2CBuffer( register, 1, buffer);
-	    return ( buffer[0] & bit) != 0;
+		byte buf[] = new byte[1];
+		ReadI2CBuffer( register, 1, buf);
+	    return ( buf[0] & bit) != 0;
 	}
 
 	// Get n bits from the byte to form a byte slice
@@ -636,7 +658,8 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		try
 		{
-			m_i2c.read( registerAddress, count, buffer );
+			byte buf[] = new byte[count];
+			m_i2c.read( registerAddress, count, buf );
 		}
 		catch (Throwable t) 
 		{
