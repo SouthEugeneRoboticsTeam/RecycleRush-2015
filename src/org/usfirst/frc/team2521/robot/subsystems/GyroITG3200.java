@@ -53,10 +53,10 @@ import edu.wpi.first.wpilibj.I2C;
  */
 public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSendable 
 {
-	byte devAddr;
+	int devAddr;
 	byte buffer[] = new byte[7];
 	
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	
 	I2C m_i2c;
     		
@@ -70,7 +70,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		m_i2c = new I2C(port, devAddr);
 
 		// TODO: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
-		UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C );
+		//UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.?? );
 		LiveWindow.addSensor( "ITG3200_Gyro_I2C", port.getValue(), this );
 	}
 	
@@ -87,7 +87,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		m_i2c = new I2C( port, address );
 
 		// TODO: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
-		UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C );
+		//UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.?? );
 		LiveWindow.addSensor( "ITG3200_Gyro_I2C", port.getValue(), this );
 	}
 	 
@@ -102,9 +102,14 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void initialize()
 	{
+		if ( !testConnection() )
+		{
+			DriverStation.reportError( "Test connection failed!", false );
+		}
 	    setFullScaleRange( ITG3200_FULLSCALE_2000 );
 	    setClockSource( ITG3200_CLOCK_PLL_XGYRO );
 	    setIntDeviceReadyEnabled( true );
+	    setIntDataReadyEnabled( true );
 	}
 	
 	/** Verify the I2C connection.
@@ -118,17 +123,18 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	
 	private void writeBit( int register, byte bit, boolean value )
 	{
-		ReadI2CBuffer( register, 1, buffer);
-		byte newValue = (byte) ( value ? (buffer[0] | (1 << bit )) 
-				                       : ( buffer[0] & ~(1 << bit ) ) );
+		byte[] buf = new byte[1];
+		ReadI2CBuffer( register, 1, buf);
+		byte newValue = (byte) ( value ? (buf[0] | (1 << bit )) 
+				                       : ( buf[0] & ~(1 << bit ) ) );
 		writeI2CBuffer( register, newValue );	
 
 		if ( DEBUG )
 		{
-			ReadI2CBuffer( register, 1, buffer);
-			if ( newValue != buffer[0] )
+			ReadI2CBuffer( register, 1, buf);
+			if ( newValue != buf[0] )
 			{
-				System.out.println( "Expected " + newValue + " seeing " + buffer[0] );
+				System.out.println( "Expected " + newValue + " seeing " + buf[0] );
 			}
 		}
 	}
@@ -136,19 +142,19 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	// this routine should update the original byte with the new data properly shifted to the correct bit location
 	public static byte updateByte( byte original, int bit, int numBits, byte value )
 	{				
-		if ( numBits > 8 )
+		if ( numBits > 7 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
 			           + GetBinaryString(value)
 			           + "\n Number bits: " + numBits );
 		}
-		if ( bit > 8 )
+		if ( bit > 7 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
 			           + GetBinaryString(value)
 			           + "\n Bit: " + bit );
 		}
-		if ( bit + numBits > 9 )
+		if ( bit < numBits )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
 			           + GetBinaryString(value)
@@ -203,10 +209,11 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 			retVal = m_i2c.write( registerAddress, data );
 			if ( DEBUG )
 			{
-				ReadI2CBuffer( registerAddress, 1, buffer);
-				if ( data != buffer[0] )
+				byte[] buf = new byte[1];
+				ReadI2CBuffer( registerAddress, 1, buf);
+				if ( data != buf[0] )
 				{
-					System.out.println( "Expected " + data + " seeing " + buffer[0] );
+					DriverStation.reportError( "Expected " + data + "\nseeing " + buf[0] + "\n", false );
 				}
 			}
 		}
@@ -223,7 +230,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		try
 		{
-			byte[] rawData = new byte[numBits];
+			byte[] rawData = new byte[1];
 			ReadI2CBuffer( register, 1, rawData );
 			byte newValue = updateByte( rawData[0], bit, numBits, value );
 			writeI2CBuffer( register, newValue );
@@ -245,17 +252,17 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	private static byte getBits( byte bitField, int bit, int numBits )
 	{
 		
-		if ( numBits > 8 )
+		if ( numBits > 7 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes."
 			           + "\n Number bits: " + numBits );
 		}
-		if ( bit > 8 )
+		if ( bit > 7 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
 			           + "\n Bit: " + bit );
 		}
-		if ( bit + numBits > 9 )
+		if ( bit < numBits )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
 			           + "\n Bit: " + bit
@@ -304,8 +311,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 
 	private byte getRegisterByte( int register ) 
 	{
-		ReadI2CBuffer( register, 1, buffer );
-	    return buffer[0];
+		byte[] buf = new byte[1];
+		ReadI2CBuffer( register, 1, buf );
+	    return buf[0];
 	}
 
 	/** Get specified bits from the specified register.
@@ -625,8 +633,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public short getTemperature()
 	{
-		ReadI2CBuffer( ITG3200_RA_TEMP_OUT_H, 2, buffer);
-	    return (short) ( ((short)(buffer[0]) << 8) | (short)buffer[1] );
+		byte[] buf = new byte[2];
+		ReadI2CBuffer( ITG3200_RA_TEMP_OUT_H, 2, buf);
+	    return (short) ( ((short)(buf[0]) << 8) | (short)buf[1] );
 	}
 	 
 	// GYRO_*OUT_* registers
@@ -647,6 +656,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public AllAxes getRotation()
 	{
 		AllAxes data = new AllAxes();
+		byte[] buffer = new byte[6];
 		ReadI2CBuffer( ITG3200_RA_GYRO_XOUT_H, 6, buffer);
 	    data.XAxis = (short) ( (((short)buffer[0]) << 8) | buffer[1] );
 	    data.YAxis = (short) ( (((short)buffer[2]) << 8) | buffer[3] );
@@ -658,8 +668,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		try
 		{
-			byte buf[] = new byte[count];
-			m_i2c.read( registerAddress, count, buf );
+			m_i2c.read( registerAddress, count, buffer );
 		}
 		catch (Throwable t) 
 		{
@@ -669,7 +678,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	
 	public short ReadShortFromRegister( byte register, int count )
 	{
-		byte[] buffer = new byte[6];
+		byte[] buffer = new byte[count];
 		ReadI2CBuffer( register, count, buffer );
 		return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
 	}
@@ -814,9 +823,10 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public byte getClockSource()
 	{
-		ReadI2CBuffer( ITG3200_RA_PWR_MGM, 1, buffer );
+		byte[] buf = new byte[1];
+		ReadI2CBuffer( ITG3200_RA_PWR_MGM, 1, buf );
 	    // I2Cdev::readBits(devAddr, ITG3200_RA_PWR_MGM, ITG3200_PWR_CLK_SEL_BIT, ITG3200_PWR_CLK_SEL_LENGTH, buffer);
-	    return (byte) ( buffer[0] & ITG3200_PWR_CLK_SEL_BIT );
+	    return (byte) ( buf[0] & ITG3200_PWR_CLK_SEL_BIT );
 	}
 	
 	/** Set clock source setting.
@@ -876,10 +886,10 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		if (m_table != null) 
 		{
-			m_table.putNumber("X", getRotationX());
-			m_table.putNumber("Y", getRotationY());
-			m_table.putNumber("Z", getRotationZ());
-			m_table.putNumber("Value", pidGet());
+			m_table.putNumber("GyroX", getRotationX());
+			m_table.putNumber("GyroY", getRotationY());
+			m_table.putNumber("GyroZ", getRotationZ());
+			m_table.putNumber("GyroPIDValue", pidGet());
 		}
 	}
 
@@ -923,7 +933,10 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 
 	public static final byte ITG3200_ADDRESS_AD0_LOW      = 0x68; // address pin low (GND), default for SparkFun IMU Digital Combo board
 	public static final byte  ITG3200_ADDRESS_AD0_HIGH    = 0x69; // address pin high (VCC), default for SparkFun ITG-3200 Breakout board
-	public static final byte  ITG3200_DEFAULT_ADDRESS     = ITG3200_ADDRESS_AD0_LOW;
+	
+	public static final int  ITG3200_SPARKFUN_ADDRES	  = 0xD2;
+	
+	public static final int  ITG3200_DEFAULT_ADDRESS     = ITG3200_ADDRESS_AD0_LOW; // ITG3200_ADDRESS_AD0_HIGH;
 	
 	public static final byte  ITG3200_RA_WHO_AM_I         = 0x00;
 	public static final byte  ITG3200_RA_SMPLRT_DIV       = 0x15;
