@@ -6,7 +6,10 @@ import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 
-import edu.wpi.first.wpilibj.CANJaguar;
+
+//import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.ControlMode;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
@@ -63,20 +66,21 @@ public class Drivechain extends Subsystem {
 	//BufferedWriter angleWriter = null;
 	String path;
 	
-	CANJaguar frontLeft, frontRight, rearLeft, rearRight;
+	CANTalon frontLeft, frontRight, rearLeft, rearRight;
 	
 	public Drivechain() {
-		frontLeft = new CANJaguar(RobotMap.FRONT_LEFT_MOTOR);
-		frontLeft.setPercentMode(CANJaguar.kQuadEncoder, 360);
+		frontLeft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR);
+		frontLeft.changeControlMode(ControlMode.PercentVbus);
+		//frontLeft.setPercentMode(CanTalonSRX.kFeedbackDev_AnalogEncoder, 360);
 		frontLeft.enableControl();
-		rearLeft = new CANJaguar(RobotMap.REAR_LEFT_MOTOR);
-		rearLeft.setPercentMode();
+		rearLeft = new CANTalon(RobotMap.REAR_LEFT_MOTOR);
+		rearLeft.changeControlMode(ControlMode.PercentVbus);
 		rearLeft.enableControl();
-		frontRight = new CANJaguar(RobotMap.FRONT_RIGHT_MOTOR);
-		frontRight.setPercentMode(CANJaguar.kQuadEncoder, 360);
+		frontRight = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR);
+		frontRight.changeControlMode(ControlMode.PercentVbus);
 		frontRight.enableControl();
-		rearRight = new CANJaguar(RobotMap.REAR_RIGHT_MOTOR);
-		rearRight.setPercentMode();
+		rearRight = new CANTalon(RobotMap.REAR_RIGHT_MOTOR);
+		rearRight.changeControlMode(ControlMode.PercentVbus);
 		rearRight.enableControl();
 		drive = new RobotDrive(frontLeft, rearLeft, frontRight, rearRight);
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
@@ -106,7 +110,7 @@ public class Drivechain extends Subsystem {
 		double transX = OI.getInstance().getTranslateStick().getX();
 		double transY = OI.getInstance().getTranslateStick().getY();
 		double rotation = OI.getInstance().getRotateStick().getX();
-		double angle = Robot.sensors.getAngle();
+		double angle = Robot.sensors.getAngleX();
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
@@ -174,7 +178,7 @@ public class Drivechain extends Subsystem {
 	
 	public void autoFieldOrientedRemembering(){
 		if (autoCounter <= TOTAL_EXECUTIONS) {
-			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], Robot.sensors.getAngle());
+			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], Robot.sensors.getAngleX());
 			autoCounter++;
 		}
 	}
@@ -353,11 +357,11 @@ public class Drivechain extends Subsystem {
 
 	
 	public void auto1() {
-		drive.mecanumDrive_Cartesian(.1, .1, 0, Robot.sensors.getAngle());
+		drive.mecanumDrive_Cartesian(.1, .1, 0, Robot.sensors.getAngleX());
 	}
 	
 	public void auto2() {
-		drive.mecanumDrive_Cartesian(.5, .5, 0, Robot.sensors.getAngle());
+		drive.mecanumDrive_Cartesian(.5, .5, 0, Robot.sensors.getAngleX());
 	}
 	
 	public void resetRemembering() {
@@ -377,7 +381,7 @@ public class Drivechain extends Subsystem {
 			transY[teleopCounter] = OI.getInstance().getTranslateStick().getY();
 			fieldOrientedRotation[teleopCounter] = OI.getInstance().getRotateStick().getX();
 			//angle[teleopCounter] = Robot.sensors.getAngle();
-			double angle = Robot.sensors.getAngle();
+			double angle = Robot.sensors.getAngleX();
 			drive.mecanumDrive_Cartesian(transX[teleopCounter], transY[teleopCounter], fieldOrientedRotation[teleopCounter], angle);
 			teleopCounter++;
 		}

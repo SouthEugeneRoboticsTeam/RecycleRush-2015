@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.CANTalon;
 
 /**
  *
@@ -23,8 +24,8 @@ public class Conveyor extends Subsystem {
     
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	private Talon conveyor0;
-	private Talon conveyor1;
+	private CANTalon conveyor0;
+	private CANTalon conveyor1;
 	BufferedWriter logWriter = null;
 	String path;
 	public static boolean upperLimitReached;
@@ -34,8 +35,8 @@ public class Conveyor extends Subsystem {
 	
 	
 	public Conveyor() {
-		conveyor0 = new Talon(0);
-		conveyor1 = new Talon(1);
+		conveyor0 = new CANTalon(RobotMap.CONVEYOR_MASTER);
+		conveyor1 = new CANTalon(RobotMap.CONVEYOR_SLAVE);
 		upperLimitReached = false;
 		lowerLimitReached = false;
 		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);

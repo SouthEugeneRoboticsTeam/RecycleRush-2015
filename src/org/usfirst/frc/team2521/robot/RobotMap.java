@@ -16,10 +16,12 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 	
-	public static final int FRONT_RIGHT_MOTOR = 44;
-	public static final int FRONT_LEFT_MOTOR = 42;
-	public static final int REAR_RIGHT_MOTOR = 41;
-	public static final int REAR_LEFT_MOTOR = 43;
+	public static final int FRONT_RIGHT_MOTOR = 50;
+	public static final int FRONT_LEFT_MOTOR = 51;
+	public static final int REAR_RIGHT_MOTOR = 52;
+	public static final int REAR_LEFT_MOTOR = 53;
+	public static final int CONVEYOR_MASTER = 54;
+	public static final int CONVEYOR_SLAVE = 55;
 	public static final int GYRO_PORT = 0;
 	public static final int EMPTY_ANALOG = 3;
 	public static final int ACCEL_PORT = 0;
@@ -41,6 +43,6 @@ public class RobotMap {
 	public static final int LIGHT_7 = 9; 
 	public static final double CONVEYOR_SPEED = .3;
 	public static final double LOW_PASS_ALPHA = .5;
-	public static final int PCM_CAN_CHANNEL = 9;
+	public static final int PCM_CAN_CHANNEL = 0;
 	public static String DATE;
 }

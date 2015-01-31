@@ -68,9 +68,19 @@ public class Sensors extends Subsystem {
 		
 	}
 	
-	public double getAngle() {
+	public double getAngleX() {
 		//return gyro.getAngle();
 		return m_gyro.getRotationX();
+	}
+	
+	public double getAngleY() {
+		//return gyro.getAngle();
+		return m_gyro.getRotationY();
+	}
+	
+	public double getAngleZ() {
+		//return gyro.getAngle();
+		return m_gyro.getRotationZ();
 	}
 	
 	public double getUltrasonicVoltage() {

@@ -22,7 +22,9 @@ public class WriteSensors extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	SmartDashboard.putNumber("Angle", Robot.sensors.getAngle());
+    	SmartDashboard.putNumber("X Angle", Robot.sensors.getAngleX());
+    	SmartDashboard.putNumber("Y Angle", Robot.sensors.getAngleY());
+    	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());
     	//SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
     	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
     	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
@@ -34,6 +36,7 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("X", Robot.sensors.getNewAccelX());
     	SmartDashboard.putNumber("Y", Robot.sensors.getNewAccelY());
     	SmartDashboard.putNumber("Z", Robot.sensors.getNewAccelZ());
+    	
     	
     }
 
