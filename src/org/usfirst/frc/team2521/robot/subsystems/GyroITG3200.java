@@ -1,12 +1,13 @@
-// GyroITG3200 I2C device class header file
+// GyroITG3200 I2C device class file
 // Based on InvenSense ITG-3200 datasheet rev. 1.4, 3/30/2010 (PS-ITG-3200A-00-01.4)
 // Original work by 7/31/2011 by Jeff Rowberg <jeff@rowberg.net>
-// Java implementation for First Robotics Competition using WPILibj 
+// Java implementation for First Robotics Competition Team 2521 using WPILibj 
 // 1/27/2015 by Joe Bussell <joe dot bussell at gmail dot com>
 // Updates should (hopefully) always be available at https://github.com/bussell
 //
 // Changelog:
 //     2011-07-31 - initial release
+//     2015-01-30 - Java revision
 
 /* ============================================
 GyroITG3200 device library code is placed under the MIT license
@@ -31,6 +32,9 @@ THE SOFTWARE.
 
 package org.usfirst.frc.team2521.robot.subsystems;
 
+import java.util.Arrays;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.communication.UsageReporting;
@@ -49,7 +53,7 @@ import edu.wpi.first.wpilibj.I2C;
 public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSendable 
 {
 	byte devAddr;
-	byte buffer[] = new byte[6];
+	byte buffer[] = new byte[7];
 	
 	I2C m_i2c;
     		
@@ -62,9 +66,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 
 		m_i2c = new I2C(port, devAddr);
 
-		// ToDo: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
-		UsageReporting.report(tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C);
-		LiveWindow.addSensor("ITG3200_Gyro_I2C", port.getValue(), this);
+		// TODO: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
+		UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C );
+		LiveWindow.addSensor( "ITG3200_Gyro_I2C", port.getValue(), this );
 	}
 	
 	/** Specific address constructor.
@@ -77,11 +81,11 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 	    devAddr = address;
 
-		m_i2c = new I2C(port, devAddr);
+		m_i2c = new I2C( port, address );
 
-		// ToDo: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
-		UsageReporting.report(tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C);
-		LiveWindow.addSensor("ITG3200_Gyro_I2C", port.getValue(), this);
+		// TODO: This report is incorrect.  Need to create instance for I2C ITG3200 Gyro
+		UsageReporting.report( tResourceType.kResourceType_I2C, tInstances.kADXL345_I2C );
+		LiveWindow.addSensor( "ITG3200_Gyro_I2C", port.getValue(), this );
 	}
 	 
 	/** Power on and prepare for general usage.
@@ -108,12 +112,12 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	    return getDeviceID() == 0b110100;
 	}
 	
-	private void writeBit( byte register, byte bit, boolean value )
+	private void writeBit( int register, byte bit, boolean value )
 	{
-		m_i2c.read( register, 1, buffer);
+		ReadI2CBuffer( register, 1, buffer);
 		byte newValue = (byte) ( value ? (buffer[0] | (1 << bit )) 
 				                       : ( buffer[0] & ~(1 << bit ) ) );
-		m_i2c.write( register, newValue );		
+		writeI2CBuffer( register, newValue );		
 	}
 	
 	// this routine should update the original byte with the new data properly shifted to the correct bit location
@@ -178,18 +182,40 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		return String.format( "%8s", Integer.toBinaryString( value & 0xFF ) ).replace(' ', '0');
 	}
 	
-	// 
-    // I2Cdev::writeBits(devAddr, ITG3200_RA_WHO_AM_I, ITG3200_DEVID_BIT, ITG3200_DEVID_LENGTH, id);
-	private void writeBits( byte register, int bit, int numBits, byte value )
+	public boolean writeI2CBuffer(int registerAddress, int data)
 	{
-		m_i2c.read( register, 1, buffer );
-		byte newValue = updateByte( buffer[0], bit, numBits, value );
-		m_i2c.write( register, newValue );
+		boolean retVal = false;
+		try
+		{
+			retVal = m_i2c.write( registerAddress, data );
+		}
+		catch (Throwable t) 
+		{
+			DriverStation.reportError("ERROR Unhandled exception: " + t.toString() + " at " + Arrays.toString(t.getStackTrace()), false);
+		} 
+		return retVal;
 	}
 	
-	private boolean readBit( byte register, byte bit )
+	// 
+    // I2Cdev::writeBits(devAddr, ITG3200_RA_WHO_AM_I, ITG3200_DEVID_BIT, ITG3200_DEVID_LENGTH, id);
+	private void writeBits( int register, int bit, int numBits, byte value )
 	{
-		m_i2c.read( register, 1, buffer);
+		try
+		{
+			byte[] rawData = new byte[6];
+			ReadI2CBuffer( register, 1, rawData );
+			byte newValue = updateByte( rawData[0], bit, numBits, value );
+			writeI2CBuffer( register, newValue );
+		}
+		catch (Throwable t) 
+		{
+			DriverStation.reportError("ERROR Unhandled exception: " + t.toString() + " at " + Arrays.toString(t.getStackTrace()), false);
+		} 		
+	}
+	
+	private boolean readBit( int register, byte bit )
+	{
+		ReadI2CBuffer( register, 1, buffer);
 	    return ( buffer[0] & bit) != 0;
 	}
 
@@ -254,9 +280,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		return mask;
 	}
 
-	private byte getRegisterByte( byte register ) 
+	private byte getRegisterByte( int register ) 
 	{
-		m_i2c.read( register, 1, buffer );
+		ReadI2CBuffer( register, 1, buffer );
 	    return buffer[0];
 	}
 
@@ -267,7 +293,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * request 6 bits
 	 * and you should get a new byte (0b00110100).
 	 */
-	private byte getRegisterBits( byte register, int bit, int numBits )
+	private byte getRegisterBits( int register, int bit, int numBits )
 	{
 		byte containingByte = getRegisterByte( register );
 		return getBits( containingByte, bit, numBits );		
@@ -301,7 +327,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	}
 	 
 	// SMPLRT_DIV register
-
 	/** Get sample rate.
 	 * This register determines the sample rate of the ITG-3200 gyros. The gyros'
 	 * outputs are sampled internally at either 1kHz or 8kHz, determined by the
@@ -323,8 +348,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public byte getRate()
 	{
 		return getRegisterByte( ITG3200_RA_SMPLRT_DIV );
-	    // I2Cdev::readByte(devAddr, ITG3200_RA_SMPLRT_DIV, buffer);
-	    // return buffer[0];
 	}
 	
 	/** Set sample rate.
@@ -335,8 +358,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setRate(byte rate)
 	{
-		m_i2c.write( ITG3200_RA_SMPLRT_DIV, rate );
-	    // I2Cdev::writeByte(devAddr, ITG3200_RA_SMPLRT_DIV, rate);
+		writeI2CBuffer( ITG3200_RA_SMPLRT_DIV, rate );
 	}
 	 
 	// DLPF_FS register
@@ -359,7 +381,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public byte getFullScaleRange()
 	{
 		return getRegisterBits( ITG3200_RA_DLPF_FS, ITG3200_DF_FS_SEL_BIT, ITG3200_DF_FS_SEL_LENGTH );
-	    // I2Cdev::readBits(devAddr, ITG3200_RA_DLPF_FS, ITG3200_DF_FS_SEL_BIT, ITG3200_DF_FS_SEL_LENGTH, buffer);
 	}
 	
 	/** Set full-scale range setting.
@@ -372,8 +393,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setFullScaleRange(byte range)
 	{
-		m_i2c.write( ITG3200_RA_DLPF_FS, range);
-		// ToDo: mask the output such that we only change the bits of interest
 	    writeBits( ITG3200_RA_DLPF_FS, ITG3200_DF_FS_SEL_BIT, ITG3200_DF_FS_SEL_LENGTH, range );
 	}
 	
@@ -401,7 +420,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public byte getDLPFBandwidth() 
 	{
 		return getRegisterBits( ITG3200_RA_DLPF_FS, ITG3200_DF_DLPF_CFG_BIT, ITG3200_DF_DLPF_CFG_LENGTH );
-	    // I2Cdev::readBits(devAddr, ITG3200_RA_DLPF_FS, ITG3200_DF_DLPF_CFG_BIT, ITG3200_DF_DLPF_CFG_LENGTH, buffer);
 	}
 	
 	/** Set digital low-pass filter bandwidth.
@@ -414,8 +432,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public void setDLPFBandwidth(byte bandwidth)
 	{
-		// m_i2c.write( ITG3200_RA_DLPF_FS, bandwidth);
-		// ToDo: mask the output such that we only change the bits of interest
 	    writeBits( ITG3200_RA_DLPF_FS, ITG3200_DF_DLPF_CFG_BIT, ITG3200_DF_DLPF_CFG_LENGTH, bandwidth );
 	}
 	 
@@ -430,7 +446,6 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public boolean getInterruptMode()
 	{
 		return readBit( ITG3200_RA_INT_CFG, ITG3200_INTCFG_ACTL_BIT );
-	    // I2Cdev::readBit(devAddr, ITG3200_RA_INT_CFG, ITG3200_INTCFG_ACTL_BIT, buffer);
 	}
 	
 	/** Set interrupt logic level mode.
@@ -588,7 +603,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public short getTemperature()
 	{
-		m_i2c.read( ITG3200_RA_TEMP_OUT_H, 2, buffer);
+		ReadI2CBuffer( ITG3200_RA_TEMP_OUT_H, 2, buffer);
 	    return (short) ( ((short)(buffer[0]) << 8) | (short)buffer[1] );
 	}
 	 
@@ -610,13 +625,31 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	public AllAxes getRotation()
 	{
 		AllAxes data = new AllAxes();
-		m_i2c.read( ITG3200_RA_GYRO_XOUT_H, 6, buffer);
+		ReadI2CBuffer( ITG3200_RA_GYRO_XOUT_H, 6, buffer);
 	    data.XAxis = (short) ( (((short)buffer[0]) << 8) | buffer[1] );
 	    data.YAxis = (short) ( (((short)buffer[2]) << 8) | buffer[3] );
 	    data.ZAxis = (short) ( (((short)buffer[4]) << 8) | buffer[5] );
 	    return data;
 	}
 	
+	public void ReadI2CBuffer( int registerAddress, int count, byte[] buffer )
+	{
+		try
+		{
+			m_i2c.read( registerAddress, count, buffer );
+		}
+		catch (Throwable t) 
+		{
+			DriverStation.reportError("ERROR Unhandled exception in I2C Read: " + t.toString() + " at " + Arrays.toString(t.getStackTrace()), false);
+		} 		
+	}
+	
+	public short ReadShortFromRegister( byte register, int count )
+	{
+		byte[] buffer = new byte[6];
+		ReadI2CBuffer( register, count, buffer );
+		return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
+	}
 	
 	/** Get X-axis gyroscope reading.
 	 * @return X-axis rotation measurement in 16-bit 2's complement format
@@ -624,8 +657,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public short getRotationX()
 	{
-		m_i2c.read( ITG3200_RA_GYRO_XOUT_H, 2, buffer );
-	    return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
+		return ReadShortFromRegister( ITG3200_RA_GYRO_XOUT_H, 2 );
 	}
 	
 	/** Get Y-axis gyroscope reading.
@@ -634,8 +666,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public short getRotationY()
 	{
-		m_i2c.read( ITG3200_RA_GYRO_YOUT_H, 2, buffer);
-	    return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
+		return ReadShortFromRegister( ITG3200_RA_GYRO_YOUT_H, 2 );
 	}
 	
 	/** Get Z-axis gyroscope reading.
@@ -644,8 +675,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public short getRotationZ()
 	{
-		m_i2c.read( ITG3200_RA_GYRO_ZOUT_H, 2, buffer);
-	    return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
+		return ReadShortFromRegister( ITG3200_RA_GYRO_ZOUT_H, 2 );
 	}
 	 
 	// PWR_MGM register
@@ -761,7 +791,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 */
 	public byte getClockSource()
 	{
-		m_i2c.read( ITG3200_RA_PWR_MGM, 1, buffer );
+		ReadI2CBuffer( ITG3200_RA_PWR_MGM, 1, buffer );
 	    // I2Cdev::readBits(devAddr, ITG3200_RA_PWR_MGM, ITG3200_PWR_CLK_SEL_BIT, ITG3200_PWR_CLK_SEL_LENGTH, buffer);
 	    return (byte) ( buffer[0] & ITG3200_PWR_CLK_SEL_BIT );
 	}
@@ -788,7 +818,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * @see ITG3200_PWR_CLK_SEL_BIT
 	 * @see ITG3200_PWR_CLK_SEL_LENGTH
 	 */
-	public void setClockSource(byte source)
+	public void setClockSource( byte source )
 	{
 	    writeBits( ITG3200_RA_PWR_MGM, ITG3200_PWR_CLK_SEL_BIT, ITG3200_PWR_CLK_SEL_LENGTH, source );
 	}
@@ -800,7 +830,8 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initTable(ITable subtable) {
+	public void initTable( ITable subtable ) 
+	{
 		m_table = subtable;
 		updateTable();
 	}
@@ -809,7 +840,8 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ITable getTable() {
+	public ITable getTable() 
+	{
 		return m_table;
 	}
 
@@ -817,8 +849,10 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updateTable() {
-		if (m_table != null) {
+	public void updateTable() 
+	{
+		if (m_table != null) 
+		{
 			m_table.putNumber("X", getRotationX());
 			m_table.putNumber("Y", getRotationY());
 			m_table.putNumber("Z", getRotationZ());
