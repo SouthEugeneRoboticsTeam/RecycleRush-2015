@@ -151,7 +151,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 			           + GetBinaryString(value)
 			           + "\n Bit: " + bit );
 		}
-		if ( bit < numBits )
+		if ( bit < numBits - 1 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. \n Value: " 
 			           + GetBinaryString(value)
@@ -259,7 +259,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
 			           + "\n Bit: " + bit );
 		}
-		if ( bit < numBits )
+		if ( bit < numBits - 1 )
 		{
 			throw new IllegalArgumentException( "This routine is intended to use 8-bit bytes. "
 			           + "\n Bit: " + bit
@@ -639,9 +639,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 
 	public static class AllAxes 
 	{
-		public short XAxis;
-		public short YAxis;
-		public short ZAxis;
+		public double XAxis;
+		public double YAxis;
+		public double ZAxis;
 	}
 	
 	/** Get 3-axis gyroscope readings.
@@ -655,9 +655,9 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		AllAxes data = new AllAxes();
 		byte[] buffer = new byte[6];
 		ReadI2CBuffer( ITG3200_RA_GYRO_XOUT_H, 6, buffer);
-	    data.XAxis = (short) ( (((short)buffer[0]) << 8) | buffer[1] );
-	    data.YAxis = (short) ( (((short)buffer[2]) << 8) | buffer[3] );
-	    data.ZAxis = (short) ( (((short)buffer[4]) << 8) | buffer[5] );
+	    data.XAxis = (double) ( (((short)buffer[0]) << 8) | buffer[1] ) / GYRO_SENSITIVITY;
+	    data.YAxis = (double) ( (((short)buffer[2]) << 8) | buffer[3] ) / GYRO_SENSITIVITY;
+	    data.ZAxis = (double) ( (((short)buffer[4]) << 8) | buffer[5] ) / GYRO_SENSITIVITY;
 	    return data;
 	}
 	
@@ -680,11 +680,30 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 		return (short) ( (((short)buffer[0]) << 8) | buffer[1] );
 	}
 	
+    /**
+     * The gyro sensitivity in LSB/radian/second. The value retrieved from the
+     * gyro should be divided by this number.
+     */
+    public static final double GYRO_SENSITIVITY = 823.626830313;
+    
+	public double getRotationX()
+	{
+		return getRawRotationX() / GYRO_SENSITIVITY;
+	}
+	public double getRotationY()
+	{
+		return getRawRotationY() / GYRO_SENSITIVITY;
+	}
+	public double getRotationZ()
+	{
+		return getRawRotationZ() / GYRO_SENSITIVITY;
+	}
+	
 	/** Get X-axis gyroscope reading.
 	 * @return X-axis rotation measurement in 16-bit 2's complement format
 	 * @see ITG3200_RA_GYRO_XOUT_H
 	 */
-	public short getRotationX()
+	public short getRawRotationX()
 	{
 		return ReadShortFromRegister( ITG3200_RA_GYRO_XOUT_H, 2 );
 	}
@@ -693,7 +712,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * @return Y-axis rotation measurement in 16-bit 2's complement format
 	 * @see ITG3200_RA_GYRO_YOUT_H
 	 */
-	public short getRotationY()
+	public short getRawRotationY()
 	{
 		return ReadShortFromRegister( ITG3200_RA_GYRO_YOUT_H, 2 );
 	}
@@ -702,7 +721,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	 * @return Z-axis rotation measurement in 16-bit 2's complement format
 	 * @see ITG3200_RA_GYRO_ZOUT_H
 	 */
-	public short getRotationZ()
+	public short getRawRotationZ()
 	{
 		return ReadShortFromRegister( ITG3200_RA_GYRO_ZOUT_H, 2 );
 	}
