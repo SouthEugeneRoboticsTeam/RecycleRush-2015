@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
  *
  */
 public class Flipper extends Subsystem {
-    DoubleSolenoid flipper;
+    //DoubleSolenoid flipper;
     BufferedWriter logWriter = null;
     String path;
     
@@ -29,7 +29,7 @@ public class Flipper extends Subsystem {
     	/*flipUp = new Solenoid(RobotMap.FLIPPER_DOWN_CHANNEL);
     	flipDown = new Solenoid(RobotMap.FLIPPER_UP_CHANNEL);
     	resetFlipper(); */
-    	flipper = new DoubleSolenoid(RobotMap.FLIPPER_UP_CHANNEL, RobotMap.FLIPPER_DOWN_CHANNEL);
+    	//flipper = new DoubleSolenoid(RobotMap.FLIPPER_UP_CHANNEL, RobotMap.FLIPPER_DOWN_CHANNEL);
     }
     
     public boolean isUp() {
@@ -38,7 +38,7 @@ public class Flipper extends Subsystem {
     
     public void flipperUp() {
         if (isUp != true){
-        flipper.set(DoubleSolenoid.Value.kForward);
+        //flipper.set(DoubleSolenoid.Value.kForward);
         isUp = true;
         }
     }
@@ -46,22 +46,22 @@ public class Flipper extends Subsystem {
     public void flipperDown() {
     	if (isUp = true){
         isUp = false;
-        flipper.set(DoubleSolenoid.Value.kReverse);
+        //flipper.set(DoubleSolenoid.Value.kReverse);
     	}
         
     }
     
     public void resetFlipper() {
         isUp = false;
-    	flipper.set(DoubleSolenoid.Value.kOff);
+    	//flipper.set(DoubleSolenoid.Value.kOff);
     
     }
 
     
     public void flipperLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/flipper_", Timer.getFPGATimestamp() + "," + 
+		/*Robot.fileManager.createLog("/home/lvuser/data/flipper_", Timer.getFPGATimestamp() + "," + 
 				isUp + "," +
-				flipper.get() + "\n");
+				flipper.get() + "\n");*/
 	}
     
     public void initDefaultCommand() {

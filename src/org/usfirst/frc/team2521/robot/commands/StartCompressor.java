@@ -21,8 +21,8 @@ public class StartCompressor extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.compressor.startCompressor();
-    	Robot.compressor.compLog();
+    	//Robot.compressor.startCompressor();
+    	//Robot.compressor.compLog();
     }
 
     // Make this return true when this Command no longer needs to run execute()

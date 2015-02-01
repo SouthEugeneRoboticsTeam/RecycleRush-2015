@@ -5,8 +5,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -56,7 +58,7 @@ public class FileManager {
 		} catch (IOException ex) {}
 	} //*/
 	
-	public double[] fileToArray(String filename, int fileLength) {
+	public double[] txtFileToArray(String filename, int fileLength) {
 		List<String> recordList;
 		int listSize = 1;
 		double[] recordArray = null;
@@ -67,6 +69,27 @@ public class FileManager {
 			}
 		} catch (IOException e) {}	
 		return recordArray;
+	}
+	
+	public double[] csvFileToArray(String filename, int fileLength) {
+		double[] dArray = new double[fileLength];
+		FileReader fr = null;
+		String[] sArray = null;
+		try {
+			fr = new FileReader(filename);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		BufferedReader br = new BufferedReader(fr);
+		try {
+			sArray = br.readLine().split(", ");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (int iii = 0; iii <= fileLength; iii++){
+			dArray[iii] = Double.parseDouble(sArray[iii]);
+		}
+		return dArray;
 	}
 	
 }

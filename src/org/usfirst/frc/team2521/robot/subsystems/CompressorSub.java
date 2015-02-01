@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  */
 public class CompressorSub extends Subsystem {
-	Compressor compressor;
+	//Compressor compressor;
 	BufferedWriter logWriter = null;
 	String pathPart1;
 	String pathPart2;
@@ -28,22 +28,22 @@ public class CompressorSub extends Subsystem {
     // here. Call these from Commands.
 	
 	public CompressorSub() {
-		compressor = new Compressor();
+		//compressor = new Compressor();
 	}
 	
 	public void startCompressor(){
-		compressor.start();
+		//compressor.start();
 	}
 	
 	public void stopCompressor(){
-		compressor.stop();
+		//compressor.stop();
 	}
 
 	
 	public void compLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/compressor_", Timer.getFPGATimestamp() + "," + 
+		/*Robot.fileManager.createLog("/home/lvuser/data/compressor_", Timer.getFPGATimestamp() + "," + 
 				compressor.getCompressorCurrent() + "," +
-				compressor.getPressureSwitchValue() + "\n");
+				compressor.getPressureSwitchValue() + "\n");*/
 	}
 	
 	

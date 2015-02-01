@@ -8,8 +8,9 @@ import java.io.IOException;
 import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.RobotMap;
-import org.usfirst.frc.team2521.robot.commands.ConveyorLog;
+import org.usfirst.frc.team2521.robot.commands.ConveyorTeleop;
 
+import edu.wpi.first.wpilibj.CANTalon.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,23 +25,31 @@ public class Conveyor extends Subsystem {
     
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	private CANTalon conveyor0;
-	private CANTalon conveyor1;
+	private CANTalon master;
+	private CANTalon slave;
 	BufferedWriter logWriter = null;
-	String path;
+	String logPath;
+	String autoPath = "/home/lvuser/auto/Conveyor.txt";
 	public static boolean upperLimitReached;
 	public static boolean lowerLimitReached;
+	BufferedWriter writer = null;
 	private DigitalInput limitSwitchTop;
+	double[] record;
 	//private DigitalInput limitSwitchBot;
+	int autoCounter = 0;
 	
 	
 	public Conveyor() {
-		conveyor0 = new CANTalon(RobotMap.CONVEYOR_MASTER);
-		conveyor1 = new CANTalon(RobotMap.CONVEYOR_SLAVE);
+		master = new CANTalon(RobotMap.CONVEYOR_MASTER);
+		slave = new CANTalon(RobotMap.CONVEYOR_SLAVE);
+		master.changeControlMode(ControlMode.PercentVbus);
+		slave.changeControlMode(ControlMode.Follower);
+		slave.set(RobotMap.CONVEYOR_MASTER);
 		upperLimitReached = false;
 		lowerLimitReached = false;
 		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
 		//limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
+		record = new double[RobotMap.TOTAL_EXECUTIONS];
 		
 	}
 	
@@ -49,12 +58,13 @@ public class Conveyor extends Subsystem {
 		//speed = SmartDashboard.getNumber("Speed");
 		//SmartDashboard.putNumber("Conveyor speed", speed);
 		if (speed > 0 && !canMoveUp()) {
-			conveyor0.set(0);
-			conveyor1.set(0);
+			master.set(0);
+			slave.set(0);
 		} else {
-			conveyor0.set(speed);
-			conveyor1.set(speed);
+			master.set(speed);
+			slave.set(speed);
 		}
+		SmartDashboard.putNumber("Belt value", master.get());
 	}
 
 	public boolean canMoveUp() {
@@ -63,15 +73,52 @@ public class Conveyor extends Subsystem {
 	
 	public void conveyorLog(){
 		Robot.fileManager.createLog("/home/lvuser/data/conveyor_", Timer.getFPGATimestamp() + "," + 
-				conveyor0.get() + "," +
-				conveyor1.get() + "," +
+				master.get() + "," +
+				slave.get() + "," +
 				upperLimitReached + "," +
 				lowerLimitReached + "\n");
 	}
 	
+	public void writeToFileSetUp() {
+		if (writer == null) {
+			File File = new File(autoPath);
+			if (!File.exists()) {
+				try {
+					File.createNewFile();
+				} catch (IOException e) {}
+			}
+	    	try {
+				writer = new BufferedWriter(new FileWriter(File));
+			} catch (IOException e) {
+				
+			} 
+		}
+	}
+	
+	public void autoInit(){
+		record = Robot.fileManager.txtFileToArray(autoPath, RobotMap.TOTAL_EXECUTIONS);
+	}
+	
+	public void auto(){
+		if (autoCounter <= RobotMap.TOTAL_EXECUTIONS) {
+			master.set(record[autoCounter]);
+			SmartDashboard.putNumber("Belt value", record[autoCounter]);
+			autoCounter++;
+		}
+	}
+	
+	public void writeToFileField() {
+		try {
+			if (writer != null) {
+			writer.write(master.get() + "\n");
+			writer.flush();
+			}
+		} catch (IOException ex) {}
+	}
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new ConveyorLog());
+        setDefaultCommand(new ConveyorTeleop());
     }
 }
 

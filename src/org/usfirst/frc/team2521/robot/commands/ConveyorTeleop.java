@@ -7,16 +7,17 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ConveyorLog extends Command {
+public class ConveyorTeleop extends Command {
 
-    public ConveyorLog() {
-    	requires(Robot.conveyor);
+    public ConveyorTeleop() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        requires(Robot.conveyor);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.conveyor.writeToFileSetUp();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -36,5 +37,6 @@ public class ConveyorLog extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

@@ -15,16 +15,19 @@ public class Autonomous extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.drivechain);
+    	requires(Robot.conveyor);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.drivechain.autoInit();
+    	Robot.conveyor.autoInit();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	Robot.drivechain.auto();
+    	Robot.conveyor.auto();
     }
 
     // Make this return true when this Command no longer needs to run execute()

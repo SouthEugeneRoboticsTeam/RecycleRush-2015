@@ -18,10 +18,10 @@ public class RobotMap {
 	
 	public static final int FRONT_RIGHT_MOTOR = 50;
 	public static final int FRONT_LEFT_MOTOR = 51;
-	public static final int REAR_RIGHT_MOTOR = 52;
+	public static final int REAR_RIGHT_MOTOR = 54;
 	public static final int REAR_LEFT_MOTOR = 53;
-	public static final int CONVEYOR_MASTER = 54;
-	public static final int CONVEYOR_SLAVE = 55;
+	public static final int CONVEYOR_MASTER = 55;
+	public static final int CONVEYOR_SLAVE = 56;
 	public static final int GYRO_PORT = 0;
 	public static final int EMPTY_ANALOG = 3;
 	public static final int ACCEL_PORT = 0;
@@ -45,4 +45,5 @@ public class RobotMap {
 	public static final double LOW_PASS_ALPHA = .5;
 	public static final int PCM_CAN_CHANNEL = 0;
 	public static String DATE;
+	public static final int TOTAL_EXECUTIONS = 9000; //used for playback autonomous, how many times it should execute in 3 minutes
 }

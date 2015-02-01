@@ -12,6 +12,7 @@ import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
 import org.usfirst.frc.team2521.robot.subsystems.CompressorSub;
 import org.usfirst.frc.team2521.robot.subsystems.Flipper;
+import org.usfirst.frc.team2521.robot.commands.Autonomous;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TalonSRX;
@@ -61,7 +62,7 @@ public class Robot extends IterativeRobot {
     	autoChooser.addObject("Autonomous 2", new Auto2());
     	//conveyorSpeed = SmartDashboard.getNumber("speed");
 		sensors = new Sensors();
-		conveyor = new Conveyor();
+		//conveyor = new Conveyor();
 		compressor = new CompressorSub();
 		flipper = new Flipper();
 		oi = new OI();
@@ -81,11 +82,12 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-    	if (OI.getInstance().getRotateStick().getRawButton(7)) {
+    	/*if (OI.getInstance().getRotateStick().getRawButton(7)) {
     		autonomousCommand = new Auto1();
     	} else {
     		autonomousCommand = new Auto2();
-    	}
+    	}*/
+    	autonomousCommand = new Autonomous();
         // schedule the autonomous command (example)
         //if (autonomousCommand != null) autonomousCommand.start();
 //    	autonomousCommand = (Command) autoChooser.getSelected();
