@@ -34,7 +34,7 @@ public class Sensors extends Subsystem {
 	private Gyro gyro;
 	private AnalogInput ultrasonic;
 	private BuiltInAccelerometer accel1;
-	private ADXL345_I2C accel2;
+	private ADXL345_I2C_SparkFun accel2;
 	private AnalogInput blankspace;
 	private double smoothedDistance = 0;
 	private ComplementaryFilter compFilter;
@@ -51,7 +51,7 @@ public class Sensors extends Subsystem {
 		blankspace = new AnalogInput(RobotMap.EMPTY_ANALOG);
 		ultrasonic = new AnalogInput(RobotMap.ULTRASONIC_PORT);
 		accel1 = new BuiltInAccelerometer();
-		accel2 = new ADXL345_I2C(I2C.Port.kOnboard, Accelerometer.Range.k16G);
+		accel2 = new ADXL345_I2C_SparkFun(I2C.Port.kOnboard, Accelerometer.Range.k16G);
 		compFilter = new ComplementaryFilter(gyro, accel1, 1);
 		dbFilter = new DataBasedFilter(gyro, accel1);
 		lpFilter = new LowPassFilter(gyro);
