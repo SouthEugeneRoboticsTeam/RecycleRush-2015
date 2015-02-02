@@ -115,9 +115,6 @@ public class Drivechain extends Subsystem {
 		double transY = OI.getInstance().getTranslateStick().getY();
 		double rotation = OI.getInstance().getRotateStick().getX();
 		double angle = Robot.sensors.getAngleZ();
-		SmartDashboard.putNumber("tele TransX", transX);
-		SmartDashboard.putNumber("tele TransY", transY);
-		SmartDashboard.putNumber("tele Rotation", rotation);
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
@@ -185,9 +182,6 @@ public class Drivechain extends Subsystem {
 	
 	public void autoFieldOrientedRemembering(){
 		if (autoCounter <= RobotMap.TOTAL_EXECUTIONS) {
-			SmartDashboard.putNumber("auto TransX", transX[autoCounter]);
-			SmartDashboard.putNumber("auto TransY", transY[autoCounter]);
-			SmartDashboard.putNumber("auto Rotation", fieldOrientedRotation[autoCounter]);
 			drive.mecanumDrive_Cartesian(transX[autoCounter], transY[autoCounter], fieldOrientedRotation[autoCounter], Robot.sensors.getAngleX());
 			autoCounter++;
 		}

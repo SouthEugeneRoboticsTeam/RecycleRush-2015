@@ -64,7 +64,7 @@ public class FileManager {
 		double[] recordArray = null;
 		try {
 			recordList = Files.readAllLines(Paths.get(filename), Charset.defaultCharset()); // this should work only if it is actually creating new lines
-			for (int iii = 0; iii <= fileLength; iii++) {
+			for (int iii = 0; iii < fileLength; iii++) {
 				recordArray[iii] = Double.valueOf(recordList.get(iii));
 			}
 		} catch (IOException e) {}	
@@ -86,7 +86,7 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for (int iii = 0; iii <= fileLength; iii++){
+		for (int iii = 0; iii < fileLength; iii++){
 			dArray[iii] = Double.parseDouble(sArray[iii]);
 		}
 		return dArray;
