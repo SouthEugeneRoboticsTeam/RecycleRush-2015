@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.ADXL345_I2C;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+
 
 /**
  *
@@ -41,6 +43,7 @@ public class Sensors extends Subsystem {
 	private DataBasedFilter dbFilter;
 	private LowPassFilter lpFilter;
 	private GyroITG3200 m_gyro;
+	private PowerDistributionPanel pdp;
 	
 	
 
@@ -57,7 +60,7 @@ public class Sensors extends Subsystem {
 		lpFilter = new LowPassFilter(gyro);
 		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
 		m_gyro.initialize();
-		
+		pdp = new PowerDistributionPanel();
 		
 
 	}
@@ -167,7 +170,28 @@ public class Sensors extends Subsystem {
 				OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n");
 	}
 	
-	
+	public void batteryLog(){
+		Robot.fileManager.createLog("/home/lvuser/data/battery_", Timer.getFPGATimestamp() + "," +
+				pdp.getTotalCurrent() + "," +
+				pdp.getVoltage() + "," +
+				pdp.getCurrent(0) + "," +
+				pdp.getCurrent(1) + "," +
+				pdp.getCurrent(2) + "," +
+				pdp.getCurrent(3) + "," +
+				pdp.getCurrent(4) + "," +
+				pdp.getCurrent(5) + "," +
+				pdp.getCurrent(6) + "," +
+				pdp.getCurrent(7) + "," +
+				pdp.getCurrent(8) + "," +
+				pdp.getCurrent(9) + "," +
+				pdp.getCurrent(10) + "," +
+				pdp.getCurrent(11) + "," +
+				pdp.getCurrent(12) + "," +
+				pdp.getCurrent(13) + "," +
+				pdp.getCurrent(14) + "," +
+				pdp.getCurrent(15) + "," + "\n");
+				
+	}
 	
     public void initDefaultCommand() {
     	setDefaultCommand(new WriteSensors());
