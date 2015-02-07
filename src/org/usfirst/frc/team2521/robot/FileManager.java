@@ -86,8 +86,8 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for (int iii = 0; iii < fileLength; iii++){
-			dArray[iii] = Double.parseDouble(sArray[iii]);
+		for (int i = 0; i < fileLength; i++){
+			dArray[i] = Double.parseDouble(sArray[i]);
 		}
 		return dArray;
 	}

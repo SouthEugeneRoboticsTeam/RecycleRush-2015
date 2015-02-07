@@ -51,15 +51,14 @@ public class Drivechain extends Subsystem {
 	String Magnitude = "/home/lvuser/auto/Magnitude.csv";
 	String Direction = "/home/lvuser/auto/Direction.csv";
 	String FieldOrientedRotation = "/home/lvuser/auto/FieldOrientedRotation.csv";
-	String TransX = "/home/lv"
-			+ "user/auto/TransX.csv";
+	String TransX = "/home/lvuser/auto/TransX.csv";
 	String TransY = "/home/lvuser/auto/TransY.csv";
 	String Angle = "/home/lvuser/auto/Angle.csv";
 	//String autoFieldOriented = "/tmp/autoFieldOriented.csv";
-	BufferedWriter ROrotWriter = null;
+	BufferedWriter robotOrientedRotationWriter = null;
 	BufferedWriter magWriter = null;
 	BufferedWriter dirWriter = null;
-	BufferedWriter FOrotWriter = null;
+	BufferedWriter fieldOrientedRotationWriter = null;
 	BufferedWriter transXWriter = null;
 	BufferedWriter transYWriter = null;
 	BufferedWriter logWriter = null;
@@ -107,7 +106,9 @@ public class Drivechain extends Subsystem {
 				frontLeft.getOutputCurrent() + "," +
 				frontRight.getOutputCurrent() + "," +
 				rearRight.getOutputCurrent() + "," +
-				rearLeft.getOutputCurrent() + ",");
+				rearLeft.getOutputCurrent() + "," +
+				teleopCounter + "," +
+				autoCounter + "\n");
 	}
 	
 	public void fieldOrientedDrive() {
@@ -251,7 +252,7 @@ public class Drivechain extends Subsystem {
 	}
 	
 	public void writeToFileRobotOrientedSetUp() {
-		if (ROrotWriter == null || magWriter == null || dirWriter == null ) {
+		if (robotOrientedRotationWriter == null || magWriter == null || dirWriter == null ) {
 			File ROrotationFile = new File(RobotOrientedRotation);
 			File magnitudeFile = new File(Magnitude);
 			File directionFile = new File(Direction);
@@ -267,7 +268,7 @@ public class Drivechain extends Subsystem {
 				} catch (IOException e) {}
 			}
 	    	try {
-				ROrotWriter = new BufferedWriter(new FileWriter(ROrotationFile));
+				robotOrientedRotationWriter = new BufferedWriter(new FileWriter(ROrotationFile));
 				magWriter = new BufferedWriter(new FileWriter(magnitudeFile));
 				dirWriter = new BufferedWriter(new FileWriter(directionFile));
 			} catch (IOException e) {
@@ -282,9 +283,9 @@ public class Drivechain extends Subsystem {
 	
 	public void writeToFileRobotOriented() {
 		try {
-			if (ROrotWriter != null) {
-			ROrotWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
-			ROrotWriter.flush();
+			if (robotOrientedRotationWriter != null) {
+			robotOrientedRotationWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
+			robotOrientedRotationWriter.flush();
 			}
 		} catch (IOException ex) {}
 		try {
@@ -302,7 +303,7 @@ public class Drivechain extends Subsystem {
 	}  
 	
 	public void writeToFileFieldOrientedSetUp() {
-		if (FOrotWriter == null || transXWriter == null || transYWriter == null) {
+		if (fieldOrientedRotationWriter == null || transXWriter == null || transYWriter == null) {
 			File FOrotationFile = new File(FieldOrientedRotation);
 			File transXFile = new File(TransX);
 			File transYFile = new File(TransY);
@@ -322,7 +323,7 @@ public class Drivechain extends Subsystem {
 				} catch (IOException e) {} */
 			}
 	    	try {
-				FOrotWriter = new BufferedWriter(new FileWriter(FOrotationFile));
+				fieldOrientedRotationWriter = new BufferedWriter(new FileWriter(FOrotationFile));
 				transXWriter = new BufferedWriter(new FileWriter(transXFile));
 				transYWriter = new BufferedWriter(new FileWriter(transYFile));
 				//angleWriter = new BufferedWriter(new FileWriter(angleFile));
@@ -334,9 +335,9 @@ public class Drivechain extends Subsystem {
 	
 	public void writeToFileFieldOriented() {
 		try {
-			if (FOrotWriter != null) {
-			FOrotWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
-			FOrotWriter.flush();
+			if (fieldOrientedRotationWriter != null) {
+			fieldOrientedRotationWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
+			fieldOrientedRotationWriter.flush();
 			}
 		} catch (IOException ex) {}
 		try {

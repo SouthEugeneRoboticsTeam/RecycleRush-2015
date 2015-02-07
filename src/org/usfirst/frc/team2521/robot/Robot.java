@@ -35,12 +35,12 @@ public class Robot extends IterativeRobot {
 	public static Sensors sensors;
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
-	public static CompressorSub compressor;
-	public static Flipper flipper;
+	//public static CompressorSub compressor;
+	//public static Flipper flipper;
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;
-	public static FileManager fileManager;
+	public static FileManager fileManager;// later try making a static filemanager in each class, so we can just use createLog for record auto
 	//public static double conveyorSpeed = 0;
 	
 
@@ -62,9 +62,9 @@ public class Robot extends IterativeRobot {
     	autoChooser.addObject("Autonomous 2", new Auto2());
     	//conveyorSpeed = SmartDashboard.getNumber("speed");
 		sensors = new Sensors();
-		//conveyor = new Conveyor();
-		compressor = new CompressorSub();
-		flipper = new Flipper();
+		conveyor = new Conveyor();
+		//compressor = new CompressorSub();
+		//flipper = new Flipper();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));

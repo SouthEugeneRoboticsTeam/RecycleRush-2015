@@ -4,9 +4,7 @@ import org.usfirst.frc.team2521.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-/**
- *
- */
+
 public class Auto1 extends Command {
 
     public Auto1() {

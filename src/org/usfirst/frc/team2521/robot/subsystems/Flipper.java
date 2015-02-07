@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Flipper extends Subsystem {
     //DoubleSolenoid flipper;
-    BufferedWriter logWriter = null;
-    String path;
+	BufferedWriter writer = null;
+    String path = "/home/lvuser/auto/flipper.csv";
     
     private boolean isUp = false;
     // Put methods for controlling this subsystem
@@ -67,6 +67,12 @@ public class Flipper extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+    
+ 
+    
+    public void writeToFile(){
+    	
     }
 }
 

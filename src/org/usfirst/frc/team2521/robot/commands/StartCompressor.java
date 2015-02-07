@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class StartCompressor extends Command {
 
     public StartCompressor() {
-    	requires(Robot.compressor);
+    	//requires(Robot.compressor);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }

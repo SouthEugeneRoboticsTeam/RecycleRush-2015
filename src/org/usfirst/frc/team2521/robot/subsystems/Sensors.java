@@ -60,7 +60,7 @@ public class Sensors extends Subsystem {
 		lpFilter = new LowPassFilter(gyro);
 		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
 		m_gyro.initialize();
-		pdp = new PowerDistributionPanel();
+		pdp = new PowerDistributionPanel(); //pdp MUST be address 0
 		
 
 	}
@@ -125,6 +125,10 @@ public class Sensors extends Subsystem {
 		m_gyro.reset();
 	}
 	
+	public double getCurrent(int adress){
+		return pdp.getCurrent(adress);
+	}
+	
 	public double getBlank(){
 		return blankspace.getValue();
 	}
@@ -143,10 +147,10 @@ public class Sensors extends Subsystem {
 	
 	public void commandLog(){
 		Robot.fileManager.createLog("/home/lvuser/data/command_", Timer.getFPGATimestamp() + "," + 
-				Robot.compressor.getCurrentCommand() + "," +
+				//Robot.compressor.getCurrentCommand() + "," +
 				Robot.conveyor.getCurrentCommand() + "," +
-				Robot.drivechain.getCurrentCommand() + "," +
-				Robot.flipper.getCurrentCommand() + "," + "\n");
+				Robot.drivechain.getCurrentCommand() + "\n");
+				//Robot.flipper.getCurrentCommand() + "," + "\n");
 		}
 	
 	public void sensorLog(){
@@ -190,7 +194,6 @@ public class Sensors extends Subsystem {
 				pdp.getCurrent(13) + "," +
 				pdp.getCurrent(14) + "," +
 				pdp.getCurrent(15) + "," + "\n");
-				
 	}
 	
     public void initDefaultCommand() {

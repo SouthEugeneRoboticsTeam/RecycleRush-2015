@@ -57,6 +57,9 @@ public class Conveyor extends Subsystem {
 	public void moveConveyor(double speed) {
 		//speed = SmartDashboard.getNumber("Speed");
 		//SmartDashboard.putNumber("Conveyor speed", speed);
+		/*if (Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT){
+			speed = RobotMap.CONVEYOR_SPEED_HI;
+		} else speed = RobotMap.CONVEYOR_SPEED_LO;*/
 		if (speed > 0 && !canMoveUp()) {
 			master.set(0);
 			slave.set(0);

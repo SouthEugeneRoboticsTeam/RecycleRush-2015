@@ -91,12 +91,10 @@ public class OI {
 	
 	private void tieButtons() {
 		resetGyro.whenPressed(new ResetGyro());
-		//moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
-		/*moveConveyorUp.whenPressed(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
+		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
 		moveConveyorUp.whenReleased(new MoveConveyor(0));
-		moveConveyorDown.whenPressed(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
-		moveConveyorDown.whenReleased(new MoveConveyor(0));*/
-		//moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
+		moveConveyorDown.whenReleased(new MoveConveyor(0));
+		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
 		resetRemembering.whenPressed(new ResetRemembering());
 		toggleRemembering.whenPressed(new ToggleRemembering());
 		flip.whenPressed(new FlipperUp());

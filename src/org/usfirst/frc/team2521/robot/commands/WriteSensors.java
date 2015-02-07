@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2521.robot.commands;
 import org.usfirst.frc.team2521.robot.Robot;
+import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +26,8 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("X Angle", Robot.sensors.getAngleX());
     	SmartDashboard.putNumber("Y Angle", Robot.sensors.getAngleY());
     	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());
+    	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));;
+    	SmartDashboard.putBoolean("Tote hooked", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT);
     	//SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
 //    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
 //    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class FlipperDown extends Command {
 
     public FlipperDown() {
-    	requires(Robot.flipper);
+    	//requires(Robot.flipper);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -21,7 +21,7 @@ public class FlipperDown extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.flipper.flipperDown();
+    	//Robot.flipper.flipperDown();
     }
 
     // Make this return true when this Command no longer needs to run execute()
