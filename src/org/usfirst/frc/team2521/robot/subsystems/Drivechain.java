@@ -88,7 +88,7 @@ public class Drivechain extends Subsystem {
 		drive = new RobotDrive(frontLeft, rearLeft, frontRight, rearRight);
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
-//		drive = new RobotDrive(0, 1, 2, 3);
+		fromFileSetUp();
 	}
 	
 	
@@ -115,7 +115,7 @@ public class Drivechain extends Subsystem {
 		double transX = OI.getInstance().getTranslateStick().getX();
 		double transY = OI.getInstance().getTranslateStick().getY();
 		double rotation = OI.getInstance().getRotateStick().getX();
-		double angle = Robot.sensors.getAngleZ();
+		double angle = Robot.sensors.getAngleZ()*(180/Math.PI);
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
@@ -239,16 +239,9 @@ public class Drivechain extends Subsystem {
 		SmartDashboard.putString("Current Drive Mode", mode.identifier);
 	}
 	
-	public void fromFileSetUp(){
-		switch (mode) {
-		case fieldOrientedMecanum:
-			writeToFileFieldOrientedSetUp();
-			break;
-		case robotOrientedMecanum:
-			writeToFileRobotOrientedSetUp();
-			break;
-		}
-			
+	public void fromFileSetUp() {
+		writeToFileFieldOrientedSetUp();
+		writeToFileRobotOrientedSetUp();
 	}
 	
 	public void writeToFileRobotOrientedSetUp() {
@@ -303,25 +296,25 @@ public class Drivechain extends Subsystem {
 	}  
 	
 	public void writeToFileFieldOrientedSetUp() {
+		File FOrotationFile = new File(FieldOrientedRotation);
+		File transXFile = new File(TransX);
+		File transYFile = new File(TransY);
+		//File angleFile = new File(Angle);
+		if (!FOrotationFile.exists() || !transXFile.exists() || !transYFile.exists()) {
+			try {
+				FOrotationFile.createNewFile();
+			} catch (IOException e) {}
+			try {
+				transXFile.createNewFile();
+			} catch (IOException e) {}
+			try {
+				transYFile.createNewFile();
+			} catch (IOException e) {}
+			/*try {
+				angleFile.createNewFile();
+			} catch (IOException e) {} */
+		}
 		if (fieldOrientedRotationWriter == null || transXWriter == null || transYWriter == null) {
-			File FOrotationFile = new File(FieldOrientedRotation);
-			File transXFile = new File(TransX);
-			File transYFile = new File(TransY);
-			//File angleFile = new File(Angle);
-			if (!FOrotationFile.exists() || !transXFile.exists() || !transYFile.exists()) {
-				try {
-					FOrotationFile.createNewFile();
-				} catch (IOException e) {}
-				try {
-					transXFile.createNewFile();
-				} catch (IOException e) {}
-				try {
-					transYFile.createNewFile();
-				} catch (IOException e) {}
-				/*try {
-					angleFile.createNewFile();
-				} catch (IOException e) {} */
-			}
 	    	try {
 				fieldOrientedRotationWriter = new BufferedWriter(new FileWriter(FOrotationFile));
 				transXWriter = new BufferedWriter(new FileWriter(transXFile));
@@ -380,6 +373,7 @@ public class Drivechain extends Subsystem {
 		teleopCounter = 0;
 		autoCounter = 0;
 	}
+	
 	public void fieldOrientedDriveRemembering() {
 		if (teleopCounter <= RobotMap.TOTAL_EXECUTIONS) {
 			transX[teleopCounter] = OI.getInstance().getTranslateStick().getX();

@@ -9,6 +9,7 @@ import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.*;
+import org.usfirst.frc.team2521.robot.FileManager;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -44,9 +45,10 @@ public class Sensors extends Subsystem {
 	private LowPassFilter lpFilter;
 	private GyroITG3200 m_gyro;
 	private PowerDistributionPanel pdp;
-	
-	
-
+	private FileManager sensor_fm;
+	private FileManager battery_fm;
+	private FileManager command_fm;
+	private FileManager joystick_fm;
 	
 	
 	public Sensors() {
@@ -61,8 +63,10 @@ public class Sensors extends Subsystem {
 		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
 		m_gyro.initialize();
 		pdp = new PowerDistributionPanel(); //pdp MUST be address 0
-		
-
+		battery_fm = new FileManager();
+		sensor_fm = new FileManager();
+		command_fm = new FileManager();
+		joystick_fm = new FileManager();
 	}
 	
 	
@@ -121,7 +125,6 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void resetGyro() {
-		//gyro.reset();
 		m_gyro.reset();
 	}
 	
@@ -146,7 +149,7 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void commandLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/command_", Timer.getFPGATimestamp() + "," + 
+		command_fm.createLog("/home/lvuser/data/command_", Timer.getFPGATimestamp() + "," + 
 				//Robot.compressor.getCurrentCommand() + "," +
 				Robot.conveyor.getCurrentCommand() + "," +
 				Robot.drivechain.getCurrentCommand() + "\n");
@@ -154,7 +157,7 @@ public class Sensors extends Subsystem {
 		}
 	
 	public void sensorLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/sensor_", Timer.getFPGATimestamp() + "," + 
+		sensor_fm.createLog("/home/lvuser/data/sensor_", Timer.getFPGATimestamp() + "," + 
 				ultrasonic.getVoltage() + "," +
 				accel2.getX() +  "," + 
 				accel2.getY() + "," +
@@ -166,7 +169,7 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void joystickLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/joysticks_", Timer.getFPGATimestamp() + "," + 
+		joystick_fm.createLog("/home/lvuser/data/joysticks_", Timer.getFPGATimestamp() + "," + 
 				OI.getInstance().getTranslateStick().getX() + "," +
 				OI.getInstance().getTranslateStick().getY() + "," +
 				OI.getInstance().getRotateStick().getX() + "," +
@@ -175,7 +178,7 @@ public class Sensors extends Subsystem {
 	}
 	
 	public void batteryLog(){
-		Robot.fileManager.createLog("/home/lvuser/data/battery_", Timer.getFPGATimestamp() + "," +
+		battery_fm.createLog("/home/lvuser/data/battery_", Timer.getFPGATimestamp() + "," +
 				pdp.getTotalCurrent() + "," +
 				pdp.getVoltage() + "," +
 				pdp.getCurrent(0) + "," +

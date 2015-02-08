@@ -3,10 +3,10 @@ package org.usfirst.frc.team2521.robot;
 import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 //import org.usfirst.frc.team2521.robot.commands.SwitchAuto;
 import org.usfirst.frc.team2521.robot.commands.ResetGyro;
-import org.usfirst.frc.team2521.robot.commands.ResetRemembering;
+import org.usfirst.frc.team2521.robot.commands.ResetAuto;
+import org.usfirst.frc.team2521.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2521.robot.commands.ToggleRemembering;
-import org.usfirst.frc.team2521.robot.commands.FlipperUp;
-import org.usfirst.frc.team2521.robot.commands.FlipperDown;
+import org.usfirst.frc.team2521.robot.commands.Flip;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -53,12 +53,15 @@ public class OI {
 	private JoystickButton resetRemembering;
 	private JoystickButton toggleRemembering;
 	private JoystickButton flip;
+	private JoystickButton flipToggle;
 	private JoystickButton clearLimits;
+	private JoystickButton resetAuto;
+	private JoystickButton toggleCompressor;
 	//private JoystickButton switchAutonomous;
 	
 	 public OI() {
 		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
-			rotate = new Joystick(RobotMap.ROTATE_PORT);
+		 rotate = new Joystick(RobotMap.ROTATE_PORT);
 		 initButtons();
 	 }
 	 
@@ -81,10 +84,12 @@ public class OI {
 		resetGyro = new JoystickButton(translate, 10);
 		moveConveyorUp = new JoystickButton(rotate, 3);
 		moveConveyorDown = new JoystickButton(rotate, 2);
-		resetRemembering = new JoystickButton(translate, 9);
+		//resetRemembering = new JoystickButton(translate, 9);
 		toggleRemembering = new JoystickButton(translate, 11);
 		flip = new JoystickButton(rotate, 1);
-		
+		flipToggle = new JoystickButton(rotate, 6);
+		resetAuto = new JoystickButton(translate, 9);
+		toggleCompressor = new JoystickButton(rotate, 7);
 		//switchAutonomous = new JoystickButton(translate, 4);
 		tieButtons();
 	}
@@ -95,13 +100,15 @@ public class OI {
 		moveConveyorUp.whenReleased(new MoveConveyor(0));
 		moveConveyorDown.whenReleased(new MoveConveyor(0));
 		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
-		resetRemembering.whenPressed(new ResetRemembering());
+		resetAuto.whenPressed(new ResetAuto());
+		//resetRemembering.whenPressed(new ResetRemembering());
 		toggleRemembering.whenPressed(new ToggleRemembering());
-		flip.whenPressed(new FlipperUp());
-		flip.whenReleased(new FlipperDown());
+		flip.whenPressed(new Flip()); //up when you press, down when you release is desired
+		flip.whenReleased(new Flip());
+		flipToggle.whenPressed(new Flip());
 		//switchAutonomous.whileHeld(new SwitchAuto());
 		//buttonPressed = translate.getRawButton(4);
-		
+		toggleCompressor.whenPressed(new ToggleCompressor());
 	}
 	
 }

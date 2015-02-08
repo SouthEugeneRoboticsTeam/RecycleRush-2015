@@ -28,17 +28,18 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());
     	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));;
     	SmartDashboard.putBoolean("Tote hooked", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT);
-    	//SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
-//    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
-//    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
-//    	SmartDashboard.putNumber("Empty Analog", Robot.sensors.getBlank());
-//    	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
-//    	Robot.sensors.sensorLog();
-//    	Robot.sensors.joystickLog();
-//    	Robot.sensors.commandLog();
-//    	SmartDashboard.putNumber("X", Robot.sensors.getNewAccelX());
-//    	SmartDashboard.putNumber("Y", Robot.sensors.getNewAccelY());
-//    	SmartDashboard.putNumber("Z", Robot.sensors.getNewAccelZ());
+    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
+    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
+    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
+    	SmartDashboard.putNumber("Empty Analog", Robot.sensors.getBlank());
+    	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
+    	Robot.sensors.sensorLog();
+    	Robot.sensors.joystickLog();
+    	Robot.sensors.commandLog();
+    	Robot.sensors.batteryLog();
+    	SmartDashboard.putNumber("X", Robot.sensors.getNewAccelX());
+    	SmartDashboard.putNumber("Y", Robot.sensors.getNewAccelY());
+    	SmartDashboard.putNumber("Z", Robot.sensors.getNewAccelZ());
     	
     	
     }

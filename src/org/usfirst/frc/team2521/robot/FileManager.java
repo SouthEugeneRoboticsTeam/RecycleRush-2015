@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 
 public class FileManager {
+	BufferedWriter writer = null;
 	public static String getFormattedDate() {
 		SimpleDateFormat dateAsString = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
 		Date now = new Date();
@@ -33,7 +34,6 @@ public class FileManager {
 	}
 	
 	public void createLog(String pathPrefix, String content) {
-		BufferedWriter writer = null; 
 		if (writer == null) {
 			String path = (pathPrefix + RobotMap.DATE + ".csv");
 			File file = new File(path);

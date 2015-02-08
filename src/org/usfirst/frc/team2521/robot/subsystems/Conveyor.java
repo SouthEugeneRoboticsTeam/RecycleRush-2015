@@ -83,13 +83,13 @@ public class Conveyor extends Subsystem {
 	}
 	
 	public void writeToFileSetUp() {
+		File File = new File(autoPath);
+		if (!File.exists()) {
+			try {
+				File.createNewFile();
+			} catch (IOException e) {}
+		}
 		if (writer == null) {
-			File File = new File(autoPath);
-			if (!File.exists()) {
-				try {
-					File.createNewFile();
-				} catch (IOException e) {}
-			}
 	    	try {
 				writer = new BufferedWriter(new FileWriter(File));
 			} catch (IOException e) {

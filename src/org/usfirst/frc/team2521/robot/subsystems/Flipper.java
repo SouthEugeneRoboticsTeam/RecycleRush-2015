@@ -10,6 +10,7 @@ import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -17,19 +18,18 @@ import edu.wpi.first.wpilibj.Timer;
  *
  */
 public class Flipper extends Subsystem {
-    //DoubleSolenoid flipper;
+    DoubleSolenoid flipper;
 	BufferedWriter writer = null;
     String path = "/home/lvuser/auto/flipper.csv";
+    private Compressor compressor;
     
     private boolean isUp = false;
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
     public Flipper() {
-    	/*flipUp = new Solenoid(RobotMap.FLIPPER_DOWN_CHANNEL);
-    	flipDown = new Solenoid(RobotMap.FLIPPER_UP_CHANNEL);
-    	resetFlipper(); */
-    	//flipper = new DoubleSolenoid(RobotMap.FLIPPER_UP_CHANNEL, RobotMap.FLIPPER_DOWN_CHANNEL);
+    	flipper = new DoubleSolenoid(RobotMap.FLIPPER_UP_CHANNEL, RobotMap.FLIPPER_DOWN_CHANNEL);
+		compressor = new Compressor();
     }
     
     public boolean isUp() {
@@ -38,7 +38,7 @@ public class Flipper extends Subsystem {
     
     public void flipperUp() {
         if (isUp != true){
-        //flipper.set(DoubleSolenoid.Value.kForward);
+        	flipper.set(DoubleSolenoid.Value.kForward);
         isUp = true;
         }
     }
@@ -46,15 +46,14 @@ public class Flipper extends Subsystem {
     public void flipperDown() {
     	if (isUp = true){
         isUp = false;
-        //flipper.set(DoubleSolenoid.Value.kReverse);
+        	flipper.set(DoubleSolenoid.Value.kReverse);
     	}
         
     }
     
     public void resetFlipper() {
         isUp = false;
-    	//flipper.set(DoubleSolenoid.Value.kOff);
-    
+    	flipper.set(DoubleSolenoid.Value.kOff);
     }
 
     
@@ -69,7 +68,9 @@ public class Flipper extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
     
- 
+    public void setClosedLoopControl(boolean on){
+		compressor.setClosedLoopControl(on);
+	}
     
     public void writeToFile(){
     	

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class Flip extends Command {
 
     public Flip() {
-    	//requires(Robot.flipper);
+    	requires(Robot.flipper);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -30,11 +30,11 @@ public class Flip extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        /*if (!Robot.flipper.isUp()) {
+        if (!Robot.flipper.isUp()) {
             Robot.flipper.flipperUp();
         } else {
             Robot.flipper.flipperDown();
-        }*/
+        }
     }
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run

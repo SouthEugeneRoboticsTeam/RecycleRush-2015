@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
 	//public static CompressorSub compressor;
-	//public static Flipper flipper;
+	public static Flipper flipper;
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;
@@ -64,7 +64,7 @@ public class Robot extends IterativeRobot {
 		sensors = new Sensors();
 		conveyor = new Conveyor();
 		//compressor = new CompressorSub();
-		//flipper = new Flipper();
+		flipper = new Flipper();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));

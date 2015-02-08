@@ -32,7 +32,7 @@ public class RobotMap {
 	public static final int CONVEYOR_MOTOR = 32;
 	public static final int FLIPPER_UP_CHANNEL = 1;
 	public static final int FLIPPER_DOWN_CHANNEL = 0;
-	public static final int LIMIT_SWITCH_PORT_TOP = 0; 
+	public static final int LIMIT_SWITCH_PORT_TOP = 0;
 	public static final int LIMIT_SWITCH_PORT_BOT = 1; 
 	public static final int LIGHT_MAIN = 2; 
 	public static final int LIGHT_1 = 3; 
@@ -48,6 +48,6 @@ public class RobotMap {
 	public static final double TOTE_CURRENT = 6; // how much current is drawn by conveyor master when a tote is hooked, needs to be updated
 	public static final int PCM_CAN_CHANNEL = 0;
 	public static String DATE;
-	public static final int TOTAL_EXECUTIONS = 9000; //used for playback autonomous, how many times it should execute in 3 minutes
+	public static final int TOTAL_EXECUTIONS = 1000; //used for playback autonomous, how many times it should execute in 3 minutes
 	public static final double CONVEYOR_SPEED = .5;
 }

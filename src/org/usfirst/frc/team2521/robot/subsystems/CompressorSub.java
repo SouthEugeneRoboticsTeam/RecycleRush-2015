@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.RobotMap;
-import org.usfirst.frc.team2521.robot.commands.StartCompressor;
+import org.usfirst.frc.team2521.robot.commands.ToggleCompressor;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  */
 public class CompressorSub extends Subsystem {
-	//Compressor compressor;
+	private Compressor compressor;
 	BufferedWriter logWriter = null;
 	String pathPart1;
 	String pathPart2;
@@ -28,17 +28,13 @@ public class CompressorSub extends Subsystem {
     // here. Call these from Commands.
 	
 	public CompressorSub() {
-		//compressor = new Compressor();
-	}
-	
-	public void startCompressor(){
-		//compressor.start();
-	}
-	
-	public void stopCompressor(){
-		//compressor.stop();
+		compressor = new Compressor();
 	}
 
+	
+	public void setClosedLoopControl(boolean on){
+		compressor.setClosedLoopControl(on);
+	}
 	
 	public void compLog(){
 		/*Robot.fileManager.createLog("/home/lvuser/data/compressor_", Timer.getFPGATimestamp() + "," + 
@@ -52,7 +48,7 @@ public class CompressorSub extends Subsystem {
     public void initDefaultCommand() {
     	
         // Set the default command for a subsystem here.
-        setDefaultCommand(new StartCompressor());
+        setDefaultCommand(new ToggleCompressor());
     }
 }
 
