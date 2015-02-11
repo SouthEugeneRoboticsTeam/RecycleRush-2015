@@ -37,13 +37,7 @@ public class Drivechain extends Subsystem {
 	private RobotDrive drive;
 	private DriveMode mode = DriveMode.fieldOrientedMecanum;
 	
-	double[] transX = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] transY = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] fieldOrientedRotation = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] robotOrientedRotation = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] angle = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] magnitude = new double[RobotMap.TOTAL_EXECUTIONS];
-	double[] direction = new double[RobotMap.TOTAL_EXECUTIONS];
+	
 	int teleopCounter = 0;
 	int autoCounter = 0;
 	boolean isRemembering = false;
@@ -64,6 +58,13 @@ public class Drivechain extends Subsystem {
 	BufferedWriter logWriter = null;
 	//BufferedWriter angleWriter = null;
 	String path;
+	double[] transX;
+	double[] transY;
+	double[] fieldOrientedRotation;
+	double[] robotOrientedRotation;
+	double[] angle;
+	double[] magnitude;
+	double[] direction;
 	
 	CANTalon frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -115,7 +116,8 @@ public class Drivechain extends Subsystem {
 		double transX = OI.getInstance().getTranslateStick().getX();
 		double transY = OI.getInstance().getTranslateStick().getY();
 		double rotation = OI.getInstance().getRotateStick().getX();
-		double angle = Robot.sensors.getAngleZ()*(180/Math.PI);
+		//double angle = Robot.sensors.getAngleZ();
+		double angle = Robot.sensors.getOldGyro();
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
@@ -138,27 +140,34 @@ public class Drivechain extends Subsystem {
 		drive.tankDrive(left, right);
 	}
 	
-	public void robotOrientedDriveRemembering() {
-		if (teleopCounter <= RobotMap.TOTAL_EXECUTIONS) {
-		robotOrientedRotation[teleopCounter] = OI.getInstance().getRotateStick().getX();
-		magnitude[teleopCounter] = OI.getInstance().getTranslateStick().getMagnitude();
-		direction[teleopCounter] = OI.getInstance().getTranslateStick().getDirectionDegrees();
-		drive.mecanumDrive_Polar(magnitude[teleopCounter], direction[teleopCounter], robotOrientedRotation[teleopCounter]);
-		teleopCounter++;
-		}
-	}
+//	public void robotOrientedDriveRemembering() {
+//		if (teleopCounter <= RobotMap.TOTAL_EXECUTIONS) {
+//		robotOrientedRotation[teleopCounter] = OI.getInstance().getRotateStick().getX();
+//		magnitude[teleopCounter] = OI.getInstance().getTranslateStick().getMagnitude();
+//		direction[teleopCounter] = OI.getInstance().getTranslateStick().getDirectionDegrees();
+//		drive.mecanumDrive_Polar(magnitude[teleopCounter], direction[teleopCounter], robotOrientedRotation[teleopCounter]);
+//		teleopCounter++;
+//		}
+//	}
 	
 	public void autoInit(){
+		transX = new double[RobotMap.TOTAL_EXECUTIONS];
+		transY = new double[RobotMap.TOTAL_EXECUTIONS];
+		fieldOrientedRotation = new double[RobotMap.TOTAL_EXECUTIONS];
+		robotOrientedRotation = new double[RobotMap.TOTAL_EXECUTIONS];
+		angle = new double[RobotMap.TOTAL_EXECUTIONS];
+		magnitude = new double[RobotMap.TOTAL_EXECUTIONS];
+		direction = new double[RobotMap.TOTAL_EXECUTIONS];
 		switch (mode) {
 		case fieldOrientedMecanum:
-			transX = Robot.fileManager.csvFileToArray(TransX, RobotMap.TOTAL_EXECUTIONS);
-			transY = Robot.fileManager.csvFileToArray(TransY, RobotMap.TOTAL_EXECUTIONS);
-			fieldOrientedRotation = Robot.fileManager.csvFileToArray(FieldOrientedRotation, RobotMap.TOTAL_EXECUTIONS);
+			transX = Robot.fileManager.csvFileToArray(TransX);
+			transY = Robot.fileManager.csvFileToArray(TransY);
+			fieldOrientedRotation = Robot.fileManager.csvFileToArray(FieldOrientedRotation);
 			break;
 		case robotOrientedMecanum:
-			robotOrientedRotation = Robot.fileManager.csvFileToArray(RobotOrientedRotation, RobotMap.TOTAL_EXECUTIONS);
-			magnitude = Robot.fileManager.csvFileToArray(Magnitude, RobotMap.TOTAL_EXECUTIONS);
-			direction = Robot.fileManager.csvFileToArray(Direction, RobotMap.TOTAL_EXECUTIONS);
+			robotOrientedRotation = Robot.fileManager.csvFileToArray(RobotOrientedRotation);
+			magnitude = Robot.fileManager.csvFileToArray(Magnitude);
+			direction = Robot.fileManager.csvFileToArray(Direction);
 			break;
 		}
 	}
@@ -223,10 +232,12 @@ public class Drivechain extends Subsystem {
 				break;
 			case robotOrientedMecanum:
 				invertLeftDrive(true);
-				robotOrientedDriveRemembering();
+				//robotOrientedDriveRemembering();
 				break;
 			}
 		}
+		Robot.conveyor.writeToFile();
+		RobotMap.TOTAL_EXECUTIONS++;
 	}
 	
 	
@@ -242,6 +253,20 @@ public class Drivechain extends Subsystem {
 	public void fromFileSetUp() {
 		writeToFileFieldOrientedSetUp();
 		writeToFileRobotOrientedSetUp();
+		Robot.conveyor.writeToFileSetUp();
+	}
+	
+	
+	public void deleteRemembering() {
+		try {
+			Files.deleteIfExists(Paths.get(RobotOrientedRotation));
+			Files.deleteIfExists(Paths.get(Magnitude));
+			Files.deleteIfExists(Paths.get(Direction));
+			Files.deleteIfExists(Paths.get(FieldOrientedRotation));
+			Files.deleteIfExists(Paths.get(TransX));
+			Files.deleteIfExists(Paths.get(TransY));
+			Files.deleteIfExists(Paths.get(Robot.conveyor.autoPath));
+		} catch (IOException ex) {}
 	}
 	
 	public void writeToFileRobotOrientedSetUp() {
@@ -329,22 +354,20 @@ public class Drivechain extends Subsystem {
 	public void writeToFileFieldOriented() {
 		try {
 			if (fieldOrientedRotationWriter != null) {
-			fieldOrientedRotationWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
-			fieldOrientedRotationWriter.flush();
+				fieldOrientedRotationWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
+				fieldOrientedRotationWriter.flush();
 			}
-		} catch (IOException ex) {}
-		try {
 			if (transXWriter != null) {
-			transXWriter.write(OI.getInstance().getTranslateStick().getX() + ", ");
-			transXWriter.flush();
+				transXWriter.write(OI.getInstance().getTranslateStick().getX() + ", ");
+				transXWriter.flush();
 			}
-		} catch (IOException ex) {}
-		try {
 			if (transYWriter != null) {
-			transYWriter.write(OI.getInstance().getRotateStick().getX() + ", ");
-			transYWriter.flush();
+				transYWriter.write(OI.getInstance().getTranslateStick().getY() + ", ");
+				transYWriter.flush();
 			}
-		} catch (IOException ex) {}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 		/*try {
 			if (angleWriter != null) {
 			angleWriter.write(OI.getInstance().getTranslateStick().getDirectionDegrees() + "\n");

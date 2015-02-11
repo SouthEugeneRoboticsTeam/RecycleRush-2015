@@ -50,6 +50,8 @@ import edu.wpi.first.wpilibj.I2C;
  */
 public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSendable 
 {
+	int internalSampleRate = 1000; // change to 8000 if cutoff is at 256Hz
+	int sampleRateDivider = 250;
 	int devAddr;
 	byte buffer[] = new byte[7];
 	
@@ -684,19 +686,25 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
      * The gyro sensitivity in LSB/radian/second. The value retrieved from the
      * gyro should be divided by this number.
      */
-    public static final double GYRO_SENSITIVITY = 823.626830313;
+    public static final double GYRO_SENSITIVITY = 14.375;  //  degrees/sec
+    
+    private double angle = 0;
+    public double getAngle() {
+    	angle += getRotationZ();
+    	return angle;
+    }
     
 	public double getRotationX()
 	{
-		return getRawRotationX() / GYRO_SENSITIVITY;
+		return (getRawRotationX() * GYRO_SENSITIVITY) * (internalSampleRate / sampleRateDivider);
 	}
 	public double getRotationY()
 	{
-		return getRawRotationY() / GYRO_SENSITIVITY;
+		return (getRawRotationY() * GYRO_SENSITIVITY) * (internalSampleRate / sampleRateDivider);
 	}
 	public double getRotationZ()
 	{
-		return getRawRotationZ() / GYRO_SENSITIVITY;
+		return (getRawRotationZ() * GYRO_SENSITIVITY) * (internalSampleRate / sampleRateDivider);
 	}
 	
 	/** Get X-axis gyroscope reading.

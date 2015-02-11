@@ -31,8 +31,8 @@ public class ResetAuto extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.drivechain.writeToFileFieldOrientedSetUp();
-    	Robot.drivechain.writeToFileRobotOrientedSetUp();
+    	Robot.drivechain.deleteRemembering();
+    	Robot.drivechain.fromFileSetUp();
     	Robot.conveyor.writeToFileSetUp();
     }
 

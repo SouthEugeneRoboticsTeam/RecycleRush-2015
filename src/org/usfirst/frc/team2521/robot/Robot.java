@@ -54,6 +54,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	fileManager = new FileManager();
     	RobotMap.DATE = fileManager.getFormattedDate();
+    	conveyor = new Conveyor();
     	drivechain = new Drivechain();
     	//Auto1 auto1 = new Auto1();
     	//Auto2 auto2 = new Auto2();
@@ -62,7 +63,7 @@ public class Robot extends IterativeRobot {
     	autoChooser.addObject("Autonomous 2", new Auto2());
     	//conveyorSpeed = SmartDashboard.getNumber("speed");
 		sensors = new Sensors();
-		conveyor = new Conveyor();
+		
 		//compressor = new CompressorSub();
 		flipper = new Flipper();
 		oi = new OI();

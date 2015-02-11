@@ -29,7 +29,7 @@ public class Conveyor extends Subsystem {
 	private CANTalon slave;
 	BufferedWriter logWriter = null;
 	String logPath;
-	String autoPath = "/home/lvuser/auto/Conveyor.txt";
+	String autoPath = "/home/lvuser/auto/Conveyor.csv";
 	public static boolean upperLimitReached;
 	public static boolean lowerLimitReached;
 	BufferedWriter writer = null;
@@ -93,30 +93,32 @@ public class Conveyor extends Subsystem {
 	    	try {
 				writer = new BufferedWriter(new FileWriter(File));
 			} catch (IOException e) {
-				
+				e.printStackTrace();
 			} 
 		}
 	}
 	
 	public void autoInit(){
-		record = Robot.fileManager.txtFileToArray(autoPath, RobotMap.TOTAL_EXECUTIONS);
+		record = Robot.fileManager.csvFileToArray(autoPath);
 	}
 	
 	public void auto(){
-		if (autoCounter <= RobotMap.TOTAL_EXECUTIONS) {
+		if (autoCounter < RobotMap.TOTAL_EXECUTIONS) {
 			master.set(record[autoCounter]);
 			SmartDashboard.putNumber("Belt value", record[autoCounter]);
 			autoCounter++;
 		}
 	}
 	
-	public void writeToFileField() {
+	public void writeToFile() {
 		try {
 			if (writer != null) {
-			writer.write(master.get() + "\n");
-			writer.flush();
+				writer.write(master.get() + ", ");
+				writer.flush();
 			}
-		} catch (IOException ex) {}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
     public void initDefaultCommand() {

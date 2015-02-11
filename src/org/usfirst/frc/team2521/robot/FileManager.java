@@ -71,8 +71,8 @@ public class FileManager {
 		return recordArray;
 	}
 	
-	public double[] csvFileToArray(String filename, int fileLength) {
-		double[] dArray = new double[fileLength];
+	public double[] csvFileToArray(String filename) {
+		
 		FileReader fr = null;
 		String[] sArray = null;
 		try {
@@ -86,6 +86,8 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		int fileLength = sArray.length;
+		double[] dArray = new double[fileLength];
 		for (int i = 0; i < fileLength; i++){
 			dArray[i] = Double.parseDouble(sArray[i]);
 		}

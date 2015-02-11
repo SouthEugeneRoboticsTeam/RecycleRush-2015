@@ -10,6 +10,7 @@ import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.*;
 import org.usfirst.frc.team2521.robot.FileManager;
+import org.usfirst.frc.team2521.robot.subsystems.ITG3200;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -44,6 +45,7 @@ public class Sensors extends Subsystem {
 	private DataBasedFilter dbFilter;
 	private LowPassFilter lpFilter;
 	private GyroITG3200 m_gyro;
+	private ITG3200 newGyro;
 	private PowerDistributionPanel pdp;
 	private FileManager sensor_fm;
 	private FileManager battery_fm;
@@ -62,6 +64,7 @@ public class Sensors extends Subsystem {
 		lpFilter = new LowPassFilter(gyro);
 		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
 		m_gyro.initialize();
+		newGyro = new ITG3200(I2C.Port.kOnboard);
 		pdp = new PowerDistributionPanel(); //pdp MUST be address 0
 		battery_fm = new FileManager();
 		sensor_fm = new FileManager();
@@ -87,7 +90,23 @@ public class Sensors extends Subsystem {
 	
 	public double getAngleZ() {
 		//return gyro.getAngle();
-		return m_gyro.getRotationZ();
+		return m_gyro.getAngle();
+	}
+	
+	public double getNewAngleX(){
+		return newGyro.getXGyro().getAngle();
+	}
+	
+	public double getNewAngleY(){
+		return newGyro.getYGyro().getAngle();
+	}
+	
+	public double getNewAngleZ(){
+		return newGyro.getZGyro().getAngle();
+	}
+	
+	public double getOldGyro(){
+		return gyro.getAngle();
 	}
 	
 	public double getUltrasonicVoltage() {
@@ -126,6 +145,7 @@ public class Sensors extends Subsystem {
 	
 	public void resetGyro() {
 		m_gyro.reset();
+		gyro.reset();
 	}
 	
 	public double getCurrent(int adress){

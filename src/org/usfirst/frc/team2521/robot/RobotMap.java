@@ -48,6 +48,6 @@ public class RobotMap {
 	public static final double TOTE_CURRENT = 6; // how much current is drawn by conveyor master when a tote is hooked, needs to be updated
 	public static final int PCM_CAN_CHANNEL = 0;
 	public static String DATE;
-	public static final int TOTAL_EXECUTIONS = 1000; //used for playback autonomous, how many times it should execute in 3 minutes
-	public static final double CONVEYOR_SPEED = .5;
+	public static int TOTAL_EXECUTIONS = 0; //used for playback autonomous, how many times it should execute in 3 minutes
+	public static final double CONVEYOR_SPEED = .35;
 }
