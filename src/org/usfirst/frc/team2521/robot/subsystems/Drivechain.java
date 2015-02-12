@@ -240,7 +240,9 @@ public class Drivechain extends Subsystem {
 		RobotMap.TOTAL_EXECUTIONS++;
 	}
 	
-	
+	public void polarDrive(double magnitude, double direction, double rotation) {
+		drive.mecanumDrive_Polar(magnitude, direction, rotation);
+	}
 	public void toggleRemembering() {
 		isRemembering  = !isRemembering;
 	}

@@ -45,6 +45,7 @@ public class OI {
 	
 	private Joystick translate;
 	private Joystick rotate;
+	private Joystick custom;
 	private static OI instance;
 	//public static boolean buttonPressed;
 	private JoystickButton resetGyro;
@@ -59,9 +60,12 @@ public class OI {
 	private JoystickButton toggleCompressor;
 	//private JoystickButton switchAutonomous;
 	
+	
+	
 	 public OI() {
 		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
 		 rotate = new Joystick(RobotMap.ROTATE_PORT);
+		 custom = new Joystick(RobotMap.CUSTOM_PORT);
 		 initButtons();
 	 }
 	 
@@ -110,6 +114,45 @@ public class OI {
 		//buttonPressed = translate.getRawButton(4);
 		toggleCompressor.whenPressed(new ToggleCompressor());
 	}
+	
+	
+	public Autonomous getAutoMode() {
+		int autoMode = 0;
+		for (int i = custom.getButtonCount(); i >= 1; i--) {
+			autoMode = (autoMode << 1) | (custom.getRawButton(i) ? 1 : 0);
+		}
+		
+		switch (autoMode) {
+//		case :
+//		case:
+//			
+		default:
+			return Autonomous.toteAndBinMiddle;
+		}
+	}
+	
+	public enum Autonomous {
+		toteAndBinRight (1),
+		toteAndBinMiddle (2),
+		toteAndBinLeft (3),
+		toteToLandmarkRight (4),
+		toteToLandmarkMiddle (5),
+		toteToLandmarkLeft (6),
+		binRight (7),
+		binMiddle (8),
+		binLeft (9),
+		twoTotesToLandmarkLeft (10),
+		twoTotesToLandmarkRight (11),
+		threeTotes (12);
+		
+		private final int mode;
+		private Autonomous(int mode) {
+			this.mode = mode;
+		}
+	}
+	
+	
+	
 	
 }
 

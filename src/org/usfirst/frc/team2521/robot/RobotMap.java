@@ -29,6 +29,7 @@ public class RobotMap {
 	public static final int ULTRASONIC_PORT = 1;
 	public static final int TRANSLATE_PORT = 0;
 	public static final int ROTATE_PORT = 1;
+	public static final int CUSTOM_PORT = 2;
 	public static final int CONVEYOR_MOTOR = 32;
 	public static final int FLIPPER_UP_CHANNEL = 1;
 	public static final int FLIPPER_DOWN_CHANNEL = 0;

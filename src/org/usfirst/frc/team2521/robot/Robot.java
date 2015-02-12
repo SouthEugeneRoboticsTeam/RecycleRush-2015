@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 
 import org.usfirst.frc.team2521.robot.commands.Auto1;
 import org.usfirst.frc.team2521.robot.commands.Auto2;
+import org.usfirst.frc.team2521.robot.commands.AutonomousGroup;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
@@ -88,7 +89,7 @@ public class Robot extends IterativeRobot {
     	} else {
     		autonomousCommand = new Auto2();
     	}*/
-    	autonomousCommand = new Autonomous();
+    	autonomousCommand = new AutonomousGroup();
         // schedule the autonomous command (example)
         //if (autonomousCommand != null) autonomousCommand.start();
 //    	autonomousCommand = (Command) autoChooser.getSelected();
