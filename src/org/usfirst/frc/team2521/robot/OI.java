@@ -100,10 +100,10 @@ public class OI {
 	
 	private void tieButtons() {
 		resetGyro.whenPressed(new ResetGyro());
-		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED));
+		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED_HI));
 		moveConveyorUp.whenReleased(new MoveConveyor(0));
 		moveConveyorDown.whenReleased(new MoveConveyor(0));
-		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED));
+		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
 		resetAuto.whenPressed(new ResetAuto());
 		//resetRemembering.whenPressed(new ResetRemembering());
 		toggleRemembering.whenPressed(new ToggleRemembering());
@@ -127,7 +127,7 @@ public class OI {
 //		case:
 //			
 		default:
-			return Autonomous.toteAndBinMiddle;
+			return Autonomous.toteToLandmarkRight;
 		}
 	}
 	

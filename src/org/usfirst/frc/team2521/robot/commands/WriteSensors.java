@@ -30,7 +30,7 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("New Y Angle", Robot.sensors.getNewAngleY());
     	SmartDashboard.putNumber("New Z Angle", Robot.sensors.getNewAngleZ());
     	SmartDashboard.putNumber("Old Gyro Angle", Robot.sensors.getOldGyro());
-//    	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));;
+    	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));
 //    	SmartDashboard.putBoolean("Tote hooked", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT);
 //    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
 //    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
@@ -44,6 +44,9 @@ public class WriteSensors extends Command {
     	SmartDashboard.putNumber("Accel X", Robot.sensors.getNewAccelX());
     	SmartDashboard.putNumber("Accel Y", Robot.sensors.getNewAccelY());
     	SmartDashboard.putNumber("Accel Z", Robot.sensors.getNewAccelZ());
+    	SmartDashboard.putNumber("Bildr X", Robot.sensors.getBildrX());
+    	SmartDashboard.putNumber("Bildr Y", Robot.sensors.getBildrY());
+    	SmartDashboard.putNumber("Bildr Z", Robot.sensors.getBildrZ());
     	
     	
     }

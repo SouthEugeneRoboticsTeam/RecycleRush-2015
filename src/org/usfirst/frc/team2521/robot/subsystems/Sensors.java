@@ -51,6 +51,7 @@ public class Sensors extends Subsystem {
 	private FileManager battery_fm;
 	private FileManager command_fm;
 	private FileManager joystick_fm;
+	private bildrGyro bildrGyro;
 	
 	
 	public Sensors() {
@@ -70,12 +71,25 @@ public class Sensors extends Subsystem {
 		sensor_fm = new FileManager();
 		command_fm = new FileManager();
 		joystick_fm = new FileManager();
+		bildrGyro = new bildrGyro();
 	}
 	
 	
 	
 	public void gyroWriter() {
 		
+	}
+	
+	public float getBildrX() {
+		return bildrGyro.getAngles()[0];
+	}
+	
+	public float getBildrY() {
+		return bildrGyro.getAngles()[1];
+	}
+	
+	public float getBildrZ() {
+		return bildrGyro.getAngles()[2];
 	}
 	
 	public double getAngleX() {

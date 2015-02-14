@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2521.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
@@ -10,10 +11,17 @@ public class bildrGyro {
 	ADXL345_I2C_SparkFun acc;
 	GyroITG3200 gyro;
 	float sampleFreq;
+	float q0;
+	float q1;
+	float q2;
+	float q3;
+	
 	
 	public bildrGyro() {
 		acc = new ADXL345_I2C_SparkFun(I2C.Port.kOnboard, Accelerometer.Range.k16G);
 		gyro = new GyroITG3200(I2C.Port.kOnboard);
+//		this.acc = acc;
+//		this.gyro = gyro;
 		now = 0;
 		lastUpdate = 0;
 	}
@@ -66,11 +74,12 @@ public class bildrGyro {
 		 // gyro values are expressed in deg/sec, the * M_PI/180 will convert it to radians/sec
 		 //AHRSupdate(val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, val[0], val[1], val[2], val[6], val[7], val[8]);
 		 // use the call below when using a 6DOF IMU
-		 AHRSupdate(val[3] * Math.PI/180, val[4] * Math.PI/180, val[5] * Math.PI/180, val[0], val[1], val[2], 0, 0, 0);
+		 //AHRSupdate(val[3] * Math.PI/180, val[4] * Math.PI/180, val[5] * Math.PI/180, val[0], val[1], val[2], 0, 0, 0);
 		 q[0] = q0;
 		 q[1] = q1;
 		 q[2] = q2;
 		 q[3] = q3;
+		 return q;
 		}
 	
 	float[] getValues() { 
