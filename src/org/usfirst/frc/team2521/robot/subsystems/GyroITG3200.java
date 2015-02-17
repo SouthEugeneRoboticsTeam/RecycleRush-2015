@@ -103,7 +103,7 @@ public class GyroITG3200 extends SensorBase implements PIDSource, LiveWindowSend
 	{
 		if ( !testConnection() )
 		{
-			DriverStation.reportError( "Test connection failed!", false );
+			//DriverStation.reportError( "Test connection failed!", false );
 		}
 	    setFullScaleRange( ITG3200_FULLSCALE_2000 );
 	    setClockSource( ITG3200_CLOCK_PLL_XGYRO );

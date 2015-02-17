@@ -56,16 +56,14 @@ public class Sensors extends Subsystem {
 	
 	public Sensors() {
 		gyro = new Gyro(RobotMap.GYRO_PORT);
-		blankspace = new AnalogInput(RobotMap.EMPTY_ANALOG);
-		ultrasonic = new AnalogInput(RobotMap.ULTRASONIC_PORT);
 		accel1 = new BuiltInAccelerometer();
 		accel2 = new ADXL345_I2C_SparkFun(I2C.Port.kOnboard, Accelerometer.Range.k16G);
 		compFilter = new ComplementaryFilter(gyro, accel1, 1);
 		dbFilter = new DataBasedFilter(gyro, accel1);
 		lpFilter = new LowPassFilter(gyro);
-		m_gyro = new GyroITG3200(I2C.Port.kOnboard);
-		m_gyro.initialize();
-		newGyro = new ITG3200(I2C.Port.kOnboard);
+		//m_gyro = new GyroITG3200(I2C.Port.kOnboard);
+		//m_gyro.initialize();
+		//newGyro = new ITG3200(I2C.Port.kOnboard);
 		pdp = new PowerDistributionPanel(); //pdp MUST be address 0
 		battery_fm = new FileManager();
 		sensor_fm = new FileManager();
@@ -123,23 +121,23 @@ public class Sensors extends Subsystem {
 		return gyro.getAngle();
 	}
 	
-	public double getUltrasonicVoltage() {
-		return ultrasonic.getVoltage();
-	}
+//	public double getUltrasonicVoltage() {
+//		return ultrasonic.getVoltage();
+//	}
 	
-	public double getUltrasonicDistance() {
-		double distance = ultrasonic.getVoltage()*(8.503401361); // Unit conversion 9.8mV/in=8.503ft/V
-		return distance;
-	}
+//	public double getUltrasonicDistance() {
+//		double distance = ultrasonic.getVoltage()*(8.503401361); // Unit conversion 9.8mV/in=8.503ft/V
+//		return distance;
+//	}
 	
 	private double lowPass(double newDistance) {
 		return smoothedDistance += (newDistance - smoothedDistance) / RobotMap.LOW_PASS_ALPHA;
 	}
 	
-	public double getSmoothedUltrasonicDistance() {
-		lowPass(getUltrasonicVoltage());
-		return smoothedDistance;
-	}
+//	public double getSmoothedUltrasonicDistance() {
+//		lowPass(getUltrasonicVoltage());
+//		return smoothedDistance;
+//	}
 	
 	public double getComplementaryAngle() {
 		return compFilter.getAngle();
@@ -166,9 +164,6 @@ public class Sensors extends Subsystem {
 		return pdp.getCurrent(adress);
 	}
 	
-	public double getBlank(){
-		return blankspace.getValue();
-	}
 	
 	public double getNewAccelX(){
 		return accel2.getX();

@@ -28,17 +28,21 @@ public class AutonomousGroup extends CommandGroup {
         // arm.
     	
     	switch (OI.getInstance().getAutoMode()) {
-    	case toteAndBinLeft:
-    		addSequential(new PolarDrive(.7, 0, 0), 3);
-    		break;
-    	case toteAndBinMiddle: case toteAndBinRight:
-    		addSequential(new PolarDrive(.8, 0, 0), 3);
-    		break;
     	case binLeft:
-    		addSequential(new PolarDrive(.6, 0, 0), 3);
+    		addSequential(new PolarDrive(.5, 180, .075), 2.25);
     		break;
     	case binMiddle: case binRight:
-    		addSequential(new PolarDrive(.7, 0, 0), 3);
+    		addSequential(new PolarDrive(.4, 180, .05), 3.2);
+    		break;
+    	case toteAndBinLeft:
+    		addSequential(new MoveConveyor(-.5), .5);
+    		addSequential(new MoveConveyor(0),.01);
+    		addSequential(new PolarDrive(.5, 180, .05), 2);
+    		break;
+    	case toteAndBinMiddle: case toteAndBinRight:
+    		addSequential(new MoveConveyor(-.5), .5);
+    		addSequential(new MoveConveyor(0),.01);
+    		addSequential(new PolarDrive(.45, 180, .05), 2.85);
     		break;
     	case toteToLandmarkMiddle:
     		addSequential(new MoveConveyor(-.5), .5);
@@ -47,27 +51,32 @@ public class AutonomousGroup extends CommandGroup {
     		addSequential(new PolarDrive(.3, 90, 0), .3);
     		addSequential(new PolarDrive(1, 0, 0), 5);
     		addSequential(new MoveConveyor(.5), .5);
+    		addSequential(new MoveConveyor(0));
     		addSequential(new PolarDrive(.3, 180, 0), .5);
     		break;
     	case toteToLandmarkLeft:
     		addSequential(new PolarDrive(-.5, 270, 0), .5);
-    		addSequential(new MoveConveyor(.5), .5);
+    		addSequential(new MoveConveyor(-.5), .5);
+    		addSequential(new MoveConveyor(0));
     		addSequential(new PolarDrive(1, 270, 0), 4);
     		addSequential(new PolarDrive(1, 0, 0), 3);
     		addSequential(new MoveConveyor(.5), .5);
+    		addSequential(new MoveConveyor(0));
     		addSequential(new PolarDrive(.3, 180, 0), .5);
     		break;
     	case toteToLandmarkRight:
     		addSequential(new MoveConveyor(-.5), .5);
+    		addSequential(new MoveConveyor(0));
     		addSequential(new PolarDrive(.5, 270, 0), 1.5);
     		addSequential(new PolarDrive(.5, 0, 0), 1);
     		addSequential(new PolarDrive(.8, 90, 0), 6);
     		addSequential(new PolarDrive(.7, 0, 0), 1);
     		addSequential(new MoveConveyor(.5), .5);
+    		addSequential(new MoveConveyor(0));
     		addSequential(new PolarDrive(.3, 180, 0), .5);
     		break;
     	}
-    	
+    	addSequential(new PolarDrive(0, 0, 0));
     	
     }
 }

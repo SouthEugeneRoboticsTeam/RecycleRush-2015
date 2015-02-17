@@ -7,6 +7,7 @@ import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 
 
+
 //import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
@@ -35,12 +36,18 @@ public class Drivechain extends Subsystem {
     // here. Call these from Commands.
 	
 	private RobotDrive drive;
-	private DriveMode mode = DriveMode.fieldOrientedMecanum;
+	private DriveMode mode = DriveMode.robotOrientedMecanum;
 	
-	
+	double rotationLimit=RobotMap.MAX_ROTATION_CHANGE_HI;
 	int teleopCounter = 0;
 	int autoCounter = 0;
+	double lastFieldRotation = 0;
+	double lastTransX = 0;
+	double lastTransY = 0;
+	double lastRobotRotation = 0;
+	double lastMagnitude = 0;
 	boolean isRemembering = false;
+	boolean slowMode = false;
 	String RobotOrientedRotation = "/home/lvuser/auto/RobotOrientedRotation.csv";
 	String Magnitude = "/home/lvuser/auto/Magnitude.csv";
 	String Direction = "/home/lvuser/auto/Direction.csv";
@@ -91,7 +98,21 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 		fromFileSetUp();
 	}
+		
+	public void resetRotation(){
+		lastFieldRotation = 0;
+		lastRobotRotation = 0;
+	}
 	
+	public void toggleSlowMode(boolean set) {
+		slowMode = set;
+		if (slowMode){
+			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_LO;
+		} else  {
+			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_HI;
+		}
+		
+	}
 	
 	public void driveLog(){
 		Robot.fileManager.createLog("/home/lvuser/data/joysticks_", Timer.getFPGATimestamp() + "," + 
@@ -112,17 +133,38 @@ public class Drivechain extends Subsystem {
 				autoCounter + "\n");
 	}
 	
-	public void fieldOrientedDrive() {
+	public void fieldOrientedDrive() { 
 		double transX = OI.getInstance().getTranslateStick().getX();
 		double transY = OI.getInstance().getTranslateStick().getY();
-		double rotation = OI.getInstance().getRotateStick().getX();
+//		double newRotation = OI.getInstance().getRotateStick().getX();
+//		double deltaRotation = newRotation - lastFieldRotation;
+//		if (Math.abs(deltaRotation) > rotationLimit) {
+//			deltaRotation = deltaRotation*rotationLimit;
+//		}
+//		double rotation = lastFieldRotation + deltaRotation;
+//		lastFieldRotation = rotation;
 		//double angle = Robot.sensors.getAngleZ();
+		double rotation = OI.getInstance().getRotateStick().getX();
+		if (slowMode) {
+			rotation = rotation*.4;
+		}
 		double angle = Robot.sensors.getOldGyro();
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
 	public void robotOrientedDrive() {
+//		double rotation;
+//		double newRotation = OI.getInstance().getRotateStick().getX();
+//		double deltaRotation = newRotation - lastRobotRotation;
+//		if (Math.abs(deltaRotation) > rotationLimit) {
+//			deltaRotation = deltaRotation*rotationLimit;
+//		}
+//		rotation = lastRobotRotation + deltaRotation;
+//		lastRobotRotation = rotation;
 		double rotation = OI.getInstance().getRotateStick().getX();
+		if (slowMode) {
+			rotation = rotation*.4;
+		}
 		double magnitude = OI.getInstance().getTranslateStick().getMagnitude();
 		double direction = OI.getInstance().getTranslateStick().getDirectionDegrees();
 		drive.mecanumDrive_Polar(magnitude, direction, rotation);	
@@ -203,17 +245,17 @@ public class Drivechain extends Subsystem {
 	}
 	
 	public void teleoperatedDrive() {
-		if (!isRemembering) {
+		//if (!isRemembering) {
 			switch (mode) {
 			case fieldOrientedMecanum:
 				invertLeftDrive(true);
 				fieldOrientedDrive();
-				writeToFileFieldOriented();
+				//writeToFileFieldOriented();
 				break;
 			case robotOrientedMecanum:
 				invertLeftDrive(true);
 				robotOrientedDrive();
-				writeToFileRobotOriented();
+				//writeToFileRobotOriented();
 				break;
 			case arcadeDrive:
 				invertLeftDrive(false);
@@ -224,20 +266,20 @@ public class Drivechain extends Subsystem {
 				tankDrive();
 				break;
 			}
-		} else {
-			switch (mode) {
-			case fieldOrientedMecanum:
-				invertLeftDrive(true);
-				fieldOrientedDriveRemembering();
-				break;
-			case robotOrientedMecanum:
-				invertLeftDrive(true);
-				//robotOrientedDriveRemembering();
-				break;
-			}
-		}
-		Robot.conveyor.writeToFile();
-		RobotMap.TOTAL_EXECUTIONS++;
+//		//} else {
+//			switch (mode) {
+//			case fieldOrientedMecanum:
+//				invertLeftDrive(true);
+//				fieldOrientedDriveRemembering();
+//				break;
+//			case robotOrientedMecanum:
+//				invertLeftDrive(true);
+//				//robotOrientedDriveRemembering();
+//				break;
+//			}
+//		}
+//		Robot.conveyor.writeToFile();
+//		RobotMap.TOTAL_EXECUTIONS++;
 	}
 	
 	public void polarDrive(double magnitude, double direction, double rotation) {

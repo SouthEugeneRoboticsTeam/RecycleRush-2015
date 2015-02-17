@@ -9,6 +9,9 @@ import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.ConveyorTeleop;
+import org.usfirst.frc.team2521.robot.commands.MaintainConveyor;
+
+import com.ni.vision.NIVision.CalibrationThumbnailType;
 
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -50,7 +53,8 @@ public class Conveyor extends Subsystem {
 		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
 		//limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
 		record = new double[RobotMap.TOTAL_EXECUTIONS];
-		
+		master.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+		master.setPID(4, 0, 1.2);
 	}
 	
 	
@@ -60,18 +64,29 @@ public class Conveyor extends Subsystem {
 		/*if (Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT){
 			speed = RobotMap.CONVEYOR_SPEED_HI;
 		} else speed = RobotMap.CONVEYOR_SPEED_LO;*/
+		master.changeControlMode(ControlMode.PercentVbus);
+		master.enableControl();
 		if (speed > 0 && !canMoveUp()) {
 			master.set(0);
-			slave.set(0);
 		} else {
 			master.set(speed);
-			slave.set(speed);
-		}
-		SmartDashboard.putNumber("Belt value", master.get());
+		}			
+		slave.set(RobotMap.CONVEYOR_MASTER);
+//		SmartDashboard.putNumber("Belt value", master.get());
 	}
 
 	public boolean canMoveUp() {
 		return limitSwitchTop.get();
+	}
+	
+	public int getPosition() {
+		return (int) master.getPosition();
+	}
+	
+	public void setPosition(int position) {
+		master.changeControlMode(ControlMode.Position);
+		master.set(position);
+		master.enableControl();
 	}
 	
 	public void conveyorLog(){
@@ -123,7 +138,6 @@ public class Conveyor extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new ConveyorTeleop());
     }
 }
 

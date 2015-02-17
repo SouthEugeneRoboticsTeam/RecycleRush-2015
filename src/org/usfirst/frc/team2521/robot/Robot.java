@@ -7,6 +7,7 @@ import org.usfirst.frc.team2521.robot.commands.Auto1;
 import org.usfirst.frc.team2521.robot.commands.Auto2;
 import org.usfirst.frc.team2521.robot.commands.AutonomousGroup;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
+import org.usfirst.frc.team2521.robot.commands.TeleopReset;
 import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
@@ -33,14 +34,16 @@ import java.io.File;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	public static Sensors sensors;
+	
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
 	//public static CompressorSub compressor;
 	public static Flipper flipper;
+	public static Sensors sensors;
 	public static OI oi;
 	SendableChooser autoChooser;
 	Command autonomousCommand;
+	Command teleopReset;
 	public static FileManager fileManager;// later try making a static filemanager in each class, so we can just use createLog for record auto
 	//public static double conveyorSpeed = 0;
 	
@@ -57,15 +60,10 @@ public class Robot extends IterativeRobot {
     	RobotMap.DATE = fileManager.getFormattedDate();
     	conveyor = new Conveyor();
     	drivechain = new Drivechain();
-    	//Auto1 auto1 = new Auto1();
-    	//Auto2 auto2 = new Auto2();
     	autoChooser = new SendableChooser();
     	autoChooser.addDefault("Autonomous 1", new Auto1());
     	autoChooser.addObject("Autonomous 2", new Auto2());
-    	//conveyorSpeed = SmartDashboard.getNumber("speed");
 		sensors = new Sensors();
-		
-		//compressor = new CompressorSub();
 		flipper = new Flipper();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
@@ -73,7 +71,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
 		SmartDashboard.putData("TankDrive", new SwitchDriveMode(DriveMode.tankDrive));
 		SmartDashboard.putData("Autonomous mode", autoChooser);
-		
+    	teleopReset = new TeleopReset();
+
         // instantiate the command used for the autonomous period
 		
          
@@ -84,6 +83,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
+    	teleopReset.start();
     	/*if (OI.getInstance().getRotateStick().getRawButton(7)) {
     		autonomousCommand = new Auto1();
     	} else {
@@ -109,6 +109,7 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //if (autonomousCommand != null) autonomousCommand.cancel();
+    	teleopReset.start();
     }
 
     /**

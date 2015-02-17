@@ -1,51 +1,32 @@
 package org.usfirst.frc.team2521.robot.commands;
 
-import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.Robot;
-import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class MoveConveyor extends Command {
-	double speed;
-    public MoveConveyor(double speed) {
+public class MaintainConveyor extends Command {
+
+    public MaintainConveyor() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.conveyor);
-    	this.speed = speed;
-    	
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//if(DriverStation.getInstance().isAutonomous()) {
-    		Robot.conveyor.moveConveyor(speed);
-
-    		//    	} else {
-//    		if (speed > 0) {
-//        		Robot.conveyor.moveConveyor((-OI.getInstance().getRotateStick().getRawAxis(3)+1)/2);
-//        	} else if (speed == 0) {
-//        		Robot.conveyor.moveConveyor(0);
-//        	} else {
-//        		Robot.conveyor.moveConveyor((OI.getInstance().getRotateStick().getRawAxis(3)+1)/2);
-//        	}
-//    	}
-    	//Robot.conveyor.writeToFileField();
+    	Robot.conveyor.setPosition(Robot.conveyor.getPosition());
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return false;
+        return false;
     }
 
     // Called once after isFinished returns true

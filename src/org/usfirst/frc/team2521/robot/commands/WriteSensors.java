@@ -15,6 +15,7 @@ public class WriteSensors extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.sensors);
+ //   	requires(Robot.conveyor);
     }
 
     // Called just before this Command runs the first time
@@ -23,31 +24,31 @@ public class WriteSensors extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	SmartDashboard.putNumber("X Angle", Robot.sensors.getAngleX());
-    	SmartDashboard.putNumber("Y Angle", Robot.sensors.getAngleY());
-    	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());
-    	SmartDashboard.putNumber("New X Angle", Robot.sensors.getNewAngleX());
-    	SmartDashboard.putNumber("New Y Angle", Robot.sensors.getNewAngleY());
-    	SmartDashboard.putNumber("New Z Angle", Robot.sensors.getNewAngleZ());
-    	SmartDashboard.putNumber("Old Gyro Angle", Robot.sensors.getOldGyro());
-    	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));
-//    	SmartDashboard.putBoolean("Tote hooked", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT);
-//    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
-//    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
-//    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
-    	SmartDashboard.putNumber("Empty Analog", Robot.sensors.getBlank());
-//    	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
-    	Robot.sensors.sensorLog();
-    	Robot.sensors.joystickLog();
-    	Robot.sensors.commandLog();
-    	Robot.sensors.batteryLog();
-    	SmartDashboard.putNumber("Accel X", Robot.sensors.getNewAccelX());
-    	SmartDashboard.putNumber("Accel Y", Robot.sensors.getNewAccelY());
-    	SmartDashboard.putNumber("Accel Z", Robot.sensors.getNewAccelZ());
-    	SmartDashboard.putNumber("Bildr X", Robot.sensors.getBildrX());
-    	SmartDashboard.putNumber("Bildr Y", Robot.sensors.getBildrY());
-    	SmartDashboard.putNumber("Bildr Z", Robot.sensors.getBildrZ());
-    	
+		//SmartDashboard.putNumber("Conveyor Position", Robot.conveyor.getPosition());
+//    	SmartDashboard.putNumber("X Angle", Robot.sensors.getAngleX());
+//    	SmartDashboard.putNumber("Y Angle", Robot.sensors.getAngleY());
+//    	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());
+//    	SmartDashboard.putNumber("New X Angle", Robot.sensors.getNewAngleX());
+//    	SmartDashboard.putNumber("New Y Angle", Robot.sensors.getNewAngleY());
+//    	SmartDashboard.putNumber("New Z Angle", Robot.sensors.getNewAngleZ());
+//    	SmartDashboard.putNumber("Old Gyro Angle", Robot.sensors.getOldGyro());
+//    	SmartDashboard.putNumber("Conveyor current", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP));
+////    	SmartDashboard.putBoolean("Tote hooked", Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT);
+////    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getComplementaryAngle());
+////    	SmartDashboard.putNumber("Filtered Angle", Robot.sensors.getDataBasedAngle());
+////    	SmartDashboard.putNumber("Low pass angle", Robot.sensors.getLPAngle());
+////    	SmartDashboard.putNumber("Error", Robot.sensors.getDBFilterError());
+//    	Robot.sensors.sensorLog();
+//    	Robot.sensors.joystickLog();
+//    	Robot.sensors.commandLog();
+//    	Robot.sensors.batteryLog();
+//    	SmartDashboard.putNumber("Accel X", Robot.sensors.getNewAccelX());
+//    	SmartDashboard.putNumber("Accel Y", Robot.sensors.getNewAccelY());
+//    	SmartDashboard.putNumber("Accel Z", Robot.sensors.getNewAccelZ());
+//    	SmartDashboard.putNumber("Bildr X", Robot.sensors.getBildrX());
+//    	SmartDashboard.putNumber("Bildr Y", Robot.sensors.getBildrY());
+//    	SmartDashboard.putNumber("Bildr Z", Robot.sensors.getBildrZ());
+//    	
     	
     }
 
@@ -63,5 +64,6 @@ public class WriteSensors extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }
