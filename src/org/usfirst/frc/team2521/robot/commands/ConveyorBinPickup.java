@@ -23,7 +23,7 @@ public class ConveyorBinPickup extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.conveyor.setPosition(-248+RobotMap.CODES_PER_HOOK);
+    	Robot.conveyor.setPosition(-248);
     }
 
     // Make this return true when this Command no longer needs to run execute()

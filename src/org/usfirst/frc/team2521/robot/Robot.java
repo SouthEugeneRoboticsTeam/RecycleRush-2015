@@ -12,8 +12,6 @@ import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
-import org.usfirst.frc.team2521.robot.subsystems.CompressorSub;
-import org.usfirst.frc.team2521.robot.subsystems.Flipper;
 import org.usfirst.frc.team2521.robot.commands.Autonomous;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -38,7 +36,6 @@ public class Robot extends IterativeRobot {
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
 	//public static CompressorSub compressor;
-	public static Flipper flipper;
 	public static Sensors sensors;
 	public static OI oi;
 	SendableChooser autoChooser;
@@ -64,7 +61,6 @@ public class Robot extends IterativeRobot {
     	autoChooser.addDefault("Autonomous 1", new Auto1());
     	autoChooser.addObject("Autonomous 2", new Auto2());
 		sensors = new Sensors();
-		flipper = new Flipper();
 		oi = new OI();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));

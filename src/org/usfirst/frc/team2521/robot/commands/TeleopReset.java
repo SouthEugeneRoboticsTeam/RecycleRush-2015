@@ -26,5 +26,6 @@ public class TeleopReset extends CommandGroup {
         // arm.
     	addSequential(new PolarDrive(0, 0, 0),.01);
     	addSequential(new MoveConveyor(0),.01);
+    	addSequential(new ResetConveyorEncoder(), .01);
     }
 }

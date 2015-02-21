@@ -45,9 +45,10 @@ public class RobotMap {
 	public static String DATE;
 	public static int TOTAL_EXECUTIONS = 0; //used for playback autonomous, how many times it should execute in 3 minutes
 	public static final double CONVEYOR_SPEED = .35;
-	public static final double MAX_ROTATION_CHANGE_HI = 0.1;
-	public static final double MAX_ROTATION_CHANGE_LO = 0.02;
-	public static final int CODES_PER_HOOK = 4581;
+	public static final double MAX_ROTATION_CHANGE_HI = 0.1; //max rotational acceleration in normal mode
+	public static final double MAX_ROTATION_CHANGE_LO = 0.02; //max rotational acceleration in slow mode
+	public static final int CODES_PER_HOOK = 4581; 
+	public static final int CODES_PER_LOOP = 40928;
 	public static final int BIN_PICKUP_OFFSET = -248;
 	public static final int TOTE_PICKUP_OFFSET = 55;
 }

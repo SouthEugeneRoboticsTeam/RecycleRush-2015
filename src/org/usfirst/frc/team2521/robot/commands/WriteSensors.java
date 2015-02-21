@@ -15,7 +15,7 @@ public class WriteSensors extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.sensors);
- //   	requires(Robot.conveyor);
+    	requires(Robot.conveyor);
     }
 
     // Called just before this Command runs the first time
@@ -24,7 +24,7 @@ public class WriteSensors extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-		//SmartDashboard.putNumber("Conveyor Position", Robot.conveyor.getPosition());
+		SmartDashboard.putNumber("Conveyor Position", Robot.conveyor.getPosition());
 //    	SmartDashboard.putNumber("X Angle", Robot.sensors.getAngleX());
 //    	SmartDashboard.putNumber("Y Angle", Robot.sensors.getAngleY());
 //    	SmartDashboard.putNumber("Z Angle", Robot.sensors.getAngleZ());

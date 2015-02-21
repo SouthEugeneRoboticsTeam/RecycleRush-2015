@@ -106,12 +106,12 @@ public class Drivechain extends Subsystem {
 	
 	public void toggleSlowMode(boolean set) {
 		slowMode = set;
-		if (slowMode){
-			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_LO;
-		} else  {
-			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_HI;
-		}
-		
+//		if (slowMode){
+//			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_LO;
+//		} else  {
+//			rotationLimit = RobotMap.MAX_ROTATION_CHANGE_HI;
+//		}
+//		
 	}
 	
 	public void driveLog(){

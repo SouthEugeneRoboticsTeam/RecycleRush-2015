@@ -229,7 +229,7 @@ public class Sensors extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-    	setDefaultCommand(new WriteSensors());
+    	//setDefaultCommand(new WriteSensors());
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }

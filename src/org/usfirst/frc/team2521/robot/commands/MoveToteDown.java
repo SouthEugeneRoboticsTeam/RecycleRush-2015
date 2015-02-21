@@ -25,11 +25,11 @@ public class MoveToteDown extends Command {
     	int position = Robot.conveyor.getPosition();
     	boolean deltaPosition = position % RobotMap.CODES_PER_HOOK < 500;
     	int setPosition;
-    	if (deltaPosition) {
-        	setPosition = position - (position % RobotMap.CODES_PER_HOOK) + RobotMap.CODES_PER_HOOK + RobotMap.TOTE_PICKUP_OFFSET;
-    	} else {
-        	setPosition = position + (position % RobotMap.CODES_PER_HOOK) + RobotMap.TOTE_PICKUP_OFFSET;
-    	}
+//    	if (deltaPosition) {
+        	setPosition = position - (position % RobotMap.CODES_PER_HOOK); // + RobotMap.TOTE_PICKUP_OFFSET;
+//    	} else {
+//        	setPosition = position + (position % RobotMap.CODES_PER_HOOK) + RobotMap.TOTE_PICKUP_OFFSET;
+//    	}
     	Robot.conveyor.setPosition(setPosition);
     }
 
