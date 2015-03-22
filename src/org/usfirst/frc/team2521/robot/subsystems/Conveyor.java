@@ -40,6 +40,7 @@ public class Conveyor extends Subsystem {
 	double[] record;
 	//private DigitalInput limitSwitchBot;
 	int autoCounter = 0;
+	private DigitalInput hallEffect;
 	
 	
 	public Conveyor() {
@@ -50,11 +51,12 @@ public class Conveyor extends Subsystem {
 		slave.set(RobotMap.CONVEYOR_MASTER);
 		upperLimitReached = false;
 		lowerLimitReached = false;
+		hallEffect = new DigitalInput(RobotMap.HALL_EFFECT_CHANNEL);
 		limitSwitchTop = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_TOP);
 		//limitSwitchBot = new DigitalInput(RobotMap.LIMIT_SWITCH_PORT_BOT);
 		record = new double[RobotMap.TOTAL_EXECUTIONS];
 		master.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-		master.setPID(4, 0, 1.2);
+		master.setPID(3, 0, 1);
 	}
 	
 	
@@ -64,19 +66,34 @@ public class Conveyor extends Subsystem {
 		/*if (Robot.sensors.getCurrent(RobotMap.CONVEYOR_PDP) >= RobotMap.TOTE_CURRENT){
 			speed = RobotMap.CONVEYOR_SPEED_HI;
 		} else speed = RobotMap.CONVEYOR_SPEED_LO;*/
+
+//		if (speed > 0 && !canMoveUp()) {
+//			master.set(0);
+//		} else {
+//			master.set(speed);
+//		}			
+//		slave.set(RobotMap.CONVEYOR_MASTER);
+//		SmartDashboard.putNumber("Belt value", master.get());
 		master.changeControlMode(ControlMode.PercentVbus);
 		master.enableControl();
-		if (speed > 0 && !canMoveUp()) {
-			master.set(0);
-		} else {
-			master.set(speed);
-		}			
-		slave.set(RobotMap.CONVEYOR_MASTER);
-//		SmartDashboard.putNumber("Belt value", master.get());
+		master.set(speed);
 	}
 
-	public boolean canMoveUp() {
-		return limitSwitchTop.get();
+//	public boolean canMoveUp() {
+//		return limitSwitchTop.get();
+//	}
+	
+	public boolean getHallEffect() {
+		return hallEffect.get();
+	}
+	
+	public void resetPosition() {
+		currentHook = 0;
+		master.setPosition(0);
+	}
+	
+	public void setPID(double p, double i, double d) {
+		master.setPID(p, i, d);
 	}
 	
 	public int getPosition() {
@@ -87,6 +104,15 @@ public class Conveyor extends Subsystem {
 		master.changeControlMode(ControlMode.Position);
 		master.set(position);
 		master.enableControl();
+	}
+	
+	private int currentHook = 0;
+	
+	public void moveByTote(int direction) {
+		setPID(3, 0, 1);
+		int nextHook = currentHook + direction < 0 ? RobotMap.HOOK_POSITIONS.length + direction: currentHook + direction; 
+		setPosition(RobotMap.HOOK_POSITIONS[nextHook]);
+		currentHook = nextHook;
 	}
 	
 	public void conveyorLog(){
@@ -138,6 +164,7 @@ public class Conveyor extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
+    	setDefaultCommand(new MaintainConveyor());
     }
 }
 

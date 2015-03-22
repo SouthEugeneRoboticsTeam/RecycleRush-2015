@@ -21,7 +21,8 @@ public class MaintainConveyor extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.conveyor.setPosition(Robot.conveyor.getPosition());
+    	Robot.conveyor.setPID(10, 0, 0);
+    	//Robot.conveyor.setPosition(Robot.conveyor.getPosition());
     }
 
     // Make this return true when this Command no longer needs to run execute()

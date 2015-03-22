@@ -148,11 +148,11 @@ public class OI {
 		
 		SmartDashboard.putNumber("autoMode", autoMode);
 		switch (autoMode) {
-		case 15: return Autonomous.threeTotes;
+		case 15: return Autonomous.backFromLandfill;
 		case 14: return Autonomous.twoTotesToLandmarkRight; 
 		case 12: return Autonomous.twoTotesToLandmarkLeft;
 		case 11: return Autonomous.toteToLandmarkLeft;
-		case 7: return Autonomous.toteToLandmarkMiddle;
+		case 7: return Autonomous.threeTotes;
 		case 13: return Autonomous.toteToLandmarkRight;
 		case 9: return Autonomous.toteAndBinLeft;
 		case 5: return Autonomous.toteAndBinMiddle;
@@ -160,6 +160,7 @@ public class OI {
 		case 8: return Autonomous.binLeft;
 		case 4: return Autonomous.binMiddle;
 		case 2: return Autonomous.binRight;
+		case 0: return Autonomous.nothing;
 		default: return Autonomous.binLeft;
 		
 		}
@@ -170,14 +171,16 @@ public class OI {
 		toteAndBinMiddle (5),
 		toteAndBinLeft (9),
 		toteToLandmarkRight (13),
-		toteToLandmarkMiddle (7),
+		threeTotes (7),
 		toteToLandmarkLeft (11),
 		binRight (2),
 		binMiddle (4),
 		binLeft (8),
 		twoTotesToLandmarkLeft (12),
 		twoTotesToLandmarkRight (14),
-		threeTotes (15);
+		backFromLandfill (15),
+		nothing (0);
+		
 		
 		private final int mode;
 		private Autonomous(int mode) {

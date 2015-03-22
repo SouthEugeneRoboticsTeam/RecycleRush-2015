@@ -51,4 +51,7 @@ public class RobotMap {
 	public static final int CODES_PER_LOOP = 40928;
 	public static final int BIN_PICKUP_OFFSET = -248;
 	public static final int TOTE_PICKUP_OFFSET = 55;
+	public static final int[] HOOK_POSITIONS = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	public static final int HALL_EFFECT_CHANNEL = 2;
+	public static final int BLING_CHANNEL = 1;
 }

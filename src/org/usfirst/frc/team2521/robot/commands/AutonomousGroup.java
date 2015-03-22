@@ -44,37 +44,58 @@ public class AutonomousGroup extends CommandGroup {
     		addSequential(new MoveConveyor(0),.01);
     		addSequential(new PolarDrive(.45, 180, .05), 2.85);
     		break;
-    	case toteToLandmarkMiddle:
-    		addSequential(new MoveConveyor(-.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(.3, 180, 0), .3);
-    		addSequential(new PolarDrive(.3, 90, 0), .3);
-    		addSequential(new PolarDrive(1, 0, 0), 5);
-    		addSequential(new MoveConveyor(.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(.3, 180, 0), .5);
+    	case nothing:
     		break;
-    	case toteToLandmarkLeft:
-    		addSequential(new PolarDrive(-.5, 270, 0), .5);
-    		addSequential(new MoveConveyor(-.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(1, 270, 0), 4);
-    		addSequential(new PolarDrive(1, 0, 0), 3);
-    		addSequential(new MoveConveyor(.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(.3, 180, 0), .5);
+    	case backFromLandfill:
+    		addSequential(new PolarDrive(.5, 180, 0), 1.5);
     		break;
-    	case toteToLandmarkRight:
-    		addSequential(new MoveConveyor(-.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(.5, 270, 0), 1.5);
-    		addSequential(new PolarDrive(.5, 0, 0), 1);
-    		addSequential(new PolarDrive(.8, 90, 0), 6);
-    		addSequential(new PolarDrive(.7, 0, 0), 1);
-    		addSequential(new MoveConveyor(.5), .5);
-    		addSequential(new MoveConveyor(0));
-    		addSequential(new PolarDrive(.3, 180, 0), .5);
+    	case threeTotes: 
+    		addParallel(new MoveToteUp(),.5);
+    		addSequential(new PolarDrive(.5, 0, -.75), 1);
+    		addSequential(new PolarDrive(.8, 180, .05), 1.5);
+    		addSequential(new PolarDrive(.5, 0, .75), 1);
+    		addSequential(new PolarDrive(.2, 0, 0), .5);
+    		addSequential(new MoveToteUp(), .5);
+    		addSequential(new PolarDrive(.5, 0, -.75), 1);
+    		addSequential(new PolarDrive(.8, 180, .05), 1.5);
+    		addSequential(new PolarDrive(.5, 0, .75), 1);
+    		addSequential(new PolarDrive(.2, 0, 0), .5);
+    		addSequential(new MoveToteUp(), .5);
+    		addSequential(new PolarDrive(.8, 180, .05), 2);
+    		addSequential(new MoveToteDown(), .5);
+    		addSequential(new PolarDrive(.8, 180, .05), .2);
     		break;
+//    	case toteToLandmarkMiddle:
+//    		addSequential(new MoveConveyor(-.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(.3, 180, 0), .3);
+//    		addSequential(new PolarDrive(.3, 90, 0), .3);
+//    		addSequential(new PolarDrive(1, 0, 0), 5);
+//    		addSequential(new MoveConveyor(.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(.3, 180, 0), .5);
+//    		break;
+//    	case toteToLandmarkLeft:
+//    		addSequential(new PolarDrive(-.5, 270, 0), .5);
+//    		addSequential(new MoveConveyor(-.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(1, 270, 0), 4);
+//    		addSequential(new PolarDrive(1, 0, 0), 3);
+//    		addSequential(new MoveConveyor(.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(.3, 180, 0), .5);
+//    		break;
+//    	case toteToLandmarkRight:
+//    		addSequential(new MoveConveyor(-.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(.5, 270, 0), 1.5);
+//    		addSequential(new PolarDrive(.5, 0, 0), 1);
+//    		addSequential(new PolarDrive(.8, 90, 0), 6);
+//    		addSequential(new PolarDrive(.7, 0, 0), 1);
+//    		addSequential(new MoveConveyor(.5), .5);
+//    		addSequential(new MoveConveyor(0));
+//    		addSequential(new PolarDrive(.3, 180, 0), .5);
+//    		break;
     	}
     	addSequential(new PolarDrive(0, 0, 0));
     	

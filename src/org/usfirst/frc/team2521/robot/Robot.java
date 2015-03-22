@@ -14,6 +14,7 @@ import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Sensors;
 import org.usfirst.frc.team2521.robot.commands.Autonomous;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.command.Command;
@@ -41,6 +42,7 @@ public class Robot extends IterativeRobot {
 	SendableChooser autoChooser;
 	Command autonomousCommand;
 	Command teleopReset;
+	public DigitalOutput bling;
 	public static FileManager fileManager;// later try making a static filemanager in each class, so we can just use createLog for record auto
 	//public static double conveyorSpeed = 0;
 	
@@ -70,9 +72,11 @@ public class Robot extends IterativeRobot {
     	teleopReset = new TeleopReset();
 
         // instantiate the command used for the autonomous period
-		
+		bling = new DigitalOutput(RobotMap.BLING_CHANNEL);
          
     }
+    
+    
 	
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
@@ -120,8 +124,12 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	
         Scheduler.getInstance().run();
+        if (conveyor.getHallEffect()) {
+        	//conveyor.resetPosition();
+        }
+        SmartDashboard.putNumber("Position", conveyor.getPosition());
+        SmartDashboard.putBoolean("Hall Effect", conveyor.getHallEffect());
     }
     
     /**
