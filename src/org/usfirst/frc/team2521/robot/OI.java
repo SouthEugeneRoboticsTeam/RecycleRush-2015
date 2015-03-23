@@ -5,10 +5,7 @@ import org.usfirst.frc.team2521.robot.commands.MaintainConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveToteDown;
 import org.usfirst.frc.team2521.robot.commands.MoveToteUp;
-//import org.usfirst.frc.team2521.robot.commands.SwitchAuto;
 import org.usfirst.frc.team2521.robot.commands.ResetGyro;
-import org.usfirst.frc.team2521.robot.commands.ResetAuto;
-import org.usfirst.frc.team2521.robot.commands.ToggleRemembering;
 import org.usfirst.frc.team2521.robot.commands.ToggleSlowMode;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
@@ -55,7 +52,6 @@ public class OI {
 	private Joystick custom;
 	private static OI instance;
 	Preferences prefs;
-	//public static boolean buttonPressed;
 	private JoystickButton resetGyro;
 	private JoystickButton moveConveyorUp;
 	private JoystickButton moveConveyorDown;
@@ -72,7 +68,6 @@ public class OI {
 	private JoystickButton moveToteUp;
 	private JoystickButton moveToteDown;
 	private JoystickButton binPickup;
-	//private JoystickButton switchAutonomous;
 	private int[] customButton = {6,3,4,5};
 	
 	
@@ -104,13 +99,11 @@ public class OI {
 		resetGyro = new JoystickButton(translate, 10);
 		moveConveyorUp = new JoystickButton(rotate, 3);
 		moveConveyorDown = new JoystickButton(rotate, 2);
-		//resetRemembering = new JoystickButton(translate, 9);
 		toggleRemembering = new JoystickButton(translate, 11);
 		resetAuto = new JoystickButton(translate, 9);
 		toggleSlowMode = new JoystickButton(custom, 2);
 		robotOriented = new JoystickButton(rotate, 10);
 		fieldOriented = new JoystickButton(rotate, 11);
-		//switchAutonomous = new JoystickButton(translate, 4);
 		moveToteUp  = new JoystickButton(rotate, 6);
 	 	moveToteDown = new JoystickButton(rotate, 7);
 	 	binPickup = new JoystickButton(rotate, 8);
@@ -123,13 +116,8 @@ public class OI {
 		moveConveyorUp.whenReleased(new MaintainConveyor());
 		moveConveyorDown.whenReleased(new MaintainConveyor());
 		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
-		resetAuto.whenPressed(new ResetAuto());
-		//resetRemembering.whenPressed(new ResetRemembering());
-		toggleRemembering.whenPressed(new ToggleRemembering());
 		toggleSlowMode.whenPressed(new ToggleSlowMode(true));
 		toggleSlowMode.whenReleased(new ToggleSlowMode(false));
-		//switchAutonomous.whileHeld(new SwitchAuto());
-		//buttonPressed = translate.getRawButton(4);
 		fieldOriented.whenPressed(new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		robotOriented.whenPressed(new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		moveToteUp.whenPressed(new MoveToteUp());

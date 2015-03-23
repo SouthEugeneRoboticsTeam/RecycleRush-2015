@@ -3,7 +3,6 @@ package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.Robot;
 
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -14,7 +13,7 @@ public class ResetGyro extends Command {
     public ResetGyro() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.sensors);
+    	requires(Robot.drivechain);
     }
 
     // Called just before this Command runs the first time
@@ -32,7 +31,7 @@ public class ResetGyro extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.sensors.resetGyro();
+    	Robot.drivechain.resetGyro();
     }
 
     // Called when another command which requires one or more of the same
