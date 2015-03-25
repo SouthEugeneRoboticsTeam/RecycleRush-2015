@@ -1,18 +1,7 @@
 package org.usfirst.frc.team2521.robot.subsystems;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-import javax.crypto.spec.PSource;
-
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.MaintainConveyor;
-
-
-
-
-
-
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
@@ -26,7 +15,7 @@ public class Conveyor extends Subsystem {
 	private CANTalon master;
 	private CANTalon slave;
 	private DigitalInput magReadSwitch;
-	private InterruptHandlerFunction<Conveyor> magReadHandler;
+//	private InterruptHandlerFunction<Conveyor> magReadHandler;
 	
 	public Conveyor() {
 		master = new CANTalon(RobotMap.CONVEYOR_MASTER);

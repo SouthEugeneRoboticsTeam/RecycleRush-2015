@@ -2,6 +2,7 @@
 package org.usfirst.frc.team2521.robot;
 
 import org.usfirst.frc.team2521.robot.commands.AutoModeSelector;
+import org.usfirst.frc.team2521.robot.commands.NextLightShow;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.commands.TeleopReset;
 import org.usfirst.frc.team2521.robot.subsystems.Bling;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,9 +29,12 @@ public class Robot extends IterativeRobot {
 	public static Conveyor conveyor;
 	public static Bling bling;
 	public static OI oi;
-
+	
+	public boolean isConveyorCalibrated = false;
+	
 	Command autonomousCommand;
 	Command teleopReset;
+	Command nextLightShow;
 
 
     /**
@@ -45,7 +48,7 @@ public class Robot extends IterativeRobot {
     	bling = new Bling();
 		oi = new OI();
     	teleopReset = new TeleopReset();
-
+    	nextLightShow = new NextLightShow();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
@@ -57,6 +60,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
+    	nextLightShow.start();
     	teleopReset.start();
     	autonomousCommand = new AutoModeSelector();
     	
@@ -68,12 +72,13 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
-        if (conveyor.getReadSwitch()) {
+        if (!isConveyorCalibrated && conveyor.getReadSwitch()) {
         	conveyor.resetPosition();
         }
     }
 
     public void teleopInit() {
+    	nextLightShow.start();
     	teleopReset.start();
     }
 
@@ -82,7 +87,8 @@ public class Robot extends IterativeRobot {
      * You can use it to reset subsystems before shutting down.
      */
     public void disabledInit(){
-
+    	nextLightShow.setRunWhenDisabled(true);
+    	nextLightShow.start();
     }
 
     /**
