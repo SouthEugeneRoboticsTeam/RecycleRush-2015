@@ -113,7 +113,7 @@ public class Conveyor extends Subsystem {
 	}
 
     public void initDefaultCommand() {
-    	setDefaultCommand(new MaintainConveyor());
+    	setDefaultCommand(new MaintainConveyor(getPosition()));
     }
 }
 

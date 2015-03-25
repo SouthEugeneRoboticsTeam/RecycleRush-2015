@@ -1,17 +1,15 @@
 package org.usfirst.frc.team2521.robot;
 
 import org.usfirst.frc.team2521.robot.commands.ConveyorBinPickup;
+import org.usfirst.frc.team2521.robot.commands.ConveyorBinStepPickup;
 import org.usfirst.frc.team2521.robot.commands.MaintainConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveToteDown;
 import org.usfirst.frc.team2521.robot.commands.MoveToteUp;
 import org.usfirst.frc.team2521.robot.commands.ResetGyro;
 import org.usfirst.frc.team2521.robot.commands.ToggleSlowMode;
-import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
-import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,37 +45,39 @@ public class OI {
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
 	
+	private static OI instance;
+	
 	private Joystick translate;
 	private Joystick rotate;
 	private Joystick custom;
-	private static OI instance;
-	Preferences prefs;
+
 	private JoystickButton resetGyro;
+	private JoystickButton toggleSlowMode;
+	
 	private JoystickButton moveConveyorUp;
 	private JoystickButton moveConveyorDown;
-	private JoystickButton toggleSlowMode;
-	private JoystickButton robotOriented;
-	private JoystickButton fieldOriented;
 	private JoystickButton moveToteUp;
 	private JoystickButton moveToteDown;
 	private JoystickButton binPickup;
+	private JoystickButton binStepPickup;
+	
 	private int[] customButton = {6,3,4,5};
 	
-	
-	
-	 public OI() {
-		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
-		 rotate = new Joystick(RobotMap.ROTATE_PORT);
-		 custom = new Joystick(RobotMap.CUSTOM_PORT);
-		 initButtons();
-	 }
-	 
-	 public static OI getInstance() {
+	public static OI getInstance() {
 		 if (instance == null) {
 			 instance = new OI();
 		 }
 		 return instance;
-	 }
+	}
+	
+	public OI() {
+		 translate = new Joystick(RobotMap.TRANSLATE_PORT);
+		 rotate = new Joystick(RobotMap.ROTATE_PORT);
+		 custom = new Joystick(RobotMap.CUSTOM_PORT);
+		 initButtons();
+	}
+	 
+
 	
 	public Joystick getTranslateStick() {
 		return translate;
@@ -90,30 +90,31 @@ public class OI {
 	
 	private void initButtons() {
 		resetGyro = new JoystickButton(translate, 10);
+		toggleSlowMode = new JoystickButton(custom, 2);
+		
 		moveConveyorUp = new JoystickButton(rotate, 3);
 		moveConveyorDown = new JoystickButton(rotate, 2);
-		toggleSlowMode = new JoystickButton(custom, 2);
-		robotOriented = new JoystickButton(rotate, 10);
-		fieldOriented = new JoystickButton(rotate, 11);
 		moveToteUp  = new JoystickButton(rotate, 6);
 	 	moveToteDown = new JoystickButton(rotate, 7);
 	 	binPickup = new JoystickButton(rotate, 8);
+	 	binStepPickup = new JoystickButton(rotate, 9);
+	 	
 		tieButtons();
 	}
 	
 	private void tieButtons() {
 		resetGyro.whenPressed(new ResetGyro());
-		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED_HI));
-		moveConveyorUp.whenReleased(new MaintainConveyor());
-		moveConveyorDown.whenReleased(new MaintainConveyor());
-		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
 		toggleSlowMode.whenPressed(new ToggleSlowMode(true));
 		toggleSlowMode.whenReleased(new ToggleSlowMode(false));
-		fieldOriented.whenPressed(new SwitchDriveMode(DriveMode.robotOrientedMecanum));
-		robotOriented.whenPressed(new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
+		
+		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED_HI));
+		moveConveyorUp.whenReleased(new MaintainConveyor(Robot.conveyor.getPosition()));
+		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
+		moveConveyorDown.whenReleased(new MaintainConveyor(Robot.conveyor.getPosition()));
 		moveToteUp.whenPressed(new MoveToteUp());
 		moveToteDown.whenPressed(new MoveToteDown());
 		binPickup.whenPressed(new ConveyorBinPickup());
+		binStepPickup.whenPressed(new ConveyorBinStepPickup());
 	}
 	
 	
@@ -146,25 +147,19 @@ public class OI {
 	}
 	
 	public enum Autonomous {
-		toteAndBinRight (3),
-		toteAndBinMiddle (5),
-		toteAndBinLeft (9),
-		toteToLandmarkRight (13),
-		threeTotes (7),
-		toteToLandmarkLeft (11),
-		binRight (2),
-		binMiddle (4),
-		binLeft (8),
-		twoTotesToLandmarkLeft (12),
-		twoTotesToLandmarkRight (14),
-		backFromLandfill (15),
-		nothing (0);
-		
-		
-		private final int mode;
-		private Autonomous(int mode) {
-			this.mode = mode;
-		}
+		toteAndBinRight,
+		toteAndBinMiddle,
+		toteAndBinLeft,
+		toteToLandmarkRight,
+		threeTotes,
+		toteToLandmarkLeft,
+		binRight,
+		binMiddle,
+		binLeft,
+		twoTotesToLandmarkLeft,
+		twoTotesToLandmarkRight,
+		backFromLandfill,
+		nothing;
 	}
 	
 	

@@ -9,11 +9,12 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class MaintainConveyor extends Command {
-
-    public MaintainConveyor() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+	
+	int position;
+	
+    public MaintainConveyor(int position) {
     	requires(Robot.conveyor);
+    	this.position = position;
     }
 
     // Called just before this Command runs the first time
@@ -23,7 +24,7 @@ public class MaintainConveyor extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	Robot.conveyor.setPID(RobotMap.MAINTAIN_P,RobotMap.MAINTAIN_I, RobotMap.MAINTAIN_D);
-    	Robot.conveyor.setPosition(Robot.conveyor.getPosition());
+    	Robot.conveyor.setPosition(position);
     }
 
     // Make this return true when this Command no longer needs to run execute()

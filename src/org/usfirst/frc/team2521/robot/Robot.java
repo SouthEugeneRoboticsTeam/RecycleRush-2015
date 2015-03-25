@@ -5,7 +5,7 @@ import org.usfirst.frc.team2521.robot.commands.AutoModeSelector;
 import org.usfirst.frc.team2521.robot.commands.NextLightShow;
 import org.usfirst.frc.team2521.robot.commands.SwitchDriveMode;
 import org.usfirst.frc.team2521.robot.commands.TeleopReset;
-import org.usfirst.frc.team2521.robot.subsystems.Bling;
+import org.usfirst.frc.team2521.robot.subsystems.Lights;
 import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
 	
 	public static Drivechain drivechain;
 	public static Conveyor conveyor;
-	public static Bling bling;
+	public static Lights bling;
 	public static OI oi;
 	
 	public boolean isConveyorCalibrated = false;
@@ -45,7 +45,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	conveyor = new Conveyor();
     	drivechain = new Drivechain();
-    	bling = new Bling();
+    	bling = new Lights();
 		oi = new OI();
     	teleopReset = new TeleopReset();
     	nextLightShow = new NextLightShow();

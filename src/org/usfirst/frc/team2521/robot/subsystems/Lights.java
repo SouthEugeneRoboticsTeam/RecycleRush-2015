@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
-public class Bling extends Subsystem {
+public class Lights extends Subsystem {
 	DigitalOutput bling;
 	
-	public Bling() {
+	public Lights() {
 		bling = new DigitalOutput(RobotMap.BLING_CHANNEL);
 	}
 	
 	public void advanceToNextMode() {
-		bling.pulse(RobotMap.BLING_CHANNEL, (float) .5);
+		bling.pulse(RobotMap.BLING_CHANNEL, .5f);
 	}
 
 	protected void initDefaultCommand() {

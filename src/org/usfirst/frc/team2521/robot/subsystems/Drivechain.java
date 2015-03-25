@@ -67,32 +67,38 @@ public class Drivechain extends Subsystem {
 		double transX = OI.getInstance().getTranslateStick().getX();
 		double transY = OI.getInstance().getTranslateStick().getY();
 		double rotation = OI.getInstance().getRotateStick().getX();
+		double angle = getAngle();
+		
 		if (slowMode) {
 			rotation = rotation*.4;
 		}
-		double angle = getAngle();
+
 		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
 	}
 	
 	public void robotOrientedDrive() {
 		double rotation = OI.getInstance().getRotateStick().getX();
+		double magnitude = OI.getInstance().getTranslateStick().getMagnitude();
+		double direction = OI.getInstance().getTranslateStick().getDirectionDegrees();
+		
 		if (slowMode) {
 			rotation = rotation*.4;
 		}
-		double magnitude = OI.getInstance().getTranslateStick().getMagnitude();
-		double direction = OI.getInstance().getTranslateStick().getDirectionDegrees();
+		
 		drive.mecanumDrive_Polar(magnitude, direction, rotation);	
 	}
 	
 	public void arcadeDrive() {
 		double rotation = OI.getInstance().getTranslateStick().getX();
 		double magnitude = OI.getInstance().getTranslateStick().getY();
+		
 		drive.arcadeDrive(magnitude, rotation);
 	}
 	
 	public void tankDrive() {
 		double left = OI.getInstance().getTranslateStick().getY();
 		double right = OI.getInstance().getRotateStick().getY();
+		
 		drive.tankDrive(left, right);
 	}
 	

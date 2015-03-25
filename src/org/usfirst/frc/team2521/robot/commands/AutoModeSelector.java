@@ -39,6 +39,9 @@ public class AutoModeSelector extends CommandGroup {
     		addSequential(new MoveConveyor(0),.01);
     		addSequential(new PolarDrive(.5, 180, 0), 1.5);
     		break;
+    	default:
+			addSequential(new MoveConveyor(-.5), .5);
+			break;
 //    	case threeTotes: 
 //    		addParallel(new MoveToteUp(),.5);
 //    		addSequential(new PolarDrive(.5, 0, -.75), 1);
@@ -86,9 +89,6 @@ public class AutoModeSelector extends CommandGroup {
 //    		addSequential(new MoveConveyor(0));
 //    		addSequential(new PolarDrive(.3, 180, 0), .5);
 //    		break;
-    		default:
-    			addSequential(new MoveConveyor(-.5), .5);
-    			break;
     	}
     	addSequential(new PolarDrive(0, 0, 0));
     	

@@ -32,7 +32,7 @@ public class RobotMap {
 	public static final double SLOW_I = 0;
 	public static final double SLOW_D = .8;
 		
-	public static final double MAINTAIN_P = 6;
+	public static final double MAINTAIN_P = 1;
 	public static final double MAINTAIN_I = 0;
 	public static final double MAINTAIN_D = 0;
 
