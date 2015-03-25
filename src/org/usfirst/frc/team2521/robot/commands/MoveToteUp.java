@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.Robot;
+import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -25,7 +26,8 @@ public class MoveToteUp extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	Robot.conveyor.moveByTote(1);
+    	Robot.conveyor.setPID(RobotMap.SLOW_P, RobotMap.SLOW_I, RobotMap.SLOW_D);
+    	Robot.conveyor.moveUpOneHook();
         return true;
     }
 

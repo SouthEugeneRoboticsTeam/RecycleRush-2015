@@ -55,13 +55,6 @@ public class OI {
 	private JoystickButton resetGyro;
 	private JoystickButton moveConveyorUp;
 	private JoystickButton moveConveyorDown;
-	private JoystickButton resetRemembering;
-	private JoystickButton toggleRemembering;
-	private JoystickButton flip;
-	private JoystickButton flipToggle;
-	private JoystickButton clearLimits;
-	private JoystickButton resetAuto;
-	private JoystickButton toggleCompressor;
 	private JoystickButton toggleSlowMode;
 	private JoystickButton robotOriented;
 	private JoystickButton fieldOriented;
@@ -99,8 +92,6 @@ public class OI {
 		resetGyro = new JoystickButton(translate, 10);
 		moveConveyorUp = new JoystickButton(rotate, 3);
 		moveConveyorDown = new JoystickButton(rotate, 2);
-		toggleRemembering = new JoystickButton(translate, 11);
-		resetAuto = new JoystickButton(translate, 9);
 		toggleSlowMode = new JoystickButton(custom, 2);
 		robotOriented = new JoystickButton(rotate, 10);
 		fieldOriented = new JoystickButton(rotate, 11);

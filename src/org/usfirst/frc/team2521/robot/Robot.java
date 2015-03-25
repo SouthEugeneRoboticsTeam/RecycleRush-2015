@@ -9,7 +9,6 @@ import org.usfirst.frc.team2521.robot.subsystems.Conveyor;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -31,7 +30,6 @@ public class Robot extends IterativeRobot {
 	public static Bling bling;
 	public static OI oi;
 
-	SendableChooser autoChooser;
 	Command autonomousCommand;
 	Command teleopReset;
 
@@ -61,7 +59,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	teleopReset.start();
     	autonomousCommand = new AutoModeSelector();
-
+    	
     	autonomousCommand.start();
     }
 
@@ -70,6 +68,9 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        if (conveyor.getReadSwitch()) {
+        	conveyor.resetPosition();
+        }
     }
 
     public void teleopInit() {
@@ -89,9 +90,6 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        if (conveyor.getReadSwitch()) {
-        	conveyor.resetPosition();
-        }
         SmartDashboard.putNumber("Position", conveyor.getPosition());
     }
     

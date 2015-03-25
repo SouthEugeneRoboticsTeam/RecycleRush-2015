@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.command.Command;
 public class MoveToteDown extends Command {
 
     public MoveToteDown() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
     	requires(Robot.conveyor);
     }
 
@@ -26,7 +24,8 @@ public class MoveToteDown extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	Robot.conveyor.moveByTote(-1);
+    	Robot.conveyor.setPID(RobotMap.SLOW_P, RobotMap.SLOW_I, RobotMap.SLOW_D);
+    	Robot.conveyor.moveDownOneHook();
         return true;
     }
 

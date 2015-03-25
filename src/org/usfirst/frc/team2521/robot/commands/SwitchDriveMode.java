@@ -4,7 +4,6 @@ import org.usfirst.frc.team2521.robot.Robot;
 import org.usfirst.frc.team2521.robot.subsystems.Drivechain.DriveMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -12,9 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwitchDriveMode extends Command {
 
 	DriveMode mode;
+	
     public SwitchDriveMode(DriveMode mode) {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
     	this.mode = mode;
     	requires(Robot.drivechain);
     }

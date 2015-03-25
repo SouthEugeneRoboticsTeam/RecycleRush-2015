@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.Robot;
+import org.usfirst.frc.team2521.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -21,8 +22,8 @@ public class MaintainConveyor extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.conveyor.setPID(10, 0, 0);
-    	//Robot.conveyor.setPosition(Robot.conveyor.getPosition());
+    	Robot.conveyor.setPID(RobotMap.MAINTAIN_P,RobotMap.MAINTAIN_I, RobotMap.MAINTAIN_D);
+    	Robot.conveyor.setPosition(Robot.conveyor.getPosition());
     }
 
     // Make this return true when this Command no longer needs to run execute()
