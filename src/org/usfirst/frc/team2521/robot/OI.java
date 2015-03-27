@@ -113,8 +113,8 @@ public class OI {
 	private void tieButtons() {
 		resetGyro.whenPressed(new ResetGyro());
 		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED_HI));
-		moveConveyorUp.whenReleased(new MaintainConveyor());
-		moveConveyorDown.whenReleased(new MaintainConveyor());
+		moveConveyorUp.whenReleased(new MoveConveyor(0));
+		moveConveyorDown.whenReleased(new MoveConveyor(0));
 		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
 		toggleSlowMode.whenPressed(new ToggleSlowMode(true));
 		toggleSlowMode.whenReleased(new ToggleSlowMode(false));
