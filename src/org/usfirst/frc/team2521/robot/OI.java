@@ -152,7 +152,7 @@ public class OI {
 		case 2: return Autonomous.binRight;
 		case 1: return Autonomous.twoLandfill;
 		case 0: return Autonomous.nothing;
-		case 14: return Autonomous.grabBin;
+		case 14: return Autonomous.canTheftAuto;
 		default: return Autonomous.binLeft;
 		
 		}
@@ -173,7 +173,7 @@ public class OI {
 		backFromLandfill,
 		twoLandfill,
 		nothing,
-		grabBin;
+		canTheftAuto;
 	}
 	
 	
