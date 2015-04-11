@@ -58,6 +58,15 @@ public class AutoModeSelector extends CommandGroup {
     		addSequential(new PolarDrive(.5, 180, 0), 1.8);
 //    		addSequential(new PolarDrive(0, 0, .4), 1.25);
     		break;
+    		
+    	case grabBin:
+    		addSequential(new ToggleArm());
+    		addSequential(new MoveConveyor(-.5), .75);
+    		addSequential(new MoveConveyor(0),.01);
+    		addSequential(new PolarDrive(.5, 180, 0), 1.5);
+    		addSequential(new ToggleArm());
+    		break;
+    		
     	default:
 			addSequential(new MoveConveyor(-.5), .75);
 			break;

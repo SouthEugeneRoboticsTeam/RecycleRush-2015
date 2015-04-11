@@ -21,6 +21,9 @@ public class RobotMap {
 	public static final int ROTATE_PORT = 1;
 	public static final int CUSTOM_PORT = 2;
 	
+	public static final int ARM_UP_CHANNEL = 0;
+	public static final int ARM_DOWN_CHANNEL = 1;
+	
 	public static final double CONVEYOR_SPEED_HI = .5; // conveyor speed when moving up
 	public static final double CONVEYOR_SPEED_LO = .7; // conveyor speed when moving down
 	
