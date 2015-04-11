@@ -28,25 +28,25 @@ public class RobotMap {
 	public static final double FREE_I = 0;
 	public static final double FREE_D = 2;
 	
-	public static final double SLOW_P = 2.5;
+	public static final double SLOW_P = .4;
 	public static final double SLOW_I = 0;
-	public static final double SLOW_D = .8;
+	public static final double SLOW_D = .1;
 		
-	public static final double MAINTAIN_P = 1;
+	public static final double MAINTAIN_P = .5;
 	public static final double MAINTAIN_I = 0;
 	public static final double MAINTAIN_D = 0;
 
-	public static final int CODES_PER_CYCLE = 40928;
-	public static final int[] BIN_PICKUPS = {-39162, -19174};     	//, 1766, 21754};
-	public static final int[] BIN_STEP_PICKUPS = {-40875, -20788}; 	//, 53, 20140};
-	public static final int[] HOOK_POSITIONS = {-40564, -38473, -36175, -33962,
-												-31757,	-29406, -27185, -24991, 
-												-22767,	-20482, -18342, -15991,
-												-13873,	-11484, -9107, -6631, 
-												-4257, -1962};
-//												364, 2455, 
-//												4753, 6966, 9171, 11522,
-//												13743, 15937, 18161, 20446,
-//												22586, 24937, 27055, 29444,
-//												31821, 34297, 36671, 38966};
+	public static final int CODES_PER_CYCLE = 40687;
+	public static final int HORIZONTAL_BIN_OFFSET = 436;
+	public static final int[] BIN_PICKUPS = {-22125, -1951, 18314, 38378};     	//, 1766, 21754};
+	public static final int[] BIN_STEP_PICKUPS = {-20279, -168, 20150, 40519}; 	//, 53, 20140};
+	public static final int[] HOOK_POSITIONS = {-40912, -38899, -36506, -34213, -31883,
+												-29623, -27266, -25115, -22841,
+												-20595, -18387, -16147, -13837,
+												-11783, -9391, -7104, -4893,
+												-310, 1910, 4163, 6540,
+												8765, 11119, 13422, 15589,
+												17914, 20073, 22372, 24533,
+												26794, 29032, 31322, 33663,
+												35752, 38170, 40429};     
 }

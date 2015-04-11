@@ -26,7 +26,8 @@ public class Conveyor extends Subsystem {
 		slave.set(RobotMap.CONVEYOR_MASTER);
 		master.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
 		master.setPID(3, 0, 1);
-		
+		master.reverseSensor(true);
+		master.reverseOutput(true);
 		magReadSwitch = new DigitalInput(RobotMap.MAG_READ_CHANNEL);
 //		magReadSwitch.setUpSourceEdge(false, true);
 //		magReadSwitch.requestInterrupts(magReadHandler);
@@ -63,23 +64,28 @@ public class Conveyor extends Subsystem {
 	
 	public void moveUpOneHook() {
 		int currentRelativePosition = getPosition() % RobotMap.CODES_PER_CYCLE;
-		setPosition(getPosition() + (getClosestPositions(RobotMap.HOOK_POSITIONS, currentRelativePosition, Direction.down) + currentRelativePosition));
+		setPosition(getPosition() + (getClosestPositions(RobotMap.HOOK_POSITIONS, currentRelativePosition, Direction.down) - currentRelativePosition));
 	}
 
 
 	public void moveDownOneHook() {
 		int currentRelativePosition = getPosition() % RobotMap.CODES_PER_CYCLE;
-		setPosition(getPosition() + (getClosestPositions(RobotMap.HOOK_POSITIONS, currentRelativePosition, Direction.up) + currentRelativePosition));
+		setPosition(getPosition() + (getClosestPositions(RobotMap.HOOK_POSITIONS, currentRelativePosition, Direction.up) - currentRelativePosition));
 	}
 	
 	public void binPickup() {
 		int currentRelativePosition = getPosition() % RobotMap.CODES_PER_CYCLE;
-		setPosition(getPosition() + (getClosestPositions(RobotMap.BIN_PICKUPS, currentRelativePosition, Direction.none) + currentRelativePosition));
+		setPosition(getPosition() + (getClosestPositions(RobotMap.BIN_PICKUPS, currentRelativePosition, Direction.none) - currentRelativePosition));
 	}
 	
 	public void binStepPickup() {
 		int currentRelativePosition = getPosition() % RobotMap.CODES_PER_CYCLE;
-		setPosition(getPosition() + (getClosestPositions(RobotMap.BIN_STEP_PICKUPS, currentRelativePosition, Direction.none) + currentRelativePosition));
+		setPosition(getPosition() + (getClosestPositions(RobotMap.BIN_STEP_PICKUPS, currentRelativePosition, Direction.none) - currentRelativePosition));
+	}
+	
+	public void binHorizontalPickup() {
+		int currentRelativePosition = getPosition() % RobotMap.CODES_PER_CYCLE;
+		setPosition(getPosition() + (getClosestPositions(RobotMap.HOOK_POSITIONS, currentRelativePosition, Direction.none) - RobotMap.HORIZONTAL_BIN_OFFSET - currentRelativePosition));
 	}
 	
 	private int getClosestPositions(int[] positions, int target, Direction direction) {
@@ -98,7 +104,7 @@ public class Conveyor extends Subsystem {
 	        }
 	    }
 	    
-	    return positions[high + direction.value];
+	    return positions[(high + direction.value) % positions.length];
 	}
 
 	public enum Direction {
@@ -113,7 +119,7 @@ public class Conveyor extends Subsystem {
 	}
 
     public void initDefaultCommand() {
-    	setDefaultCommand(new MaintainConveyor(getPosition()));
+    	//setDefaultCommand(new MaintainConveyor(getPosition()));
     }
 }
 

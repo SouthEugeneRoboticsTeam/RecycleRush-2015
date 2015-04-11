@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class MaintainConveyor extends Command {
-	
-	int position;
-	boolean newPosition = false;
-	
-    public MaintainConveyor() {
+public class CalibrateConveyor extends Command {
+
+    public CalibrateConveyor() {
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     	requires(Robot.conveyor);
     }
 
@@ -23,28 +22,25 @@ public class MaintainConveyor extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (!newPosition) {
-    		position = Robot.conveyor.getPosition();
-    		newPosition = true;
-        	Robot.conveyor.setPID(RobotMap.MAINTAIN_P,RobotMap.MAINTAIN_I, RobotMap.MAINTAIN_D);
-    	}
-    	Robot.conveyor.setPosition(position);
+    	Robot.conveyor.moveConveyor(-.3);
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	
-        return false;
+        return Robot.conveyor.getReadSwitch();
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	newPosition = false;
+    	Robot.conveyor.moveConveyor(0);
+    	Robot.conveyor.resetPosition();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
+    	Robot.conveyor.moveConveyor(0);
     }
 }

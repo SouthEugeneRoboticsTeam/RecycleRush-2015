@@ -1,7 +1,9 @@
 package org.usfirst.frc.team2521.robot;
 
+import org.usfirst.frc.team2521.robot.commands.CalibrateConveyor;
 import org.usfirst.frc.team2521.robot.commands.ConveyorBinPickup;
 import org.usfirst.frc.team2521.robot.commands.ConveyorBinStepPickup;
+import org.usfirst.frc.team2521.robot.commands.ConveyorHorizontalBinPickup;
 import org.usfirst.frc.team2521.robot.commands.MaintainConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveConveyor;
 import org.usfirst.frc.team2521.robot.commands.MoveToteDown;
@@ -60,6 +62,9 @@ public class OI {
 	private JoystickButton moveToteDown;
 	private JoystickButton binPickup;
 	private JoystickButton binStepPickup;
+	private JoystickButton maintainConveyor;
+	private JoystickButton binHorizontalPickup;
+	private JoystickButton conveyorReset;
 	
 	private int[] customButton = {6,3,4,5};
 	
@@ -97,8 +102,10 @@ public class OI {
 		moveToteUp  = new JoystickButton(rotate, 6);
 	 	moveToteDown = new JoystickButton(rotate, 7);
 	 	binPickup = new JoystickButton(rotate, 8);
-	 	binStepPickup = new JoystickButton(rotate, 9);
-	 	
+	 	binStepPickup = new JoystickButton(rotate, 10);
+	 	binHorizontalPickup = new JoystickButton(rotate, 9);
+	 	maintainConveyor = new JoystickButton(rotate, 5);
+	 	conveyorReset = new JoystickButton(translate, 9);
 		tieButtons();
 	}
 	
@@ -108,13 +115,16 @@ public class OI {
 		toggleSlowMode.whenReleased(new ToggleSlowMode(false));
 		
 		moveConveyorUp.whileHeld(new MoveConveyor(-RobotMap.CONVEYOR_SPEED_HI));
-		moveConveyorUp.whenReleased(new MaintainConveyor(Robot.conveyor.getPosition()));
+		moveConveyorUp.whenReleased(new MoveConveyor(0));
 		moveConveyorDown.whileHeld(new MoveConveyor(RobotMap.CONVEYOR_SPEED_LO));
-		moveConveyorDown.whenReleased(new MaintainConveyor(Robot.conveyor.getPosition()));
+		moveConveyorDown.whenReleased(new MoveConveyor(0));
 		moveToteUp.whenPressed(new MoveToteUp());
 		moveToteDown.whenPressed(new MoveToteDown());
 		binPickup.whenPressed(new ConveyorBinPickup());
 		binStepPickup.whenPressed(new ConveyorBinStepPickup());
+		binHorizontalPickup.whenPressed(new ConveyorHorizontalBinPickup());
+		maintainConveyor.whenPressed(new MaintainConveyor());
+		conveyorReset.whenPressed(new CalibrateConveyor());
 	}
 	
 	
@@ -140,6 +150,7 @@ public class OI {
 		case 8: return Autonomous.binLeft;
 		case 4: return Autonomous.binMiddle;
 		case 2: return Autonomous.binRight;
+		case 1: return Autonomous.twoLandfill;
 		case 0: return Autonomous.nothing;
 		default: return Autonomous.binLeft;
 		
@@ -159,6 +170,7 @@ public class OI {
 		twoTotesToLandmarkLeft,
 		twoTotesToLandmarkRight,
 		backFromLandfill,
+		twoLandfill,
 		nothing;
 	}
 	

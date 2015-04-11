@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
 	
 	Command autonomousCommand;
 	Command teleopReset;
-	Command nextLightShow;
+//	Command nextLightShow;
 
 
     /**
@@ -45,10 +45,10 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	conveyor = new Conveyor();
     	drivechain = new Drivechain();
-    	bling = new Lights();
+//    	bling = new Lights();
 		oi = new OI();
     	teleopReset = new TeleopReset();
-    	nextLightShow = new NextLightShow();
+//    	nextLightShow = new NextLightShow();
 		SmartDashboard.putData("Field Oriented Drive", new SwitchDriveMode(DriveMode.fieldOrientedMecanum));
 		SmartDashboard.putData("Robot Oriented Drive", new SwitchDriveMode(DriveMode.robotOrientedMecanum));
 		SmartDashboard.putData("Arcade Drive", new SwitchDriveMode(DriveMode.arcadeDrive));
@@ -60,8 +60,8 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-    	nextLightShow.start();
-    	teleopReset.start();
+//    	nextLightShow.start();
+//    	teleopReset.start();
     	autonomousCommand = new AutoModeSelector();
     	
     	autonomousCommand.start();
@@ -78,8 +78,8 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-    	nextLightShow.start();
-    	teleopReset.start();
+//    	nextLightShow.start();
+//    	teleopReset.start();
     }
 
     /**
@@ -87,8 +87,8 @@ public class Robot extends IterativeRobot {
      * You can use it to reset subsystems before shutting down.
      */
     public void disabledInit(){
-    	nextLightShow.setRunWhenDisabled(true);
-    	nextLightShow.start();
+//    	nextLightShow.setRunWhenDisabled(true);
+//    	nextLightShow.start();
     }
 
     /**
@@ -97,6 +97,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Position", conveyor.getPosition());
+        SmartDashboard.putBoolean("Hall Effect", conveyor.getReadSwitch());
     }
     
     /**
