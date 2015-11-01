@@ -5,8 +5,6 @@ import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 
-
-
 //import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
@@ -15,6 +13,8 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 
 /**
  *
@@ -25,7 +25,7 @@ public class Drivechain extends Subsystem {
     // here. Call these from Commands.
 	
 	private RobotDrive drive;
-	private Gyro gyro;
+	private AHRS ahrs;
 	private DriveMode mode = DriveMode.robotOrientedMecanum;
 	boolean slowMode = false;
 	
@@ -56,7 +56,7 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 		
-		gyro = new Gyro(RobotMap.GYRO_PORT);
+		ahrs = new AHRS(SPI.Port.kMXP);
 	}
 	
 	public void toggleSlowMode(boolean set) {
@@ -103,12 +103,12 @@ public class Drivechain extends Subsystem {
 	}
 	
 	public double getAngle(){
-		return gyro.getAngle();
+		return ahrs.getAngle();
 	}
 
 	
 	public void resetGyro() {
-		gyro.reset();
+		ahrs.reset();
 	}	
 	
 	public void teleoperatedDrive() {
