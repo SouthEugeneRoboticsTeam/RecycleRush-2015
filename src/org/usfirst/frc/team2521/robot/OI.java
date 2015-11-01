@@ -126,46 +126,41 @@ public class OI {
 		
 		SmartDashboard.putNumber("autoMode", autoMode);
 		switch (autoMode) {
-		case 15: return Autonomous.backFromLandfill;
-		case 14: return Autonomous.twoTotesToLandmarkRight; 
-		case 12: return Autonomous.twoTotesToLandmarkLeft;
-		case 11: return Autonomous.toteToLandmarkLeft;
-		case 7: return Autonomous.threeTotes;
-		case 13: return Autonomous.toteToLandmarkRight;
-		case 9: return Autonomous.toteAndBinLeft;
-		case 5: return Autonomous.toteAndBinMiddle;
-		case 3: return Autonomous.toteAndBinRight;
-		case 8: return Autonomous.binLeft;
-		case 4: return Autonomous.binMiddle;
-		case 2: return Autonomous.binRight;
 		case 0: return Autonomous.nothing;
+		case 2: return Autonomous.binRight;
+		case 3: return Autonomous.toteAndBinRight;
+		case 4: return Autonomous.binMiddle;
+		case 5: return Autonomous.toteAndBinMiddle;
+		case 7: return Autonomous.threeTotes;
+		case 8: return Autonomous.binLeft;
+		case 9: return Autonomous.toteAndBinLeft;
+		case 11: return Autonomous.toteToLandmarkLeft;
+		case 12: return Autonomous.twoTotesToLandmarkLeft;
+		case 13: return Autonomous.toteToLandmarkRight;
+		case 14: return Autonomous.twoTotesToLandmarkRight;
+		case 15: return Autonomous.backFromLandfill;
 		default: return Autonomous.binLeft;
 		
 		}
 	}
 	
 	public enum Autonomous {
-		toteAndBinRight (3),
-		toteAndBinMiddle (5),
-		toteAndBinLeft (9),
-		toteToLandmarkRight (13),
-		threeTotes (7),
-		toteToLandmarkLeft (11),
+		nothing (0),
 		binRight (2),
+		toteAndBinRight (3),
 		binMiddle (4),
+		toteAndBinMiddle (5),
+		threeTotes (7),
 		binLeft (8),
+		toteAndBinLeft (9),
+		toteToLandmarkLeft (11),
 		twoTotesToLandmarkLeft (12),
+		toteToLandmarkRight (13),
 		twoTotesToLandmarkRight (14),
-		backFromLandfill (15),
-		nothing (0);
-		
+		backFromLandfill (15);
 		
 		private Autonomous(int mode) {
 		}
 	}
-	
-	
-	
-	
 }
 
