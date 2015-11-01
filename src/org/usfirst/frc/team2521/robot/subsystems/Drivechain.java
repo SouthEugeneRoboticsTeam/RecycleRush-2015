@@ -5,24 +5,24 @@ import org.usfirst.frc.team2521.robot.OI;
 import org.usfirst.frc.team2521.robot.RobotMap;
 import org.usfirst.frc.team2521.robot.commands.TeleoperatedDrive;
 
-//import edu.wpi.first.wpilibj.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
-import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
 
 /**
  *
  */
 public class Drivechain extends Subsystem {
     
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
+    // Put methods for controlling this subsystem here.
+    // Call these from Commands.
 	
 	private RobotDrive drive;
 	private AHRS ahrs;
@@ -56,7 +56,12 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 		
-		ahrs = new AHRS(SPI.Port.kMXP);
+          try {
+              // Communicate w/navX-MXP via the MXP SPI Bus.
+              ahrs = new AHRS(SPI.Port.kMXP); 
+          } catch (RuntimeException ex ) {
+              DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+          }
 	}
 	
 	public void toggleSlowMode(boolean set) {
