@@ -126,7 +126,7 @@ public class OI {
 		
 		SmartDashboard.putNumber("autoMode", autoMode);
 		switch (autoMode) {
-		case 0: return Autonomous.nothing;
+		case 0: return Autonomous.navXAutonomous;
 		case 2: return Autonomous.binRight;
 		case 3: return Autonomous.toteAndBinRight;
 		case 4: return Autonomous.binMiddle;
@@ -145,7 +145,7 @@ public class OI {
 	}
 	
 	public enum Autonomous {
-		nothing (0),
+		navXAutonomous (0),
 		binRight (2),
 		toteAndBinRight (3),
 		binMiddle (4),

@@ -33,7 +33,7 @@ public class AutoModeSelector extends CommandGroup {
         		addSequential(new PolarDrive(.45, 180, .05), 2.85);
         		break;
         		
-        	case nothing:
+        	case navXAutonomous:
         		break;
         		
         	case backFromLandfill:
