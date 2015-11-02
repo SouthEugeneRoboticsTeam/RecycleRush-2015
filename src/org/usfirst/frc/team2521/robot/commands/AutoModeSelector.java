@@ -34,11 +34,8 @@ public class AutoModeSelector extends CommandGroup{
         		break;
         		
         	case navXAutonomous:
-        		
-        		addParallel(new NavXAuto(0.4, 0.4, 0));
-
         		try {
-                    
+                    //Future Auto Code
                 } catch (RuntimeException ex ) {
                     DriverStation.reportError("Error " + ex.getMessage(), true);
                 }
