@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.OI;
-import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -36,7 +35,7 @@ public class AutoModeSelector extends CommandGroup{
         		
         	case navXAutonomous:
         		
-        		addParallel(new NavXAuto(1, 1, 1, 1));
+        		addParallel(new NavXAuto(0.4, 0.4, 0));
 
         		try {
                     

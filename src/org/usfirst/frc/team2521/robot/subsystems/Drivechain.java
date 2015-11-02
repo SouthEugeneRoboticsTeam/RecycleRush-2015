@@ -175,8 +175,12 @@ public class Drivechain extends Subsystem implements PIDOutput {
 		drive.mecanumDrive_Polar(magnitude, direction, rotation);
 	}
 	
-	public void navXAuto (double x, double y, double rotation, double gyroAngle) {
-		drive.mecanumDrive_Cartesian(x, y, rotation, gyroAngle);
+	public void navXAuto (double x, double y, double customAngle) {
+		double rotation;
+		turnController.setSetpoint(customAngle);
+		turnController.enable();
+		rotation = rotateToAngleRate;
+		drive.mecanumDrive_Cartesian(x, y, rotation, getAngle());
 	}
 	
 	public void switchDriveMode(DriveMode newMode) {

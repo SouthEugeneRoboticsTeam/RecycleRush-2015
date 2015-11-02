@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class NavXAuto extends Command {
 
-	double x, y, rotation, gyroAngle;
+	double x, y, rotation;
 	
-    public NavXAuto(double x, double y, double rotation, double gyroAngle) {
+    public NavXAuto(double x, double y, double rotation) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	
@@ -19,7 +19,6 @@ public class NavXAuto extends Command {
     	this.x = x;
     	this.y = y;
     	this.rotation = rotation;
-    	this.gyroAngle = gyroAngle;
     }
 
     // Called just before this Command runs the first time
@@ -28,7 +27,7 @@ public class NavXAuto extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.drivechain.navXAuto(x, y, rotation, gyroAngle);
+    	Robot.drivechain.navXAuto(x, y, rotation);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -38,7 +37,7 @@ public class NavXAuto extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.drivechain.navXAuto(0, 0, 0, 0);
+    	Robot.drivechain.navXAuto(0, 0, 0);
     }
 
     // Called when another command which requires one or more of the same
