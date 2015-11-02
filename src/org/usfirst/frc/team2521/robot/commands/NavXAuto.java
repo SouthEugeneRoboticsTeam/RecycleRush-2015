@@ -7,12 +7,19 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class NextLightShow extends Command {
+public class NavXAuto extends Command {
 
-    public NextLightShow() {
+	double x, y, rotation, gyroAngle;
+	
+    public NavXAuto(double x, double y, double rotation, double gyroAngle) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.bling);
+    	
+    	requires(Robot.drivechain);
+    	this.x = x;
+    	this.y = y;
+    	this.rotation = rotation;
+    	this.gyroAngle = gyroAngle;
     }
 
     // Called just before this Command runs the first time
@@ -21,16 +28,17 @@ public class NextLightShow extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	Robot.drivechain.navXAuto(x, y, rotation, gyroAngle);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	Robot.bling.advanceToNextMode();
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.drivechain.navXAuto(0, 0, 0, 0);
     }
 
     // Called when another command which requires one or more of the same

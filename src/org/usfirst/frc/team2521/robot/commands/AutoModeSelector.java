@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.OI;
+import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -8,7 +9,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class AutoModeSelector extends CommandGroup {
+public class AutoModeSelector extends CommandGroup{
     
     public  AutoModeSelector() {
     	switch (OI.getInstance().getAutoMode()) {
@@ -34,6 +35,14 @@ public class AutoModeSelector extends CommandGroup {
         		break;
         		
         	case navXAutonomous:
+        		
+        		addParallel(new NavXAuto(1, 1, 1, 1));
+
+        		try {
+                    
+                } catch (RuntimeException ex ) {
+                    DriverStation.reportError("Error " + ex.getMessage(), true);
+                }
         		break;
         		
         	case backFromLandfill:

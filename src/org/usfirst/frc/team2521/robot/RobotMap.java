@@ -31,4 +31,11 @@ public class RobotMap {
 												-18342, -20482, -22767, -24991,
 												-27185, -29406, -31757, -33962,
 												-36175, -38473};
+	
+	public static final double kP = 0.03;
+	public static final double kI = 0.00;
+	public static final double kD = 0.00;
+	public static final double kF = 0.00;
+	public static final double kToleranceDegrees = 2.0f;
+	public final static double kCollisionThreshold_DeltaG = 0.5f;
 }

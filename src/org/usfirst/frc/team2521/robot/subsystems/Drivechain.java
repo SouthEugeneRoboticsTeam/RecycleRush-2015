@@ -10,16 +10,19 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.ControlMode;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class Drivechain extends Subsystem {
+public class Drivechain extends Subsystem implements PIDOutput {
     
     // Put methods for controlling this subsystem here.
     // Call these from Commands.
@@ -28,6 +31,8 @@ public class Drivechain extends Subsystem {
 	private AHRS ahrs;
 	private DriveMode mode = DriveMode.robotOrientedMecanum;
 	boolean slowMode = false;
+    PIDController turnController;
+    double rotateToAngleRate;
 	
 	CANTalon frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -56,12 +61,36 @@ public class Drivechain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 		
-          try {
-              // Communicate w/navX-MXP via the MXP SPI Bus.
-              ahrs = new AHRS(SPI.Port.kMXP); 
-          } catch (RuntimeException ex ) {
-              DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
-          }
+        try {
+            // Communicate w/navX-MXP via the MXP SPI Bus.
+            ahrs = new AHRS(SPI.Port.kMXP); 
+        } catch (RuntimeException ex ) {
+            DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+        }
+        
+        turnController = new PIDController(RobotMap.kP, RobotMap.kI, RobotMap.kD, RobotMap.kF, ahrs, this);
+        turnController.setInputRange(-180.0f,  180.0f);
+        turnController.setOutputRange(-1.0, 1.0);
+        turnController.setAbsoluteTolerance(RobotMap.kToleranceDegrees);
+        turnController.setContinuous(true);
+        LiveWindow.addActuator("DriveSystem", "RotateController", turnController);
+        
+		double last_world_linear_accel_x = 0;
+		double last_world_linear_accel_y = 0;
+		boolean collisionDetected = false;
+		
+        double curr_world_linear_accel_x = ahrs.getWorldLinearAccelX();
+        double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
+        last_world_linear_accel_x = curr_world_linear_accel_x;
+        double curr_world_linear_accel_y = ahrs.getWorldLinearAccelY();
+        double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
+        last_world_linear_accel_y = curr_world_linear_accel_y;
+        
+        if ( ( Math.abs(currentJerkX) > RobotMap.kCollisionThreshold_DeltaG ) ||
+             ( Math.abs(currentJerkY) > RobotMap.kCollisionThreshold_DeltaG ) ) {
+            collisionDetected = true;
+        }
+        SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
 	}
 	
 	public void toggleSlowMode(boolean set) {
@@ -75,8 +104,13 @@ public class Drivechain extends Subsystem {
 		if (slowMode) {
 			rotation = rotation*.4;
 		}
-		double angle = getAngle();
-		drive.mecanumDrive_Cartesian(transX, transY, rotation, angle);
+		double gyroAngle = getAngle();
+        try {
+        	drive.mecanumDrive_Cartesian(transX, transY, rotation, gyroAngle);
+        } catch( RuntimeException ex ) {
+            String err_string = "Drive system error:  " + ex.getMessage();
+            DriverStation.reportError(err_string, true);
+        }
 	}
 	
 	public void robotOrientedDrive() {
@@ -141,6 +175,10 @@ public class Drivechain extends Subsystem {
 		drive.mecanumDrive_Polar(magnitude, direction, rotation);
 	}
 	
+	public void navXAuto (double x, double y, double rotation, double gyroAngle) {
+		drive.mecanumDrive_Cartesian(x, y, rotation, gyroAngle);
+	}
+	
 	public void switchDriveMode(DriveMode newMode) {
 		mode = newMode;
 		SmartDashboard.putString("Current Drive Mode", mode.identifier);
@@ -160,6 +198,13 @@ public class Drivechain extends Subsystem {
     	private DriveMode(String identifier) {
     		this.identifier = identifier;
     	}
+    }
+
+    @Override
+    /* This function is invoked periodically by the PID Controller, */
+    /* based upon navX MXP yaw angle input and PID Coefficients.    */
+    public void pidWrite(double output) {
+        rotateToAngleRate = output;
     }
 }
     	

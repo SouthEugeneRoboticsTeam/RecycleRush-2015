@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class PolarDrive extends Command {
 
 	double magnitude, direction, rotation;
+	
     public PolarDrive(double magnitude, double direction, double rotation) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
