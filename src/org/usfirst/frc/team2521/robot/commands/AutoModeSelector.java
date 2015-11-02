@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2521.robot.commands;
 
 import org.usfirst.frc.team2521.robot.OI;
+import org.usfirst.frc.team2521.robot.subsystems.Drivechain;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -35,7 +36,22 @@ public class AutoModeSelector extends CommandGroup{
         		
         	case navXAutonomous:
         		try {
-                    //Future Auto Code
+        			DriverStation.reportError("Yay! Autonomous code started successfully!", false);
+                    while ( !Drivechain.collisionDetected ) { // Need to implement ( !Drivechain.collisionDetected || Drivechain.ahrs.getAltitude() < x value )
+                    	addSequential(new NavXAuto(0, .4, 0));
+                    	DriverStation.reportError("Moving forward.", false);
+                    } 
+                    if ( Drivechain.collisionDetected ) {
+                    	DriverStation.reportError("Collison was detected.", false);
+                    	addParallel(new MoveToteUp(),.5);
+                    	addSequential(new NavXAuto(0, .1, 0), 1);
+                    	DriverStation.reportError("Picking up tote.", false);
+                    	addSequential(new NavXAuto(0, -.1, 0), 0.5);
+                    	addSequential(new NavXAuto(0, .1, 0), 1);
+                    	addParallel(new NavXAuto(0, 0, 179.9f), 1);
+                    	DriverStation.reportError("Rotating to the right 180 degrees.", false);
+                    	Drivechain.collisionDetected = false;
+                    }
                 } catch (RuntimeException ex ) {
                     DriverStation.reportError("Error " + ex.getMessage(), true);
                 }

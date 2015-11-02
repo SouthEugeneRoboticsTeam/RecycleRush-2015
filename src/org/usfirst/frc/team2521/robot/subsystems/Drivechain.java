@@ -33,6 +33,10 @@ public class Drivechain extends Subsystem implements PIDOutput {
 	boolean slowMode = false;
     PIDController turnController;
     double rotateToAngleRate;
+	double last_world_linear_accel_x = 0;
+	double last_world_linear_accel_y = 0;
+	public static boolean collisionDetected = false;
+	double gyroAngle = getAngle();
 	
 	CANTalon frontLeft, frontRight, rearLeft, rearRight;
 	
@@ -74,10 +78,6 @@ public class Drivechain extends Subsystem implements PIDOutput {
         turnController.setAbsoluteTolerance(RobotMap.kToleranceDegrees);
         turnController.setContinuous(true);
         LiveWindow.addActuator("DriveSystem", "RotateController", turnController);
-        
-		double last_world_linear_accel_x = 0;
-		double last_world_linear_accel_y = 0;
-		boolean collisionDetected = false;
 		
         double curr_world_linear_accel_x = ahrs.getWorldLinearAccelX();
         double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
@@ -90,7 +90,7 @@ public class Drivechain extends Subsystem implements PIDOutput {
              ( Math.abs(currentJerkY) > RobotMap.kCollisionThreshold_DeltaG ) ) {
             collisionDetected = true;
         }
-        SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
+        SmartDashboard.putBoolean( "CollisionDetected", collisionDetected );
 	}
 	
 	public void toggleSlowMode(boolean set) {
@@ -104,7 +104,7 @@ public class Drivechain extends Subsystem implements PIDOutput {
 		if (slowMode) {
 			rotation = rotation*.4;
 		}
-		double gyroAngle = getAngle();
+		
         try {
         	drive.mecanumDrive_Cartesian(transX, transY, rotation, gyroAngle);
         } catch( RuntimeException ex ) {
@@ -180,7 +180,12 @@ public class Drivechain extends Subsystem implements PIDOutput {
 		turnController.setSetpoint(customAngle);
 		turnController.enable();
 		rotation = rotateToAngleRate;
-		drive.mecanumDrive_Cartesian(x, y, rotation, getAngle());
+		try {
+			drive.mecanumDrive_Cartesian(x, y, rotation, getAngle());
+        } catch( RuntimeException ex ) {
+            String err_string = "Drive system error:  " + ex.getMessage();
+            DriverStation.reportError(err_string, true);
+        }
 	}
 	
 	public void switchDriveMode(DriveMode newMode) {
